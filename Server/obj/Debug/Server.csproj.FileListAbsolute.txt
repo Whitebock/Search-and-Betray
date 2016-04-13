@@ -56,3 +56,6 @@ F:\Combat in Candahar City\Server\obj\Debug\NS_View\View.baml
 F:\Combat in Candahar City\Server\obj\Debug\Server.g.resources
 F:\Combat in Candahar City\Server\obj\Debug\Server.Properties.Resources.resources
 F:\Combat in Candahar City\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+E:\Projekte\Unity\Combat-in-Candahar-City\Server\bin\Debug\Server.exe.config
+E:\Projekte\Unity\Combat-in-Candahar-City\Server\obj\Debug\Server.exe
+E:\Projekte\Unity\Combat-in-Candahar-City\Server\obj\Debug\Server.pdb
