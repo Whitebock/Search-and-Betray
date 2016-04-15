@@ -13,113 +13,55 @@ namespace WhiteNet.Server
         #region Attributes
 
         private TcpListener listener;
-        private Thread thread;
-        private List<ServerClient> clients;
-        private IPEndPoint endPoint;
-        
+        private Thread listenerThread;
+
+        private bool listening;
         #endregion
 
         #region Properties
-
-        public List<ServerClient> Clients
-        {
-            get { return clients; }
-        }
-
-        public IPEndPoint EndPoint
-        {
-            get { return endPoint; }
-        }
-
         public bool Listening
         {
-            get { return thread != null; }
+            get { return listening; }
+            set { listening = value; }
         }
 
         #endregion
 
         #region Events
 
-        public delegate void ClientEvent(ServerClient client);
+        public delegate void TcpEvent(TcpClient tcp);
 
-        private event ClientEvent clientConnected = delegate { };
+        private event TcpEvent tcpConnected = delegate { };
 
-        public ClientEvent ClientConnected
+        public TcpEvent TcpConnected
         {
-            get { return clientConnected; }
-            set { clientConnected = value; }
+            get { return tcpConnected; }
+            set { tcpConnected = value; }
         }
 
         #endregion
 
-        #region Constructor
+        #region Constructors
 
         public Server()
         {
-            clients = new List<ServerClient>();
-            endPoint = new IPEndPoint(IPUtils.GetLocalAddress(), 0);
+
         }
 
         #endregion
 
-        #region Network Methodes
-
-        private void ListenerThread()
-        {
-            while (true)
-            {
-                try
-                {
-                    TcpClient tcp = listener.AcceptTcpClient();
-
-                    //StreamReader reader = new StreamReader(tcp.GetStream());
-                    //Read logon infos
-
-                    ServerClient client = new ServerClient(tcp);
-
-                    //Check if client is already connected
-
-                    clients.Add(client);
-                    //client.RecieveEvent += Recieved;
-                    //client.DisconnectEvent += Disconnected;
-
-                    ClientConnected(client);
-
-                }
-                catch (Exception) { }
-            }
-        }
-
-        private void Recieved(ServerClient client, string message)
-        {
-            //Send to other clients
-        }
-
-        private void Disconnected(ServerClient client)
-        {
-            clients.Remove(client);
-            client.Tcp.Close();
-
-            //Notify the other Clients
-
-        }
-        #endregion
-
-        #region Methodes
+        #region Listener Methodes
 
         /// <summary>
         /// Stopps Listener Thread
         /// </summary>
         public void StopListener()
         {
-            foreach (ServerClient c in clients)
-            {
-                //Notify all other clients
-                c.Tcp.Close();
-            }
+            if (!listening)
+                throw new Exception("Listener not started");
+
             listener = null;
-            thread = null;
-            clients.Clear();
+            listenerThread = null;
         }
 
         /// <summary>
@@ -128,15 +70,17 @@ namespace WhiteNet.Server
         /// <param name="port">Port to listen</param>
         public void StartListener(int port)
         {
-            endPoint.Port = port;
+            if (listening)
+                throw new Exception("Already listening for connections");
+
             try
             {
                 listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
 
-                thread = new Thread(new ThreadStart(ListenerThread));
-                thread.Name = "Listener Thread";
-                thread.Start();
+                listenerThread = new Thread(new ThreadStart(ListenerThread));
+                listenerThread.Name = "Listener Thread";
+                listenerThread.Start();
             }
             catch (Exception e)
             {
@@ -144,6 +88,23 @@ namespace WhiteNet.Server
             }
         }
 
+        #endregion
+
+        #region Thread Methodes
+        private void ListenerThread()
+        {
+            while (true)
+            {
+                try
+                {
+                    TcpClient tcp = listener.AcceptTcpClient();
+
+                    TcpConnected(tcp);
+
+                }
+                catch (Exception) { }
+            }
+        }
         #endregion
     }
 }

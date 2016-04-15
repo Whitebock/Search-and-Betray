@@ -14,7 +14,6 @@ namespace WhiteNet.Client
 
         private bool connected;
         private bool reading;
-        private bool listening;
         #endregion
 
         #region Delegates
@@ -40,10 +39,6 @@ namespace WhiteNet.Client
         {
             get { return reading; }
         }
-        public bool Listening
-        {
-            get { return listening; }
-        }
 
         //Events
         public ByteEvent DataReceived
@@ -54,13 +49,15 @@ namespace WhiteNet.Client
         #endregion
 
         #region Constructors
-        public Client()
+        public Client(TcpClient tcp = null)
         {
             connected = false;
             reading = false;
-            listening = false;
 
-            tcpClient = new TcpClient();
+            if (tcp == null)
+                tcpClient = new TcpClient();
+            else
+                tcpClient = tcp;
         }
 
         #endregion
@@ -69,7 +66,7 @@ namespace WhiteNet.Client
         public void Connect(IPAddress address, int port)
         {
             if (connected)
-                throw new Exception("Alread connected to a Server");
+                throw new Exception("Already connected to a Server");
             try
             {
                 tcpClient.Connect(address, port);
