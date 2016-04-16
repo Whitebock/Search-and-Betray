@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -14,6 +16,7 @@ namespace WhiteNet.Client
 
         private bool connected;
         private bool reading;
+        private bool listening;
         #endregion
 
         #region Delegates
@@ -24,13 +27,11 @@ namespace WhiteNet.Client
 
         #region Events
 
-        private event ByteEvent dataReceived = delegate { };
+        private event ByteEvent DataReceived = delegate { };
 
         #endregion
 
         #region Properties
-
-        //Attributes
         public bool Connected
         {
             get { return connected; }
@@ -39,25 +40,20 @@ namespace WhiteNet.Client
         {
             get { return reading; }
         }
-
-        //Events
-        public ByteEvent DataReceived
+        public bool Listening
         {
-            get { return dataReceived; }
-            set { dataReceived = value; }
+            get { return listening; }
         }
         #endregion
 
         #region Constructors
-        public Client(TcpClient tcp = null)
+        public Client()
         {
             connected = false;
             reading = false;
+            listening = false;
 
-            if (tcp == null)
-                tcpClient = new TcpClient();
-            else
-                tcpClient = tcp;
+            tcpClient = new TcpClient();
         }
 
         #endregion
@@ -66,7 +62,7 @@ namespace WhiteNet.Client
         public void Connect(IPAddress address, int port)
         {
             if (connected)
-                throw new Exception("Already connected to a Server");
+                throw new Exception("Alread connected to a Server");
             try
             {
                 tcpClient.Connect(address, port);
@@ -101,7 +97,19 @@ namespace WhiteNet.Client
             if (!connected)
                 throw new Exception("Not connected to a Server");
 
-            writer.Write(packet);
+            if (packet.Length > 255)
+                throw new ArgumentException("Packet must be smaller than 255 bytes, because the header is 2 bytes long", "packet");
+
+            // Get the length of the packet as header.
+            byte[] header = BitConverter.GetBytes((UInt16)packet.Length);
+
+            // Combine header and packet.
+            byte[] data = new byte[header.Length + packet.Length];
+            header.CopyTo(data, 0);
+            packet.CopyTo(data, header.Length);
+            
+            // Send the data.
+            writer.Write(data);
             writer.Flush();
         }
 
@@ -116,8 +124,15 @@ namespace WhiteNet.Client
             reading = true;
 
             Stream s = tcpClient.GetStream();
-            byte[] packet = new byte[s.Length];
-            s.Read(packet, 0, (int)s.Length);
+
+            // Get the header (length of the packet).
+            byte[] header = new byte[2];
+            s.Read(header, 0, 2);
+            UInt16 length = BitConverter.ToUInt16(header, 0);
+
+            // Now read the actual data.
+            byte[] packet = new byte[length];
+            s.Read(packet, 0, length);
 
             reading = false;
 
@@ -144,8 +159,15 @@ namespace WhiteNet.Client
             try
             {
                 Stream s = tcpClient.GetStream();
-                byte[] packet = new byte[s.Length];
-                s.Read(packet, 0, (int)s.Length);
+
+                // Get the header (length of the packet).
+                byte[] header = new byte[2];
+                s.Read(header, 0, 2);
+                UInt16 length = BitConverter.ToUInt16(header, 0);
+
+                // Now read the actual data.
+                byte[] packet = new byte[length];
+                s.Read(packet, 0, length);
 
                 DataReceived(packet);
 

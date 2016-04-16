@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,9 +14,9 @@ namespace Server.NS_Model
     {
         private int port;
 
-        private List<TcpClient> clients;
+        private List<ServerClient> clients;
 
-        public List<TcpClient> Clients
+        public List<ServerClient> Clients
         {
             get { return clients; }
             set { clients = value; }
@@ -26,44 +28,37 @@ namespace Server.NS_Model
         {
             port = 63001;
             server = new WhiteNet.Server.Server();
-            //server.ClientConnected += OnClient;
+            server.ClientConnected += OnClient;
         }
 
         public void Start()
         {
             server.StartListener(port);
-            //server.BeginRead();
         }
 
         public void Stop()
         {
             server.StopListener();
-            /*
-            if (server.Reading)
-            {
-                server.EndRead();
-
-            }
-            */
         }
 
-        private void OnClient(TcpClient client)
+        private void OnClient(ServerClient client)
         {
-            CCC_Packet response = new CCC_Packet(CCC_Packet.Type.BLACKLIST); //server.Read();
+            CCC_Packet response = client.Read();
             if (response.Flag == CCC_Packet.Type.HANDSHAKE)
             {
-                if (response.Data[0] != CCC_Packet.Version)
+                if (response.Data.Length < 1 || response.Data[0] != CCC_Packet.Version)
                 {
-                    byte[] version = new byte[1];
-                    version[0] = CCC_Packet.Version;
-                    //server.Send(client, new CCC_Packet(CCC_Packet.Type.PROTOCOL_NOT_SUPPORTED, version));
-                    client.Close();
+                    client.Send(new CCC_Packet(CCC_Packet.Type.PROTOCOL_NOT_SUPPORTED, CCC_Packet.Version));
                 }
                 else
                 {
-                    //server.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE_OK));
-                    client.Close();
+                    client.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE_OK));
                 }
+            }
+            else
+            {
+                //Unknown Packet Flag
+                client.Send(new CCC_Packet(CCC_Packet.Type.PROTOCOL_NOT_SUPPORTED, CCC_Packet.Version));
             }
         }
     }
