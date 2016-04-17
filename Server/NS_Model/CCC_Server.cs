@@ -55,6 +55,10 @@ namespace Server.NS_Model
                     client.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE_OK));
                 }
             }
+            else if(response.Flag == CCC_Packet.Type.INFO)
+            {
+
+            }
             else
             {
                 //Unknown Packet Flag
