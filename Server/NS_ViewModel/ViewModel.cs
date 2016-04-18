@@ -70,8 +70,8 @@ namespace Server.NS_ViewModel
             server = new CCC_Server();
             Clients = new ObservableCollection<string>();
             Port = 0;
-            PublicAddress = IPAddress.None;
-            LocalAddress = IPAddress.None;
+            LocalAddress = IPUtils.GetLocalAddress(); ;
+            PublicAddress = IPUtils.GetPublicAddress();
             startCommand = new RelayCommand(OnStartExecuted, OnStartCanExecute);
             stopCommand = new RelayCommand(OnStopExecuted, OnStopCanExecute);
         }
@@ -79,6 +79,8 @@ namespace Server.NS_ViewModel
         #endregion
 
         #region Methodes
+
+
 
         #endregion
 
@@ -100,8 +102,6 @@ namespace Server.NS_ViewModel
             try
             {
                 server.Start();
-                LocalAddress = IPUtils.GetLocalAddress(); ;
-                PublicAddress = IPUtils.GetPublicAddress();
                 Port = 63001;
             }
             catch (Exception)

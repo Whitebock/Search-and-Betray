@@ -1,61 +1,14 @@
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\bin\Debug\Server.exe.config
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\bin\Debug\Server.exe
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\MainWindow.g.cs
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\App.g.cs
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server_MarkupCompile.cache
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server_MarkupCompile.lref
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\MainWindow.baml
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.g.resources
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.Properties.Resources.resources
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.csproj.GenerateResource.Cache
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.exe
-E:\Projekte\Unity\Combat in Candahar City\Client\Server\obj\Debug\Server.pdb
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\bin\Debug\Server.exe.config
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.pdb
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\bin\Debug\Server.exe
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\MainWindow.g.cs
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\App.g.cs
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.cache
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.lref
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\MainWindow.baml
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.g.resources
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.Properties.Resources.resources
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.csproj.GenerateResource.Cache
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\Server.exe
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\bin\Debug\Server.pdb
-C:\Users\Sven\Desktop\Combat in Candahar City\Server\obj\Debug\NS_View\View.g.cs
-G:\Combat in Candahar City\Server\bin\Debug\Server.exe.config
-G:\Combat in Candahar City\Server\obj\Debug\Server.pdb
-G:\Combat in Candahar City\Server\bin\Debug\Server.exe
-G:\Combat in Candahar City\Server\bin\Debug\Server.pdb
-G:\Combat in Candahar City\Server\bin\Debug\WhiteNet.dll
-G:\Combat in Candahar City\Server\bin\Debug\WhiteNet.pdb
-G:\Combat in Candahar City\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
-G:\Combat in Candahar City\Server\obj\Debug\NS_View\View.g.cs
-G:\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.cache
-G:\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.lref
-G:\Combat in Candahar City\Server\obj\Debug\NS_View\View.baml
-G:\Combat in Candahar City\Server\obj\Debug\Server.g.resources
-G:\Combat in Candahar City\Server\obj\Debug\Server.Properties.Resources.resources
-G:\Combat in Candahar City\Server\obj\Debug\Server.csproj.GenerateResource.Cache
-G:\Combat in Candahar City\Server\obj\Debug\Server.exe
-F:\Combat in Candahar City\Server\bin\Debug\Server.exe.config
-F:\Combat in Candahar City\Server\obj\Debug\Server.exe
-F:\Combat in Candahar City\Server\obj\Debug\Server.pdb
-F:\Combat in Candahar City\Server\bin\Debug\Server.exe
-F:\Combat in Candahar City\Server\bin\Debug\Server.pdb
-F:\Combat in Candahar City\Server\bin\Debug\WhiteNet.dll
-F:\Combat in Candahar City\Server\bin\Debug\WhiteNet.pdb
-F:\Combat in Candahar City\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
-F:\Combat in Candahar City\Server\obj\Debug\NS_View\View.g.cs
-F:\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.cache
-F:\Combat in Candahar City\Server\obj\Debug\Server_MarkupCompile.lref
-F:\Combat in Candahar City\Server\obj\Debug\NS_View\View.baml
-F:\Combat in Candahar City\Server\obj\Debug\Server.g.resources
-F:\Combat in Candahar City\Server\obj\Debug\Server.Properties.Resources.resources
-F:\Combat in Candahar City\Server\obj\Debug\Server.csproj.GenerateResource.Cache
-E:\Projekte\Unity\Combat-in-Candahar-City\Server\bin\Debug\Server.exe.config
-E:\Projekte\Unity\Combat-in-Candahar-City\Server\obj\Debug\Server.exe
-E:\Projekte\Unity\Combat-in-Candahar-City\Server\obj\Debug\Server.pdb
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\NS_View\View.g.cs
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server_MarkupCompile.cache
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server_MarkupCompile.lref
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\bin\Debug\Server.exe.config
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\bin\Debug\Server.exe
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\bin\Debug\Server.pdb
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\bin\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\NS_View\View.baml
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.g.resources
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.Properties.Resources.resources
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.exe
+E:\Projekte\GitHub\Combat-in-Candahar-City\Server\obj\Debug\Server.pdb

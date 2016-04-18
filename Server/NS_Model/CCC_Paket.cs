@@ -14,7 +14,7 @@ namespace Server.NS_Model
         /// </summary>
         public static byte Version
         {
-            get { return 1; }
+            get { return 2; }
         }
 
         /*
@@ -23,7 +23,7 @@ namespace Server.NS_Model
         ----------------------------------------------------------------------------------------------------------------
 
         Handshake
-        |   ->      | HANDSHAKE                 |
+        |   ->      | HANDSHAKE                 | version
 
         |   <-      | HANDSHAKE_OK              |
         |           | PROTOCOL_NOT_SUPPORTED    | version
@@ -63,6 +63,7 @@ namespace Server.NS_Model
 
         ----------------------------------------------------------------------------------------------------------------
         */
+
         public enum Type : byte
         {
             //Handshake
@@ -112,6 +113,14 @@ namespace Server.NS_Model
         {
             Flag = flag;
             Data = data;
+        }
+
+        public CCC_Packet(Type flag, byte data)
+        {
+            Flag = flag;
+            byte[] temp = new byte[1];
+            temp[0] = data;
+            Data = temp;
         }
 
         public CCC_Packet(Type flag)

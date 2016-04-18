@@ -13,3 +13,8 @@ F:\Combat in Candahar City\WhiteNet\bin\Debug\WhiteNet.pdb
 F:\Combat in Candahar City\WhiteNet\obj\Debug\WhiteNet.csprojResolveAssemblyReference.cache
 F:\Combat in Candahar City\WhiteNet\obj\Debug\WhiteNet.dll
 F:\Combat in Candahar City\WhiteNet\obj\Debug\WhiteNet.pdb
+E:\Projekte\GitHub\Combat-in-Candahar-City\WhiteNet\bin\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Combat-in-Candahar-City\WhiteNet\bin\Debug\WhiteNet.pdb
+E:\Projekte\GitHub\Combat-in-Candahar-City\WhiteNet\obj\Debug\WhiteNet.csprojResolveAssemblyReference.cache
+E:\Projekte\GitHub\Combat-in-Candahar-City\WhiteNet\obj\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Combat-in-Candahar-City\WhiteNet\obj\Debug\WhiteNet.pdb
