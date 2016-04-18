@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,72 +12,140 @@ namespace WhiteNet.Server
     public class ServerClient
     {
         #region Attributes
-        private TcpClient tcp;
-        private IPEndPoint ip;
+        private TcpClient tcpClient;
+        private IPAddress address;
 
         private BinaryWriter writer;
+
+
+        private bool reading;
         #endregion
 
         #region Properties
-        public TcpClient Tcp
+        public IPAddress Address
         {
-            get { return tcp; }
+            get { return address; }
         }
-        public IPEndPoint IP
+
+        public bool Reading
         {
-            get { return ip; }
+            get { return reading; }
         }
+        #endregion
+
+        #region Delegates
+
+        public delegate void ByteEvent(byte[] data);
+
         #endregion
 
         #region Events
 
-        public delegate void Message(ServerClient sender, string message);
-
-        private event Message recieveEvent = delegate { };
-
-        public Message RecieveEvent
-        {
-            get { return recieveEvent; }
-            set { recieveEvent = value; }
-        }
+        private event ByteEvent DataReceived = delegate { };
 
         #endregion
 
         #region Constructors
         public ServerClient(TcpClient tcp)
         {
-            this.tcp = tcp;
-            ip = (IPEndPoint)tcp.Client.LocalEndPoint;
+            this.tcpClient = tcp;
+            IPEndPoint endpoint = (IPEndPoint)tcp.Client.LocalEndPoint;
+            address = endpoint.Address;
+
             writer = new BinaryWriter(tcp.GetStream());
-            tcp.GetStream().BeginRead(new byte[] { 0 }, 0, 0, Read, tcp);
+            reading = false;
         }
         #endregion
 
-        #region Network Methodes
-        private void Read(IAsyncResult result)
+        #region Read Methodes
+        public byte[] Read()
+        {
+            if (reading)
+                throw new Exception("Already reading");
+
+            reading = true;
+
+            Stream s = tcpClient.GetStream();
+
+            // Get the header (length of the packet).
+            byte[] header = new byte[2];
+            s.Read(header, 0, 2);
+            UInt16 length = BitConverter.ToUInt16(header, 0);
+
+            // Now read the actual data.
+            byte[] packet = new byte[length];
+            s.Read(packet, 0, length);
+
+            reading = false;
+
+            return packet;
+        }
+        public void BeginRead()
+        {
+            if (reading)
+                throw new Exception("Already reading");
+            reading = true;
+            tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, tcpClient);
+        }
+        public void EndRead()
+        {
+            reading = false;
+        }
+
+
+        #endregion
+
+        #region Send Methodes
+        public void Send(byte[] packet)
+        {
+            if (packet.Length > 255)
+                throw new ArgumentException("Packet must be smaller than 255 bytes, because the header is 2 bytes long", "packet");
+
+            // Get the length of the packet as header.
+            byte[] header = BitConverter.GetBytes((UInt16)packet.Length);
+
+            // Combine header and packet.
+            byte[] data = new byte[header.Length + packet.Length];
+            header.CopyTo(data, 0);
+            packet.CopyTo(data, header.Length);
+
+            // Send the data.
+            writer.Write(data);
+            writer.Flush();
+        }
+
+        #endregion
+
+        #region Thread Methodes
+        private void OnRead(IAsyncResult result)
         {
             try
             {
+                Stream s = tcpClient.GetStream();
 
-                if (tcp.Connected)
-                    tcp.GetStream().BeginRead(new byte[] { 0 }, 0, 0, Read, null);
-            }
-            catch (Exception e)
-            {
-                RecieveEvent(this, e.Message);
-            }
-        }
+                // Get the header (length of the packet).
+                byte[] header = new byte[2];
+                s.Read(header, 0, 2);
+                UInt16 length = BitConverter.ToUInt16(header, 0);
 
-        public void Send(string s)
-        {
-            //writer.WriteLine(s);
-            //writer.Flush();
+                // Now read the actual data.
+                byte[] packet = new byte[length];
+                s.Read(packet, 0, length);
+
+                DataReceived(packet);
+
+                if (tcpClient.Connected && reading)
+                    tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
+                else
+                    reading = false;
+            }
+            catch (Exception) { }
         }
         #endregion
 
         public override string ToString()
         {
-            return String.Format("ServerClient[{0}:{1}]", ip.Address, ip.Port);
+            return String.Format("ServerClient[{0}]", address);
         }
     }
 }

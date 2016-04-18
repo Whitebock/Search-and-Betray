@@ -57,12 +57,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -94,6 +88,7 @@
     <Compile Include="Assets\Scripts\PlayerScripts\PosAdjust_Player_Crouch.cs" />
     <Compile Include="Assets\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Scripts\PropOffGround.cs" />
+    <Compile Include="Assets\Scripts\ServerTest.cs" />
     <Compile Include="Assets\Scripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
     <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Menager.cs" />
