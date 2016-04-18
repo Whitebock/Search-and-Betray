@@ -10,6 +10,9 @@ public class ServerTest : MonoBehaviour {
     public InputField inputIP;
     public InputField inputPort;
     public Text labelServername;
+    public Text labelVersion;
+    public Text labelPlayerCount;
+    public Text labelGameRunning;
 
     private CCC_Client client;
     // Use this for initialization
@@ -29,6 +32,14 @@ public class ServerTest : MonoBehaviour {
     public void GetInfo()
     {
         client.Port = Int32.Parse(inputPort.text);
-        labelServername.text = client.GetInfo(IPAddress.Parse(inputIP.text));
+        IPAddress address = IPAddress.Parse(inputIP.text);
+
+        labelVersion.text = "v" + client.GetProtocol(address);
+
+        string[] info = client.GetInfo(address);
+
+        labelServername.text = info[0];
+        labelGameRunning.text = info[1];
+        labelPlayerCount.text = (info[3].Split(',').Length - 1) + "/" +  info[2];
     }
 }

@@ -52,8 +52,6 @@ namespace WhiteNet.Client
             connected = false;
             reading = false;
             listening = false;
-
-            tcpClient = new TcpClient();
         }
 
         #endregion
@@ -65,6 +63,7 @@ namespace WhiteNet.Client
                 throw new Exception("Alread connected to a Server");
             try
             {
+                tcpClient = new TcpClient();
                 tcpClient.Connect(address, port);
                 writer = new BinaryWriter(tcpClient.GetStream());
                 connected = true;

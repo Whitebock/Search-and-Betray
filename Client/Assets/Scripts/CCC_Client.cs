@@ -31,31 +31,47 @@ public class CCC_Client
     }
 
     #region Network Methodes
-    public string GetInfo(IPAddress address)
+    public string[] GetInfo(IPAddress address)
     {
-        //Connect
-        client.Connect(address, Port);
-
-        //Send Handshake
-        client.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE, CCC_Packet.Version));
-        
-        Debug.Log("Starting read");
-        //Wait for response
-        CCC_Packet response = client.Read();
-        Debug.Log("Reading done");
-        if (response.Flag != CCC_Packet.Type.HANDSHAKE_OK)
+        if (GetProtocol(address) != CCC_Packet.Version)
         {
             throw new Exception("Protocol not supported");
         }
-        Debug.Log("Success");
 
-        //Send Info Request
+        // Connect to the server.
+        client.Connect(address, Port);
+        
+        // Send Info Request.
         client.Send(new CCC_Packet(CCC_Packet.Type.INFO));
 
-        //Wait for Response
-        response = client.Read();
+        // Wait for Response.
+        CCC_Packet response = client.Read();
 
-        return response.GetString();
+        string temp = response.GetString();
+        return temp.Split(';');
+    }
+
+    public int GetProtocol(IPAddress address)
+    {
+        // Connect.
+        client.Connect(address, Port);
+
+
+        // Send Handshake.
+        client.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE, CCC_Packet.Version));
+        
+        // Wait for response.
+        CCC_Packet response = client.Read();
+
+        // Disconnect.
+        client.Disconnect();
+
+
+        if (response.Flag != CCC_Packet.Type.HANDSHAKE_OK)
+            return response.Data[0];
+        return CCC_Packet.Version;
+
+        
     }
 
     public void Connect(IPAddress address, string username)
