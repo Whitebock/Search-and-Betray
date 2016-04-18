@@ -3,6 +3,7 @@ Unity generated
 ===========================
 Client/Temp/
 Client/Library/
+*.meta
 
 ========================
 Visual Studio generated
