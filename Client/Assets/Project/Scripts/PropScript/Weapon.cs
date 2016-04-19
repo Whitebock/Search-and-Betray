@@ -14,21 +14,35 @@ public class Weapon : MonoBehaviour {
     bool readyToShoot;
 	// Use this for initialization
 	void Start () {
+        readyToShoot = true;
         myAudioSource = GetComponent<AudioSource>();
 	}
 	
-    public bool Shoot()
+    public bool TriggerDown()
     {
         if (readyToShoot && shotsInMag() > 0)
         {
             shotsLeft--;
+            PlaySound(shotSound);
 
-            //Reset weapon to limit shots per second
-            Invoke("SmallReload", 1 / shotsPerSecond);
+            readyToShoot = false;
 
+            if (!singleShot)
+            {
+                //Reset weapon to limit shots per second
+                Invoke("SmallReload", 1.0f / shotsPerSecond);
+            }
             return true;
         }
         return false;
+    }
+
+    public void TriggerUp()
+    {
+        if (singleShot)
+        {
+            Invoke("SmallReload", 0.3f);
+        }
     }
 
     public int shotsInMag()
@@ -59,5 +73,7 @@ public class Weapon : MonoBehaviour {
             Debug.Log("No \"AudioSource\" found! GameObject: " + gameObject.ToString());
         }
     }
+
+    
 
 }
