@@ -16,7 +16,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 
 	private AnimatorPlayer anim;					// Animationen
 	private bool isGrounded;						// Ob spieler Bodenkontackt hat
-	public DemageHandler bodyDemageHandler;			// Refferenz auf die Hitbox, die mit einer Brustpanzerung geschützt werden kann.
+	public DamageHandler bodyDamageHandler;			// Refferenz auf die Hitbox, die mit einer Brustpanzerung geschützt werden kann.
 
 	// Testvariablen
 	public Vector3 posOffset = new Vector3(30f, 0f, 0f);	// Wo der Spieler statt der echten Position sein soll (nur zum testen!)
@@ -101,6 +101,6 @@ public class OnlinePlayerInfo : MonoBehaviour
 	// Brustpanzerung setzen
 	public void SetBodyArmor(int armor)
 	{
-		if (bodyDemageHandler != null) bodyDemageHandler.Armor = armor;
+		if (bodyDamageHandler != null) bodyDamageHandler.Armor = armor;
 	}
 }

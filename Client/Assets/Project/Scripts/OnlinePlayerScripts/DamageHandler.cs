@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DemageHandler : MonoBehaviour
+public class DamageHandler : MonoBehaviour
 {
 	/*
 	 * Ein Raycast trifft auf einer Hitbox mit diesem Skript und ruft die funktion "TakeDemage" mit dem entsprechenden
@@ -22,7 +22,7 @@ public class DemageHandler : MonoBehaviour
 		attachedPlayer = transform.GetComponentInParent<OnlinePlayerInfo>();
 	}
 
-	void TakeDemage(int hitpoints)
+	void TakeDamage(int hitpoints)
 	{
 		hitpoints -= armor;
 		if (hitpoints <= 0) return;
