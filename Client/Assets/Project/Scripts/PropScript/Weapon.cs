@@ -6,6 +6,7 @@ public class Weapon : MonoBehaviour {
     public int shotsPerSecond;
     public int shotsLeft;
     public int shotsPerMag;
+    public float recoilForce;
     public bool singleShot;
     public AudioClip shotSound;
     public AudioClip reloadSound;

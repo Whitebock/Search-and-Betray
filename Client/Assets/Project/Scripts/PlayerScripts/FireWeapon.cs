@@ -3,8 +3,10 @@ using System.Collections;
 
 public class FireWeapon : MonoBehaviour {
     public Weapon myWeapon;
+    Recoil myRecoil;
 	// Use this for initialization
 	void Start () {
+        myRecoil = GetComponent<Recoil>();
         FindWeapon();
 	}
 	
@@ -13,7 +15,14 @@ public class FireWeapon : MonoBehaviour {
         if (Input.GetButton("Fire1"))
         {
             Debug.Log("FIRE");
-            myWeapon.TriggerDown();
+
+            //If weapon is actually shot recoil is applied
+            if(myWeapon.TriggerDown())
+            {
+                myRecoil.ApplyRecoil(myWeapon.recoilForce);
+
+            }
+
         }
         if (Input.GetButtonUp("Fire1"))
         {
