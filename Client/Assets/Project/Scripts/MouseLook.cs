@@ -30,8 +30,8 @@ public class MouseLook : MonoBehaviour
 		PlayerPos();
 		m_CharacterTargetRot = tr_horizontal.localRotation;
 		m_CameraTargetRot = tr_vertical.localRotation;
-		//Cursor.lockState = CursorLockMode.Locked;
-		//Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+	    Cursor.visible = false;
     }
 
 	public void PlayerPos()

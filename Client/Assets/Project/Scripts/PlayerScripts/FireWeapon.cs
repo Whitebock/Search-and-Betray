@@ -18,7 +18,7 @@ public class FireWeapon : MonoBehaviour {
             if(myWeapon.TriggerDown())
             {
                 CheckHit();
-                myRecoil.ApplyRecoil(myWeapon.recoilForce);
+               // myRecoil.ApplyRecoil(myWeapon.recoilForce); Currently recoil is not working properly
                 
             }
 
