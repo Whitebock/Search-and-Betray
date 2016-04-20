@@ -22,14 +22,14 @@ public class DamageHandler : MonoBehaviour
 		attachedPlayer = transform.GetComponentInParent<OnlinePlayerInfo>();
 	}
 
-	void TakeDamage(int hitpoints)
+	public void TakeDamage(int hitpoints, int myPlayerID)
 	{
 		hitpoints -= armor;
-		if (hitpoints <= 0) return;
 
-		// Hier Muss der Demage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
-		//DEMAGE = (int)Mathf.Floor(hitpoints * factor);
-
+        int damage = (int)Mathf.Floor(hitpoints * factor); //Berechnung des Schadens
+        // Hier Muss der Demage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
+        //DEMAGE = (int)Mathf.Floor(hitpoints * factor);
+        Debug.Log(attachedPlayer.PlayerID + " got hit by" + myPlayerID + " and recevied " + damage + " damage!"); //Da momentan noch kein Server existiert hier die Ausgabe des Schadens
 		armor = 0;
 	}
 }

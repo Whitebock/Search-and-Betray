@@ -14,19 +14,17 @@ public class FireWeapon : MonoBehaviour {
 	void Update () {
         if (Input.GetButton("Fire1"))
         {
-            Debug.Log("FIRE");
-
             //If weapon is actually shot recoil is applied
             if(myWeapon.TriggerDown())
             {
+                CheckHit();
                 myRecoil.ApplyRecoil(myWeapon.recoilForce);
-
+                
             }
 
         }
         if (Input.GetButtonUp("Fire1"))
         {
-            Debug.Log("Trigger up");
             myWeapon.TriggerUp();
         }
 
@@ -46,4 +44,17 @@ public class FireWeapon : MonoBehaviour {
             }
         }
     }
+    void CheckHit()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.transform.gameObject.GetComponent<DamageHandler>())
+            {
+                hit.transform.gameObject.GetComponent<DamageHandler>().TakeDamage(myWeapon.damage, PlayerInfo.PlayerID);
+            }
+        }
+            
+    } 
 }

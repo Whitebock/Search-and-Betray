@@ -90,7 +90,6 @@
     <Compile Include="Assets\Project\Scripts\PlayerScripts\Jumping.cs" />
     <Compile Include="Assets\Project\Scripts\PlayerScripts\Movement.cs" />
     <Compile Include="Assets\Project\Scripts\PlayerScripts\PlayerInfo.cs" />
-    <Compile Include="Assets\Project\Scripts\PlayerScripts\PlayerShot.cs" />
     <Compile Include="Assets\Project\Scripts\PlayerScripts\PosAdjust_Player_Crouch.cs" />
     <Compile Include="Assets\Project\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Project\Scripts\PropOffGround.cs" />

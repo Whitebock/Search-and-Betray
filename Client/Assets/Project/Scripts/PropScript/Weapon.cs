@@ -2,7 +2,8 @@
 using System.Collections;
 
 public class Weapon : MonoBehaviour {
-    public float damage;
+    public string name;
+    public int damage;
     public int shotsPerSecond;
     public int shotsLeft;
     public int shotsPerMag;

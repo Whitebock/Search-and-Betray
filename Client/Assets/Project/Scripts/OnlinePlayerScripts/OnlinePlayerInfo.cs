@@ -10,7 +10,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	 */
 
 	// Felder
-	private int playerID;							// Spieler-ID
+	public  int playerID;							// Spieler-ID
 	private string playerName = "Test-Spieler";		// Spielername
 	private bool isCrouching;						// Ob Spieler gerade geduckt ist
 
