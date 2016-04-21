@@ -93,7 +93,6 @@
     <Compile Include="Assets\Project\Scripts\PlayerScripts\PosAdjust_Player_Crouch.cs" />
     <Compile Include="Assets\Project\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Project\Scripts\PropOffGround.cs" />
-    <Compile Include="Assets\Project\Scripts\PropScript\Recoil.cs" />
     <Compile Include="Assets\Project\Scripts\PropScript\Weapon.cs" />
     <Compile Include="Assets\Project\Scripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Project\Scripts\UI\FaceCamera.cs" />
