@@ -8,6 +8,6 @@ public class MagCount : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        GetComponent<Text>().text = myWeapon.GetComponent<Weapon>().shotsLeft.ToString();
+        GetComponent<Text>().text = myWeapon.GetComponent<Weapon>().BulletCount();
 	}
 }

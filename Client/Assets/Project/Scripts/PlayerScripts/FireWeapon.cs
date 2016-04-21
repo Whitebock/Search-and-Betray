@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class FireWeapon : MonoBehaviour {
     public Weapon myWeapon;
-    Recoil myRecoil;
 	// Use this for initialization
 	void Start () {
-        myRecoil = GetComponent<Recoil>();
         FindWeapon();
 	}
 	
@@ -18,17 +17,26 @@ public class FireWeapon : MonoBehaviour {
             if(myWeapon.TriggerDown())
             {
                 CheckHit();
-               // myRecoil.ApplyRecoil(myWeapon.recoilForce); Currently recoil is not working properly
+                // myRecoil.ApplyRecoil(myWeapon.recoilForce); Currently recoil is not working properly
+                ApplyRecoil();
                 
             }
 
         }
-        if (Input.GetButtonUp("Fire1"))
+        else if (Input.GetButtonUp("Fire1"))
         {
             myWeapon.TriggerUp();
         }
-
+        else if(Input.GetKeyDown(KeyCode.R))
+        {
+            myWeapon.Reload();
+        }
 	}
+
+    private void ApplyRecoil()
+    {
+        transform.Rotate(new Vector3(UnityEngine.Random.Range(0.2f, 0.4f) * -1,0,0));
+    }
 
     void FindWeapon()
     {
@@ -47,7 +55,8 @@ public class FireWeapon : MonoBehaviour {
     void CheckHit()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2 + UnityEngine.Random.Range(-1 * myWeapon.recoilForce, myWeapon.recoilForce),
+            Screen.height / 2 + UnityEngine.Random.Range(-1 * myWeapon.recoilForce, myWeapon.recoilForce)));
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.transform.gameObject.GetComponent<DamageHandler>())

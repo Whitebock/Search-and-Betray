@@ -1,32 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
+/*Markus Röse
+  Script that handels all weapon related actions
+  */
 
 public class Weapon : MonoBehaviour {
-    public string name;
-    public int damage;
-    public int shotsPerSecond;
-    public int shotsLeft;
-    public int shotsPerMag;
-    public float recoilForce;
-    public bool singleShot;
-    public AudioClip shotSound;
-    public AudioClip reloadSound;
+    public string name; //Name of Weapon
+    public int damage; //Damage of Weapon
+    public int shotsPerSecond; //Shots that can be fired per second
+    public uint shotsTotal; //Total number of shots that the weapons holds
+    public uint shotsPerMag; //Count of shots per magazine
+    public float recoilForce; 
+
+    public bool singleShot; //Is the weapon to shoot full automatic
+
+    public float reloadTime;//Time needed for one reload
+
+    public AudioClip shotSound;//Sound played when shot
+    public AudioClip reloadSound;//Sound played when reload
+
     AudioSource myAudioSource;
 
+    uint shotsInMag; //Current bullet count in mag
+
     bool readyToShoot;
-	// Use this for initialization
+    bool reloading;
+	
+    // Use this for initialization
 	void Start () {
         readyToShoot = true;
+        reloading = false;
         myAudioSource = GetComponent<AudioSource>();
+        shotsInMag = shotsPerMag;
 	}
 	
     public bool TriggerDown()
     {
-        if (readyToShoot && shotsInMag() > 0)
+        if (readyToShoot && shotsInMag > 0 && !reloading)
         {
-            shotsLeft--;
+            
             PlaySound(shotSound);
 
+            shotsInMag--;
             readyToShoot = false;
 
             if (!singleShot)
@@ -41,15 +56,32 @@ public class Weapon : MonoBehaviour {
 
     public void TriggerUp()
     {
-        if (singleShot)
+        if (singleShot && !reloading)
         {
             Invoke("SmallReload", 0.3f);
         }
     }
 
-    public int shotsInMag()
+    public void Reload()
     {
-        return shotsLeft % shotsPerMag;
+        if (shotsTotal > 0)
+        {
+            readyToShoot = false;
+            reloading = true;
+            PlaySound(reloadSound);
+            Invoke("ReloadFinish", reloadTime);
+        }      
+    }
+
+    void ReloadFinish()
+    {
+        for (shotsInMag = 0; shotsInMag < shotsPerMag && shotsTotal > 0; shotsTotal--)
+        {
+            shotsInMag++;
+        }
+        readyToShoot = true;
+        reloading = false;
+
     }
 
     void SmallReload()
@@ -76,6 +108,11 @@ public class Weapon : MonoBehaviour {
         }
     }
 
+    public string BulletCount()
+    {
+        return shotsInMag + "/" + shotsTotal;
+    }
+    
     
 
 }
