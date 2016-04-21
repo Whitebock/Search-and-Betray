@@ -132,7 +132,7 @@ public class CCC_Packet
 
     public string GetString()
     {
-        return Encoding.UTF8.GetString(Data);
+        return Encoding.Unicode.GetString(Data);
     }
 
     #endregion

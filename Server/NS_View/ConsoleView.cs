@@ -65,9 +65,9 @@ namespace Server.NS_View
         private void OnNewClient(object sender, NotifyCollectionChangedEventArgs e)
         {
             Debug.WriteLine("CHANGE!!");
-            foreach (var s in e.NewItems)
+            foreach (string s in e.NewItems)
             {
-                Console.WriteLine(s);
+                Console.WriteLine(s + " connected");
             }
         }
 

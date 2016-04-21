@@ -41,7 +41,7 @@ namespace WhiteNet.Server
 
         #region Events
 
-        private event ByteEvent DataReceived = delegate { };
+        public event ByteEvent DataReceived = delegate { };
 
         #endregion
 

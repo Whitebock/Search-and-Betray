@@ -18,7 +18,7 @@ namespace Server.NS_Model
         private int port;
 
         // Game
-        private List<CCC_Player> clients;
+        private List<CCC_Player> players;
         private bool gameRunning;
 
         // Serverconfig
@@ -27,13 +27,25 @@ namespace Server.NS_Model
 
         #endregion
 
+        #region Delegates
+
+        public delegate void PlayerEvent(CCC_Player player);
+
+        #endregion
+
+        #region Events
+
+        public event PlayerEvent PlayerConnected = delegate { };
+
+        #endregion
+
         #region Properties
-        public List<CCC_Player> Clients
+        public List<CCC_Player> Players
         {
-            get { return clients; }
-            set { clients = value; }
+            get { return players; }
+            set { players = value; }
         }
-        
+
         public bool GameRunning
         {
             get { return gameRunning; }
@@ -53,7 +65,7 @@ namespace Server.NS_Model
 
             // Temp for testing
             gameRunning = false;
-            clients = new List<CCC_Player>();
+            players = new List<CCC_Player>();
         }
         #endregion
 
@@ -72,11 +84,15 @@ namespace Server.NS_Model
         #region Eventhandlers
         private void OnClient(ServerClient client)
         {
-            Debug.WriteLine("--Client");
             CCC_Packet response = client.Read();
+
+            /**********************************************
+             * Initial Handshake
+             * Will check if client and server are using
+             * the same protocol version.
+             **********************************************/
             if (response.Flag == CCC_Packet.Type.HANDSHAKE)
             {
-                Debug.WriteLine("HANDSHAKE");
                 if (response.Data.Length < 1 || response.Data[0] != CCC_Packet.Version)
                 {
                     client.Send(new CCC_Packet(CCC_Packet.Type.PROTOCOL_NOT_SUPPORTED, CCC_Packet.Version));
@@ -86,22 +102,85 @@ namespace Server.NS_Model
                     client.Send(new CCC_Packet(CCC_Packet.Type.HANDSHAKE_OK));
                 }
             }
-            else if(response.Flag == CCC_Packet.Type.INFO)
+            /**********************************************
+             * Info Request
+             * Will return information about the server.
+             * Clients can request this to prevent unnecessary requests.
+             **********************************************/
+            else if (response.Flag == CCC_Packet.Type.INFO)
             {
-                // THIS IS ONLY TEMP
-                // Will be replaced by proper encoding later
-                Debug.WriteLine("INFO");
                 StringBuilder builder = new StringBuilder();
                 builder.AppendFormat("{0};{1};{2};", Name, GameRunning, MaxPlayers);
 
-                foreach (CCC_Player player in Clients)
+                foreach (CCC_Player player in players)
                 {
                     builder.AppendFormat("{0},", player.Username);
                 }
 
-                byte[] encodedInfo = Encoding.UTF8.GetBytes(builder.ToString());
+                byte[] encodedInfo = Encoding.Unicode.GetBytes(builder.ToString());
                 client.Send(new CCC_Packet(CCC_Packet.Type.INFO_RESPONSE, encodedInfo));
             }
+            /**********************************************
+             * Login
+             * Will check for:
+             *  - Game is full
+             *  - Username is taken by another player
+             *  - Username is valid
+             *    (Filter out inappropriate keywords/symbols/...)
+             *  - Whitelist
+             *  - Blacklist
+             * 
+             * If successfull, will add user to the player list.
+             **********************************************/
+            else if (response.Flag == CCC_Packet.Type.LOGIN)
+            {
+                // Check if game is full.
+                if (players.Count == MaxPlayers)
+                {
+                    client.Send(new CCC_Packet(CCC_Packet.Type.GAME_FULL));
+                    return;
+                }
+
+                string username = Encoding.Unicode.GetString(response.Data);
+
+                // Check if username is taken.
+                foreach (CCC_Player p in players)
+                {
+                    if (p.Username == username)
+                    {
+                        client.Send(new CCC_Packet(CCC_Packet.Type.USERNAME_TAKEN));
+                        return;
+                    }
+                }
+
+                // Check if username is valid.
+                // TODO
+                // Maybe some file or smth
+                if (username.Contains("hacker"))
+                {
+                    client.Send(new CCC_Packet(CCC_Packet.Type.USERNAME_INVALID));
+                    return;
+                }
+
+                // Check Whitelist.
+
+                // Check Blacklist.
+
+                client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK));
+                CCC_Player player = new CCC_Player(client, username);
+                players.Add(player);
+
+                PlayerConnected(player);
+                // Notify other players.
+                foreach (CCC_Player p in players)
+                {
+
+                }
+            }
+            /**********************************************
+             * Unknown Packet
+             * Will return PROTOCOL_NOT_SUPPORTED error.
+             **********************************************/
             else
             {
                 Debug.WriteLine("UNKNOWN");

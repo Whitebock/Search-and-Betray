@@ -74,6 +74,13 @@ namespace Server.NS_ViewModel
             PublicAddress = IPUtils.GetPublicAddress();
             startCommand = new RelayCommand(OnStartExecuted, OnStartCanExecute);
             stopCommand = new RelayCommand(OnStopExecuted, OnStopCanExecute);
+
+            server.PlayerConnected += OnClientConnect;
+        }
+
+        private void OnClientConnect(CCC_Player player)
+        {
+            clients.Add(player.Username);
         }
 
         #endregion

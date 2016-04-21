@@ -9,6 +9,7 @@ public class ServerTest : MonoBehaviour {
 
     public InputField inputIP;
     public InputField inputPort;
+    public InputField inputUsername;
     public Text labelServername;
     public Text labelVersion;
     public Text labelPlayerCount;
@@ -21,6 +22,7 @@ public class ServerTest : MonoBehaviour {
         client = new CCC_Client();
         inputIP.text = IPUtils.GetLocalAddress().ToString();
         inputPort.text = client.Port.ToString();
+        inputUsername.text = "Testuser";
     }
 
     // Update is called once per frame
@@ -41,5 +43,13 @@ public class ServerTest : MonoBehaviour {
         labelServername.text = info[0];
         labelGameRunning.text = info[1];
         labelPlayerCount.text = (info[3].Split(',').Length - 1) + "/" +  info[2];
+    }
+
+    public void Connect()
+    {
+        client.Port = Int32.Parse(inputPort.text);
+        IPAddress address = IPAddress.Parse(inputIP.text);
+
+        client.Connect(address, inputUsername.text);
     }
 }

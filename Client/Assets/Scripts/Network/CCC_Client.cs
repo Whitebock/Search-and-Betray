@@ -5,6 +5,7 @@ using System.Threading;
 using System;
 using WhiteNet;
 using WhiteNet.Client;
+using System.Text;
 
 public class CCC_Client
 {
@@ -47,6 +48,9 @@ public class CCC_Client
         // Wait for Response.
         CCC_Packet response = client.Read();
 
+        // Disconnect.
+        client.Disconnect();
+
         string temp = response.GetString();
         return temp.Split(';');
     }
@@ -76,7 +80,22 @@ public class CCC_Client
 
     public void Connect(IPAddress address, string username)
     {
+        if (GetProtocol(address) != CCC_Packet.Version)
+        {
+            throw new Exception("Protocol not supported");
+        }
 
+        // Connect to the server.
+        client.Connect(address, Port);
+
+        // Send Info Request.
+        byte[] data = Encoding.Unicode.GetBytes(username);
+        client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN, data));
+
+        // Wait for Response.
+        CCC_Packet response = client.Read();
+
+        Debug.Log(response.Flag);
     }
 
     public void Disconnect()

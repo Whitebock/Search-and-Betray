@@ -27,9 +27,12 @@ namespace Server.NS_Model
         #endregion
 
         #region Constructors
-        public CCC_Player(ServerClient client)
+        public CCC_Player(ServerClient client, string username)
         {
+            this.client = client;
+            this.username = username;
 
+            
         }
         #endregion
 
