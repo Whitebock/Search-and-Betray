@@ -16,13 +16,14 @@ public enum PackageType
 	Position, Rotation, Crouch, Demage, Granade, Velocity
 };
 
-public static class Netzwerk_Simulator
+public class Netzwerk_Simulator
 {
+	public static bool aktiv = true;
 	public delegate void Del_NetzwerkStream(int sender, int empfaenger, PackageType typ, string info);
 	public static event Del_NetzwerkStream NetzwerkStream;
 
 	public static void Senden(int sender, int empfaenger, PackageType typ, string info)
 	{
-		if (NetzwerkStream != null) NetzwerkStream(sender, empfaenger, typ, info);
+		if (NetzwerkStream != null && aktiv) NetzwerkStream(sender, empfaenger, typ, info);
 	}
 }

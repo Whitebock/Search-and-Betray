@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class OnlinePlayerUI_Menager : MonoBehaviour
+public class OnlinePlayerUI_Manager : MonoBehaviour
 {
 	/*
 	 * Dieses Skript positioniert alle UI-Elemente zwischen Kamera und dem Spieler dem die UI zugewiesen ist.
@@ -94,7 +94,7 @@ public class OnlinePlayerUI_Menager : MonoBehaviour
 		if (info == null) return;
 
 		// UI-Element: Spielername
-		if (playername == null) Debug.Log("OnlinePlayerUI_Menager: Es wurde kein UI-Element für \"playername\" festgelegt!Objekt: \n" + transform.name);
+		if (playername == null) Debug.Log("OnlinePlayerUI_Manager: Es wurde kein UI-Element für \"playername\" festgelegt!Objekt: \n" + transform.name);
 		else playername.text = info.PlayerName;
 	}
 }

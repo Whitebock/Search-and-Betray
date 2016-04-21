@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DemageHandler : MonoBehaviour
+public class DamageHandler : MonoBehaviour
 {
 	/*
-	 * Ein Raycast trifft auf einer Hitbox mit diesem Skript und ruft die funktion "TakeDemage" mit dem entsprechenden
+	 * Ein Raycast trifft auf einer Hitbox mit diesem Skript und ruft die funktion "TakeDamage" mit dem entsprechenden
 	 * Schaden auf. Das Skript berechnet den tatsächlichen Schaden.
 	 * Dabei werden Panzerung und erhöter Schaden bei empfindlichen Körperregionen (z. B. Kopf) beachtet.
 	 */
@@ -22,12 +22,12 @@ public class DemageHandler : MonoBehaviour
 		attachedPlayer = transform.GetComponentInParent<OnlinePlayerInfo>();
 	}
 
-	void TakeDemage(int hitpoints)
+	void TakeDamage(int hitpoints)
 	{
 		hitpoints -= armor;
 		if (hitpoints <= 0) return;
 
-		// Hier Muss der Demage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
+		// Hier Muss der Damage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
 		//DEMAGE = (int)Mathf.Floor(hitpoints * factor);
 
 		armor = 0;

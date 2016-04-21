@@ -10,7 +10,7 @@ public class Player_UI_Tools : MonoBehaviour
 	 * Alle Objekte die als Referenz in -affectedUIs- abgelegt sind, werden dem entsprechend ein- bzw. ausgeblendet.
 	 */
 
-	public OnlinePlayerUI_Menager menager;	// Liefert zusätzliche Informationen ob die UI eingeblendet werden soll oder nicht.
+	public OnlinePlayerUI_Manager manager;	// Liefert zusätzliche Informationen ob die UI eingeblendet werden soll oder nicht.
     public float maxDistance = 50f;			// Alles, was weiter entfernt ist, wird nicht mehr angezeigt.
 	public bool hideAtStart = true;			// Ob die UI zu beginn aus oder ingeblendet werden soll.
 	public CanvasRenderer[] affectedUIs;	// Alle UI-Felder die von diesem Skript gesteuert werden sollen.
@@ -21,14 +21,14 @@ public class Player_UI_Tools : MonoBehaviour
 	void Start()
 	{
 		// Initialisierungen
-		if (menager == null)
+		if (manager == null)
 		{
-			Debug.Log("No \"OnlinePlayerUI_Menager\" found!");
+			Debug.Log("No \"OnlinePlayerUI_Manager\" found!");
 			GameObject.Destroy(this);
 		}
 		if (affectedUIs.Length == 0)
 		{
-			Debug.Log("No attached UI's found for \"OnlinePlayerUI_Menager\"!");
+			Debug.Log("No attached UI's found for \"OnlinePlayerUI_Manager\"!");
 			GameObject.Destroy(this);
 		}
 
@@ -39,12 +39,12 @@ public class Player_UI_Tools : MonoBehaviour
 	void Update()
 	{
 		// UI ein- und ausblenden
-		if (toggle && !(menager.Visible && hovers))
+		if (toggle && !(manager.Visible && hovers))
 		{
 			Hide();
 			toggle = false;
 		}
-		else if (!toggle && menager.Visible && hovers)
+		else if (!toggle && manager.Visible && hovers)
 		{
 			Show();
 			toggle = true;
@@ -59,7 +59,7 @@ public class Player_UI_Tools : MonoBehaviour
     private void Show()
     {
 		// UI einblenden
-		if (menager.Visible && menager.Difference.magnitude <= maxDistance)
+		if (manager.Visible && manager.Difference.magnitude <= maxDistance)
         {
 			foreach (CanvasRenderer item in affectedUIs) item.cull = false;
 		}

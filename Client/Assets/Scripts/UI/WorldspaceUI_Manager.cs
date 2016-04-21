@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WorldspaceUI_Menager : MonoBehaviour
+public class WorldspaceUI_Manager : MonoBehaviour
 {
 	/*
 	 * Dieses Skript erzeugt eine UI für den Spieler, der, beim Aufruf der Methode "MakeUI(Transform newPlayer)",
@@ -28,6 +28,6 @@ public class WorldspaceUI_Menager : MonoBehaviour
 		newUI.SetParent(transform, false);
 
 		// UI dem Spieler zuweisen, dessen Informationen angezeigt werden sollen.
-		newUI.GetComponentInChildren<OnlinePlayerUI_Menager>().OnlinePlayer = newPlayer;
+		newUI.GetComponentInChildren<OnlinePlayerUI_Manager>().OnlinePlayer = newPlayer;
 	}
 }
