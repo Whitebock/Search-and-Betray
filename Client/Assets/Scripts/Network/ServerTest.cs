@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Net;
 using WhiteNet;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ServerTest : MonoBehaviour {
 
@@ -19,7 +20,7 @@ public class ServerTest : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        client = new CCC_Client();
+        client = CCC_Client.CreateInstance();
         inputIP.text = IPUtils.GetLocalAddress().ToString();
         inputPort.text = client.Port.ToString();
         inputUsername.text = "Testuser";
@@ -51,5 +52,6 @@ public class ServerTest : MonoBehaviour {
         IPAddress address = IPAddress.Parse(inputIP.text);
 
         client.Connect(address, inputUsername.text);
+        SceneManager.LoadScene("ServerTest3D");
     }
 }

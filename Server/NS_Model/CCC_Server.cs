@@ -167,15 +167,24 @@ namespace Server.NS_Model
                 // Check Blacklist.
 
                 client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK));
-                CCC_Player player = new CCC_Player(client, username);
-                players.Add(player);
 
-                PlayerConnected(player);
+                CCC_Player player = new CCC_Player(client,players.Count, username);
+
+                CCC_Packet joinPacket = new CCC_Packet(CCC_Packet.Type.PLAYER_JOIN);
+                List<byte> temp = new List<byte>();
+                temp.Add((byte)player.ID);
+                temp.AddRange(Encoding.Unicode.GetBytes(player.Username));
+                joinPacket.Data = temp.ToArray();
+
                 // Notify other players.
                 foreach (CCC_Player p in players)
                 {
-
+                    p.Client.Send(joinPacket);
                 }
+
+                // Add player.
+                players.Add(player);
+                PlayerConnected(player);
             }
             /**********************************************
              * Unknown Packet

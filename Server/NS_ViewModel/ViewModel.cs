@@ -20,7 +20,7 @@ namespace Server.NS_ViewModel
         private RelayCommand startCommand;
         private RelayCommand stopCommand;
 
-        private ObservableCollection<string> clients;
+        private ObservableCollection<CCC_Player> clients;
 
         private IPAddress localAddress;
         private IPAddress publicAddress;
@@ -39,7 +39,7 @@ namespace Server.NS_ViewModel
             get { return stopCommand; }
         }
 
-        public ObservableCollection<string> Clients
+        public ObservableCollection<CCC_Player> Clients
         {
             get { return clients; }
             set { clients = value; }
@@ -68,7 +68,7 @@ namespace Server.NS_ViewModel
         public ViewModel()
         {
             server = new CCC_Server();
-            Clients = new ObservableCollection<string>();
+            Clients = new ObservableCollection<CCC_Player>();
             Port = 0;
             LocalAddress = IPUtils.GetLocalAddress(); ;
             PublicAddress = IPUtils.GetPublicAddress();
@@ -80,7 +80,7 @@ namespace Server.NS_ViewModel
 
         private void OnClientConnect(CCC_Player player)
         {
-            clients.Add(player.Username);
+            clients.Add(player);
         }
 
         #endregion

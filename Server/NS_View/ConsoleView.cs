@@ -1,4 +1,5 @@
-﻿using Server.NS_Utils;
+﻿using Server.NS_Model;
+using Server.NS_Utils;
 using Server.NS_ViewModel;
 using System;
 using System.Collections.Generic;
@@ -65,10 +66,19 @@ namespace Server.NS_View
         private void OnNewClient(object sender, NotifyCollectionChangedEventArgs e)
         {
             Debug.WriteLine("CHANGE!!");
-            foreach (string s in e.NewItems)
+            foreach (CCC_Player p in e.NewItems)
             {
-                Console.WriteLine(s + " connected");
+                Console.WriteLine(p.Username + " connected.");
+                p.TransformChanged += Player_TransformChanged;
             }
+        }
+
+        private void Player_TransformChanged(CCC_Player.Vector3 position, CCC_Player.Vector3 rotation, CCC_Player.Vector3 scale)
+        {
+            Console.WriteLine("[({0}, {1}, {2}), ({3}, {4}, {5}), ({6}, {7}, {8})]",
+                position.X, position.Y, position.Z,
+                rotation.X, rotation.Y, rotation.Z,
+                scale.X, scale.Y, scale.Z);
         }
 
         #region Formatting Methodes
