@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Server.NS_Utils
+namespace Server.NS_ViewModel
 {
     public class RelayCommand : ICommand
     {

@@ -140,7 +140,6 @@ public class CCC_Client
         // Disconnect.
         client.Disconnect();
 
-
         if (response.Flag != CCC_Packet.Type.HANDSHAKE_OK)
             return response.Data[0];
         return CCC_Packet.Version;
@@ -165,25 +164,43 @@ public class CCC_Client
         // Wait for Response.
         CCC_Packet loginresponse = client.Read();
 
-        if (loginresponse.Flag != CCC_Packet.Type.LOGIN_OK)
+        switch (loginresponse.Flag)
         {
-            Debug.Log(loginresponse.Flag);
-            client.Disconnect();
-            return;
+            case CCC_Packet.Type.USERNAME_TAKEN:
+                client.Disconnect();
+                throw new Exception("Username taken");
+
+            case CCC_Packet.Type.USERNAME_INVALID:
+                client.Disconnect();
+                throw new Exception("Username invalid");
+
+            case CCC_Packet.Type.GAME_FULL:
+                client.Disconnect();
+                throw new Exception("Game full");
+
+            case CCC_Packet.Type.BLACKLIST:
+                client.Disconnect();
+                throw new Exception("You are banned from this server");
+
+            case CCC_Packet.Type.WHITELIST:
+                client.Disconnect();
+                throw new Exception("You are not whitelisted on this server");
         }
+        
 
         client.BeginRead();
     }
 
     public void Disconnect()
     {
+        client.Send(new CCC_Packet(CCC_Packet.Type.LOGOUT));
         client.EndRead();
         client.Disconnect();
     }
     #endregion
 
     #region Send Methodes
-    public void SendTransform(Transform transform)
+    public void SendTransform(Transform transform, Vector3 velocity)
     {
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_MOVE);
 
@@ -191,10 +208,14 @@ public class CCC_Client
         data.AddRange(BitConverter.GetBytes(transform.position.x));
         data.AddRange(BitConverter.GetBytes(transform.position.y));
         data.AddRange(BitConverter.GetBytes(transform.position.z));
-
+        
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.x));
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.y));
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.z));
+        
+        data.AddRange(BitConverter.GetBytes(velocity.x));
+        data.AddRange(BitConverter.GetBytes(velocity.y));
+        data.AddRange(BitConverter.GetBytes(velocity.z));
 
         data.AddRange(BitConverter.GetBytes(transform.localScale.x));
         data.AddRange(BitConverter.GetBytes(transform.localScale.y));

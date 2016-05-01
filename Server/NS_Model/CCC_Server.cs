@@ -36,6 +36,8 @@ namespace Server.NS_Model
         #region Events
 
         public event PlayerEvent PlayerConnected = delegate { };
+        public event PlayerEvent PlayerMoved = delegate { };
+        public event PlayerEvent PlayerDisconnected = delegate { };
 
         #endregion
 
@@ -156,7 +158,7 @@ namespace Server.NS_Model
                 // Check if username is valid.
                 // TODO
                 // Maybe some file or smth
-                if (username.Contains("hacker"))
+                if (String.IsNullOrWhiteSpace(username) || username.Contains("hacker"))
                 {
                     client.Send(new CCC_Packet(CCC_Packet.Type.USERNAME_INVALID));
                     return;
@@ -185,6 +187,9 @@ namespace Server.NS_Model
                 // Add player.
                 players.Add(player);
                 PlayerConnected(player);
+
+                player.Logout += Player_Logout;
+                player.TransformChanged += Player_TransformChanged;
             }
             /**********************************************
              * Unknown Packet
@@ -196,6 +201,32 @@ namespace Server.NS_Model
                 // Unknown Packet Flag.
                 client.Send(new CCC_Packet(CCC_Packet.Type.PROTOCOL_NOT_SUPPORTED, CCC_Packet.Version));
             }
+        }
+
+        private void Player_TransformChanged(CCC_Player player)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].ID == player.ID)
+                {
+                    players[i] = player;
+                    break;
+                }
+            }
+            PlayerMoved(player);
+        }
+
+        private void Player_Logout(CCC_Player player)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].ID == player.ID)
+                {
+                    players.RemoveAt(i);
+                    break;
+                }
+            }
+            PlayerDisconnected(player);
         }
         #endregion
     }

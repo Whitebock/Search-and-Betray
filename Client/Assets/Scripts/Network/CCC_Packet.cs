@@ -11,7 +11,7 @@ public class CCC_Packet
     /// Version needs to be updated if there were changes
     /// to the protocol, to inform the client/server
     /// </summary>
-    public static byte Version { get { return 4; } }
+    public static byte Version { get { return 5; } }
 
     /*
     ----------------------------------------------------------------------------------------------------------------

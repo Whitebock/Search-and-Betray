@@ -1,30 +1,19 @@
-﻿using Server.NS_Model;
-using Server.NS_Utils;
-using Server.NS_ViewModel;
+﻿using Server.NS_ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Server.NS_View
 {
     class ConsoleView
     {
         #region Attributes
-        private ViewModel dataContext;
-
-        public ViewModel DataContext
-        {
-            get { return dataContext; }
-            set { dataContext = value; }
-        }
-
+        private List<string> options;
         #endregion
 
         #region Properties
+        public ViewModel DataContext { get; set; }
+        
 
         #endregion
 
@@ -32,54 +21,192 @@ namespace Server.NS_View
         public ConsoleView(ViewModel dataContext)
         {
             DataContext = dataContext;
-            //Check if the programm has been started inside a console
-            bool hasConsole = ConsoleHelper.AttachConsole(-1);
-            if (!hasConsole)
-            {
-                //If not, create a new one
-                ConsoleHelper.AllocConsole();
-            }
+            options = new List<string>() { "Overview", "Connected", "Stats" };
+            
+            // Clear console, so formatting is correct.
+            Console.Clear();
 
-            Console.WriteLine();
+            // Disable cursor
+            Console.CursorVisible = false;
+
+            // Fix console size.
+            Console.BufferHeight = Console.WindowHeight;
+            Console.BufferWidth = Console.WindowWidth;
+
+            // Header
+            Console.Title = "CCC Dedicated Server";
             PrintLine();
             Console.WriteLine("CCC Dedicated Server");
             PrintLine();
+            
+            PrintNavigation();
+            
+            ShowView("Overview");
 
-            dataContext.StartCommand.Execute(this);
-            Console.WriteLine("Server started at: ");
-            Console.WriteLine("Port: " + dataContext.Port);
-            Console.WriteLine("LocalIP: " + dataContext.LocalAddress);
-            Console.WriteLine("PublicIP: " + dataContext.PublicAddress);
-            PrintLine();
+            DataContext.PlayerConnected += OnPlayerConnected;
+            DataContext.PlayerDisconnected += OnPlayerDisconnected;
+            DataContext.PlayerMoved += OnPlayerMove;
 
-            dataContext.Clients.CollectionChanged += OnNewClient;
-            //dataContext.StopCommand.Execute(this);
-            //Console.WriteLine("Server stopped");
-            //Console.ReadKey(true);
-            //while (true){ }
-            Debug.WriteLine("Started");
-            Console.ReadLine();
+            while (true)
+            {
+                int menu = ChooseMenu();
+                if (menu > 0 && menu < options.Count + 1)
+                {
+                    string viewname = options[menu - 1];
+                    ShowView(viewname);
+                }
+            }
         }
 
         #endregion
 
-        private void OnNewClient(object sender, NotifyCollectionChangedEventArgs e)
+        #region Menu
+
+        private int ChooseMenu()
         {
-            Debug.WriteLine("CHANGE!!");
-            foreach (CCC_Player p in e.NewItems)
+            int charcode = 0;
+            do
             {
-                Console.WriteLine(p.Username + " connected.");
-                p.TransformChanged += Player_TransformChanged;
-            }
+                charcode = (int)Console.ReadKey(true).KeyChar;
+            } while (charcode < 47 || charcode > 59);
+
+            return (charcode % 47) - 1;
         }
 
-        private void Player_TransformChanged(CCC_Player.Vector3 position, CCC_Player.Vector3 rotation, CCC_Player.Vector3 scale)
+        private void PrintNavigation()
+        {
+            // Clear Menu
+            Console.SetCursorPosition(0, 3);
+            for (int i = 0; i < options.Count; i++)
+            {
+                PrintLine(' ');
+            }
+
+            // Write Menu
+            Console.SetCursorPosition(0, 3);
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (CanExecute(options[i]))
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                else
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                Console.CursorLeft = 2;
+                Console.WriteLine((i + 1) + " " + options[i]);
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            PrintLine();
+        }
+
+        private void ShowView(string viewname)
+        {
+            if (!CanExecute(viewname))
+                return;
+
+            int cur = 4 + options.Count;
+
+            // Clear view screen.
+            Console.SetCursorPosition(0, cur);
+            for (int i = 0; i < Console.BufferHeight - cur - 1; i++)
+            {
+                PrintLine(' ');
+            }
+            // Reset position.
+            Console.SetCursorPosition(0, cur);
+
+            // Show view.
+            Execute(viewname);
+        }
+        #endregion
+
+        #region Execute
+        private void ExecuteOverview()
+        {
+            options.Add("StartServer");
+            options.Add("StopServer");
+            PrintNavigation();
+            Console.WriteLine("Port: " + DataContext.Port);
+            Console.WriteLine("LocalIP: " + DataContext.LocalAddress);
+            Console.WriteLine("PublicIP: " + DataContext.PublicAddress);
+            Console.WriteLine("Running: " + DataContext.Running);
+        }
+
+        private void ExecuteConnected()
+        {
+            Console.Write("Connected");
+        }
+
+        private void ExecuteStats()
+        {
+            Console.Write("Stats");
+        }
+
+        private void ExecuteStartServer()
+        {
+            DataContext.StartCommand.Execute(this);
+        }
+
+        private void ExecuteStopServer()
+        {
+            DataContext.StopCommand.Execute(this);
+        }
+
+        #endregion
+
+        #region CanExecute
+        private bool CanExecuteConnected()
+        {
+            return DataContext.Clients.Count > 0;
+        }
+
+        private bool CanExecuteStats()
+        {
+            return DataContext.Clients.Count > 0;
+        }
+
+        #endregion
+
+        private void Execute(string methodname)
+        {
+            MethodInfo method = this.GetType().GetMethod("Execute" + methodname, BindingFlags.NonPublic | BindingFlags.Instance);
+            if (method != null)
+                method.Invoke(this, null);
+            else
+                throw new Exception("Method unknown");
+        }
+
+        private bool CanExecute(string methodname)
+        {
+            MethodInfo method = this.GetType().GetMethod("CanExecute" + methodname, BindingFlags.NonPublic | BindingFlags.Instance);
+            if (method != null)
+            {
+                bool canexecute = (bool)method.Invoke(this, null);
+                return canexecute;
+            }
+            return true;
+        }
+
+        #region EventHandlers
+        private void OnPlayerConnected(PlayerData player)
+        {
+            Console.WriteLine(player.Username + " connected.");
+        }
+
+        private void OnPlayerDisconnected(PlayerData player)
+        {
+            Console.WriteLine(player.Username + " disconnected.");
+        }
+
+        private void OnPlayerMove(PlayerData player)
         {
             Console.WriteLine("[({0}, {1}, {2}), ({3}, {4}, {5}), ({6}, {7}, {8})]",
-                position.X, position.Y, position.Z,
-                rotation.X, rotation.Y, rotation.Z,
-                scale.X, scale.Y, scale.Z);
+                player.Position.X, player.Position.Y, player.Position.Z,
+                player.Rotation.X, player.Rotation.Y, player.Rotation.Z,
+                player.Scale.X, player.Scale.Y, player.Scale.Z);
         }
+
+        #endregion
 
         #region Formatting Methodes
         private void PrintLine(char c = '-')

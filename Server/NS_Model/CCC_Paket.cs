@@ -13,7 +13,7 @@ namespace Server.NS_Model
         /// Version needs to be updated if there were changes
         /// to the protocol, to inform the client/server
         /// </summary>
-        public static byte Version { get { return 4; } }
+        public static byte Version { get { return 5; } }
 
         /*
         ----------------------------------------------------------------------------------------------------------------
@@ -155,6 +155,10 @@ namespace Server.NS_Model
 
         public static implicit operator CCC_Packet(byte[] packet)
         {
+            if (packet.Length == 0)
+            {
+                return new CCC_Packet(Type.LOGOUT);
+            }
             Type type = (Type)packet[0];
             byte[] data = packet.Skip(1).ToArray();
             CCC_Packet d = new CCC_Packet(type, data);

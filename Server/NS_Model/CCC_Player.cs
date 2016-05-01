@@ -49,6 +49,7 @@ namespace Server.NS_Model
         public Vector3 Scale { get; private set; }
         public Vector3 Rotation { get; private set; }
         public Vector3 Position { get; private set; }
+        public Vector3 Velocity { get; private set; }
 
         //Network
         public ServerClient Client { get; private set; }
@@ -57,13 +58,14 @@ namespace Server.NS_Model
 
         #region Delegates
 
-        public delegate void TransformEvent(Vector3 position, Vector3 rotation, Vector3 scale);
+        public delegate void PlayerEvent(CCC_Player player);
 
         #endregion
 
         #region Events
 
-        public event TransformEvent TransformChanged = delegate { };
+        public event PlayerEvent TransformChanged = delegate { };
+        public event PlayerEvent Logout = delegate { };
 
         #endregion
 
@@ -73,7 +75,7 @@ namespace Server.NS_Model
             Client = client;
             ID = (byte)id;
             Username = username;
-
+            
             Client.DataReceived += OnDataReceived;
             Client.BeginRead();
         }
@@ -85,13 +87,19 @@ namespace Server.NS_Model
             {
                 byte[] posbytes = response.Data.Skip(0).Take(12).ToArray();
                 byte[] rotbytes = response.Data.Skip(12).Take(12).ToArray();
-                byte[] sclbytes = response.Data.Skip(24).Take(12).ToArray();
+                byte[] velbytes = response.Data.Skip(24).Take(12).ToArray();
+                byte[] sclbytes = response.Data.Skip(36).Take(12).ToArray();
 
                 Position = posbytes;
                 Rotation = rotbytes;
+                Velocity = velbytes;
                 Scale = sclbytes;
 
-                TransformChanged(Position, Rotation, Scale);
+                TransformChanged(this);
+            }
+            else if (response.Flag == CCC_Packet.Type.LOGOUT)
+            {
+                Logout(this);
             }
         }
         #endregion
@@ -108,10 +116,12 @@ namespace Server.NS_Model
             // Player transform.
             byte[] pos = Position;
             byte[] rot = Rotation;
+            byte[] vel = Velocity;
             byte[] scl = Scale;
 
             temp.AddRange(pos);
             temp.AddRange(rot);
+            temp.AddRange(vel);
             temp.AddRange(scl);
 
             temp.AddRange(Encoding.Unicode.GetBytes(Username));
