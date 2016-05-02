@@ -11,7 +11,7 @@ namespace Server
         [STAThread]
         static void Main(string[] args)
         {
-            //Check Arguments
+            // Check Arguments.
             bool gui = false;
             foreach (string argument in args)
             {
@@ -25,10 +25,10 @@ namespace Server
                 }
             }
 
-            //Create Viewmodel
+            // Create Viewmodel.
             ViewModel viewmodel = new ViewModel();
 
-            //Create view
+            // Create view.
             if (gui)
             {
                 Application a = new Application();
@@ -38,8 +38,17 @@ namespace Server
             }
             else
             {
+                // Check if the programm has been started inside a console.
+                bool hasConsole = ConsoleHelper.AttachConsole(-1);
+                if (!hasConsole)
+                {
+                    // If not, create a new one.
+                    ConsoleHelper.AllocConsole();
+                }
+
                 ConsoleView view = new ConsoleView(viewmodel);
 
+                // Free Console after the programm ends.
                 ConsoleHelper.FreeConsole();
             }
             Environment.Exit(0);

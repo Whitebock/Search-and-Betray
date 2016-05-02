@@ -41,7 +41,7 @@ namespace WhiteNet.Server
 
         #region Events
 
-        private event ByteEvent DataReceived = delegate { };
+        public event ByteEvent DataReceived = delegate { };
 
         #endregion
 
@@ -86,6 +86,7 @@ namespace WhiteNet.Server
                 throw new Exception("Already reading");
             reading = true;
             tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, tcpClient);
+            Console.WriteLine("STARTED_READ");
         }
         public void EndRead()
         {
@@ -119,8 +120,6 @@ namespace WhiteNet.Server
         #region Thread Methodes
         private void OnRead(IAsyncResult result)
         {
-            try
-            {
                 Stream s = tcpClient.GetStream();
 
                 // Get the header (length of the packet).
@@ -138,8 +137,6 @@ namespace WhiteNet.Server
                     tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
                 else
                     reading = false;
-            }
-            catch (Exception) { }
         }
         #endregion
 
