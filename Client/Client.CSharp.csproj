@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\MouseLook.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Client.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Packet.cs" />
+    <Compile Include="Assets\Scripts\Network\ConnectMenu.cs" />
     <Compile Include="Assets\Scripts\Netzwerk_Simulator.cs" />
     <Compile Include="Assets\Scripts\OnlinePlayerScripts\DemageHandler.cs" />
     <Compile Include="Assets\Scripts\OnlinePlayerScripts\OnlinePlayerInfo.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Assets\Scripts\PlayerScripts\PosAdjust_Player_Crouch.cs" />
     <Compile Include="Assets\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Scripts\PropOffGround.cs" />
-    <Compile Include="Assets\Scripts\ServerTest.cs" />
     <Compile Include="Assets\Scripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
     <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Menager.cs" />

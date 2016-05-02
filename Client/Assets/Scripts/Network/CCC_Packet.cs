@@ -11,10 +11,7 @@ public class CCC_Packet
     /// Version needs to be updated if there were changes
     /// to the protocol, to inform the client/server
     /// </summary>
-    public static byte Version
-    {
-        get { return 2; }
-    }
+    public static byte Version { get { return 5; } }
 
     /*
     ----------------------------------------------------------------------------------------------------------------
@@ -43,13 +40,12 @@ public class CCC_Packet
     |           | WHITELIST                 |
 
     Game -> Player
+    |   <-      | PLAYER_JOIN               | id, username
     |   <-      | PLAYER_TABLE              | array with all player objects (position, orientation, etc.)
-    |   <-      | PLAYER_UPDATE             | position; rotation
-
-    |   ->      | PLAYER_MOVE               | position; rotation
-    |   ->      | PLAYER_JUMP               |
+    |   <-      | PLAYER_UPDATE             | position, rotation, scale
+    |   ->      | PLAYER_MOVE               | position, rotation, scale
     |   ->      | PLAYER_CROUTCH            | bool
-    |   ->      | PLAYER_DEAL_DAMAGE        | amount
+    |   ->      | PLAYER_SEND_DAMAGE        | id, amount
     |   <-      | PLAYER_RECIEVE_DAMAGE     | amount
 
     Game -> Prop
@@ -57,11 +53,16 @@ public class CCC_Packet
     |   <-      | PROP_CREATED              | id; type; position
     |   ->      | PROP_MOVE                 | id; position
 
+    Chat
+    |   ->      | SEND_MESSAGE              | text
+    |   <-      | RECIEVE_MESSAGE           | id, text
+
     Logout
     |   ->      | LOGOUT                    |
 
     ----------------------------------------------------------------------------------------------------------------
     */
+
     public enum Type : byte
     {
         //Handshake
@@ -83,12 +84,12 @@ public class CCC_Packet
         WHITELIST,
 
         //Game -> Player
-        PLAYER_TABLE = 80,
+        PLAYER_JOIN = 80,
+        PLAYER_TABLE,
         PLAYER_UPDATE,
         PLAYER_MOVE,
-        PLAYER_JUMP,
         PLAYER_CROUTCH,
-        PLAYER_DEAL_DAMAGE,
+        PLAYER_SEND_DAMAGE,
         PLAYER_RECIEVE_DAMAGE,
 
         //Game -> Prop
@@ -96,8 +97,12 @@ public class CCC_Packet
         PROP_CREATED,
         PROP_MOVE,
 
+        //Chat
+        SEND_MESSAGE = 120,
+        RECIEVE_MESSAGE,
+
         //Logout
-        LOGOUT = 120
+        LOGOUT = 140
     }
 
     #region Properties
@@ -128,11 +133,11 @@ public class CCC_Packet
     }
     #endregion
 
-    #region Data Conversion 
+    #region Basic Data Conversion 
 
-    public string GetString()
+    public string GetString(int offset = 0)
     {
-        return Encoding.UTF8.GetString(Data);
+        return Encoding.Unicode.GetString(Data.Skip(offset).ToArray());
     }
 
     #endregion
@@ -155,13 +160,31 @@ public class CCC_Packet
     }
     #endregion
 
-    #region Overrides
+    #region ToString
 
     public override string ToString()
     {
         return String.Format("Packet[{0}][{1}]", Flag, Data);
     }
 
+    public string ToBitString(bool markbytes = false)
+    {
+        BitArray bits = new BitArray(this);
+        string output = "";
+        for (int i = 1; i < bits.Length; i++)
+        {
+            output += bits[i] ? '1' : '0';
+            if (markbytes && i % 8 == 0)
+            {
+                output += '|';
+            }
+        }
+
+        if (markbytes)
+            output += " (" + bits.Length + "bit)";
+
+        return output;
+    }
+
     #endregion
 }
-

@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -63,7 +66,8 @@
     <Compile Include="NS_Model\CCC_Player.cs" />
     <Compile Include="NS_Model\CCC_Server.cs" />
     <Compile Include="NS_Utils\ConsoleHelper.cs" />
-    <Compile Include="NS_Utils\RelayCommand.cs" />
+    <Compile Include="NS_ViewModel\RelayCommand.cs" />
+    <Compile Include="NS_ViewModel\PlayerData.cs" />
     <Compile Include="NS_ViewModel\ViewModel.cs" />
     <Compile Include="NS_ViewModel\ViewModelBase.cs" />
     <Compile Include="NS_View\ConsoleView.cs" />
@@ -99,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
