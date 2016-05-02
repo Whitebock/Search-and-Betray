@@ -16,7 +16,7 @@ public class PlayerInfo : MonoBehaviour
 	private static int lifeEnergy;
 
 	private static Rigidbody phy;
-	private static float inp_horizontal, inp_vertical, inp_yRot, inp_xRot;
+	private static float inp_horizontal, inp_vertical;
 	private static bool isGrounded, isCrouchingInp, isCrouching, crouchToggle, unconscious;
 
     private CCC_Client client;
@@ -49,10 +49,6 @@ public class PlayerInfo : MonoBehaviour
 	{ get { return inp_horizontal; } }
 	public static float Inp_vertical												// Input "Vorwärts/Rückwärts"
 	{ get { return inp_vertical; } }
-	public static float Inp_yRot													// Input "Maus vertikal"
-	{ get { return inp_yRot; } }
-	public static float Inp_xRot													// Input "Maus horizontal"
-	{ get { return inp_xRot; } }
 	public static bool IsGrounded													// Hat bodenkontakt
 	{ get { return isGrounded; } }
 	public static bool CrouchToggle													// Ob die Crouch-Taste nicht gedrück gehalten werden muss
@@ -87,8 +83,6 @@ public class PlayerInfo : MonoBehaviour
 	void Update()
 	{
 		// Input registrieren
-		inp_yRot = Input.GetAxis("Mouse X");
-		inp_xRot = Input.GetAxis("Mouse Y");
 		inp_horizontal = Input.GetAxisRaw("Horizontal");
 		inp_vertical = Input.GetAxisRaw("Vertical");
 
