@@ -170,7 +170,7 @@ namespace Server.NS_Model
 
                 client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK));
 
-                CCC_Player player = new CCC_Player(client,players.Count, username);
+                CCC_Player player = new CCC_Player(client,players.Count + 1, username);
 
                 CCC_Packet joinPacket = new CCC_Packet(CCC_Packet.Type.PLAYER_JOIN);
                 List<byte> temp = new List<byte>();

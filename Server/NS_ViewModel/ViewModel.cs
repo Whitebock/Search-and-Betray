@@ -90,7 +90,7 @@ namespace Server.NS_ViewModel
             Running = false;
             startCommand = new RelayCommand(OnStartExecuted, OnStartCanExecute);
             stopCommand = new RelayCommand(OnStopExecuted, OnStopCanExecute);
-
+            
             server.PlayerConnected += OnClientConnect;
             server.PlayerDisconnected += OnClientDisconnect;
             server.PlayerMoved += OnPlayerMove;
@@ -101,53 +101,62 @@ namespace Server.NS_ViewModel
         #region Eventhandlers
         private void OnClientDisconnect(CCC_Player player)
         {
-            // This code is required because it is not possible to edit 
-            // an ObservableCollection outside the UI thread.
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+            PlayerData p = ConvertPlayerData(player);
+
+            for (int i = 0; i < clients.Count; i++)
             {
-                PlayerData p = ConvertPlayerData(player);
-                for (int i = 0; i < clients.Count; i++)
+                if (clients[i].ID == p.ID)
                 {
-                    if (clients[i].ID == p.ID)
-                    {
+                    // This code is required because it is not possible to edit 
+                    // an ObservableCollection outside the UI thread.
+                    if (Application.Current != null)
+                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+                        { clients.RemoveAt(i); });
+                    else
                         clients.RemoveAt(i);
-                        break;
-                    }
+
+                    break;
                 }
-                PlayerMoved(p);
-            });
+            }
+
+            PlayerDisconnected(p);
         }
 
         private void OnClientConnect(CCC_Player player)
         {
+            PlayerData p = ConvertPlayerData(player);
+
             // This code is required because it is not possible to edit 
             // an ObservableCollection outside the UI thread.
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
-            {
-                PlayerData p = ConvertPlayerData(player);
+            if (Application.Current != null)
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+                { clients.Add(p); });
+            else
                 clients.Add(p);
-                PlayerConnected(p);
-            });
+
+            PlayerConnected(p);
         }
 
         private void OnPlayerMove(CCC_Player player)
         {
-            // This code is required because it is not possible to edit 
-            // an ObservableCollection outside the UI thread.
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+            PlayerData p = ConvertPlayerData(player);
+            
+            for (int i = 0; i < clients.Count; i++)
             {
-                PlayerData p = ConvertPlayerData(player);
-                for (int i = 0; i < clients.Count; i++)
+                if (clients[i].ID == p.ID)
                 {
-                    if (clients[i].ID == p.ID)
-                    {
+                    // This code is required because it is not possible to edit 
+                    // an ObservableCollection outside the UI thread.
+                    if (Application.Current != null)
+                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+                        { clients[i] = p; });
+                    else
                         clients[i] = p;
-                        break;
-                    }
-                }
-                PlayerMoved(p);
-            });
 
+                    break;
+                }
+            }
+            PlayerMoved(p);
         }
         #endregion
 

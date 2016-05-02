@@ -1,6 +1,8 @@
 ﻿using Server.NS_ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Reflection;
 
 namespace Server.NS_View
@@ -8,21 +10,25 @@ namespace Server.NS_View
     class ConsoleView
     {
         #region Attributes
-        private List<string> options;
+        private ObservableCollection<string> options;
+        private string lastView;
+        private ObservableCollection<string> standardOptions;
         #endregion
 
         #region Properties
         public ViewModel DataContext { get; set; }
         
-
         #endregion
 
         #region Constuctors
         public ConsoleView(ViewModel dataContext)
         {
+            // Initalize
             DataContext = dataContext;
-            options = new List<string>() { "Overview", "Connected", "Stats" };
-            
+            options = new ObservableCollection<string>();
+            standardOptions = new ObservableCollection<string>() { "Overview", "Connected", "Stats", "StartServer", "StopServer" };
+            options.CollectionChanged += PrintNavigation;
+
             // Clear console, so formatting is correct.
             Console.Clear();
 
@@ -38,14 +44,19 @@ namespace Server.NS_View
             PrintLine();
             Console.WriteLine("CCC Dedicated Server");
             PrintLine();
-            
-            PrintNavigation();
-            
-            ShowView("Overview");
 
+            // Add start menu
+            foreach (string s in standardOptions)
+            {
+                options.Add(s);
+            }
+
+            // Add event handlers
             DataContext.PlayerConnected += OnPlayerConnected;
             DataContext.PlayerDisconnected += OnPlayerDisconnected;
             DataContext.PlayerMoved += OnPlayerMove;
+            
+            ShowView("Overview");
 
             while (true)
             {
@@ -73,7 +84,7 @@ namespace Server.NS_View
             return (charcode % 47) - 1;
         }
 
-        private void PrintNavigation()
+        private void PrintNavigation(object sender, NotifyCollectionChangedEventArgs e)
         {
             // Clear Menu
             Console.SetCursorPosition(0, 3);
@@ -101,6 +112,12 @@ namespace Server.NS_View
 
         private void ShowView(string viewname)
         {
+            options.Clear();
+            foreach (string s in standardOptions)
+            {
+                options.Add(s);
+            }
+            lastView = viewname;
             if (!CanExecute(viewname))
                 return;
 
@@ -117,15 +134,15 @@ namespace Server.NS_View
 
             // Show view.
             Execute(viewname);
+
+            // Update Navigation
+            PrintNavigation(this, null);
         }
         #endregion
 
         #region Execute
         private void ExecuteOverview()
         {
-            options.Add("StartServer");
-            options.Add("StopServer");
-            PrintNavigation();
             Console.WriteLine("Port: " + DataContext.Port);
             Console.WriteLine("LocalIP: " + DataContext.LocalAddress);
             Console.WriteLine("PublicIP: " + DataContext.PublicAddress);
@@ -134,22 +151,30 @@ namespace Server.NS_View
 
         private void ExecuteConnected()
         {
-            Console.Write("Connected");
+            foreach (PlayerData player in DataContext.Clients)
+            {
+                Console.WriteLine("[{0}] {1}", player.ID, player.Username);
+            }
         }
 
         private void ExecuteStats()
         {
-            Console.Write("Stats");
+            foreach (PlayerData player in DataContext.Clients)
+            {
+                Console.WriteLine("[{0}] {1}HP, {2}AR", player.ID, player.Health, player.Armour);
+            }
         }
 
         private void ExecuteStartServer()
         {
             DataContext.StartCommand.Execute(this);
+            ShowView(options[0]);
         }
 
         private void ExecuteStopServer()
         {
             DataContext.StopCommand.Execute(this);
+            ShowView(options[0]);
         }
 
         #endregion
@@ -163,6 +188,16 @@ namespace Server.NS_View
         private bool CanExecuteStats()
         {
             return DataContext.Clients.Count > 0;
+        }
+
+        private bool CanExecuteStartServer()
+        {
+            return !DataContext.Running;
+        }
+
+        private bool CanExecuteStopServer()
+        {
+            return DataContext.Running;
         }
 
         #endregion
@@ -190,20 +225,19 @@ namespace Server.NS_View
         #region EventHandlers
         private void OnPlayerConnected(PlayerData player)
         {
-            Console.WriteLine(player.Username + " connected.");
+            PrintNavigation(this, null);
+            ShowView(lastView);
         }
 
         private void OnPlayerDisconnected(PlayerData player)
         {
-            Console.WriteLine(player.Username + " disconnected.");
+            PrintNavigation(this, null);
+            ShowView(lastView);
         }
 
         private void OnPlayerMove(PlayerData player)
         {
-            Console.WriteLine("[({0}, {1}, {2}), ({3}, {4}, {5}), ({6}, {7}, {8})]",
-                player.Position.X, player.Position.Y, player.Position.Z,
-                player.Rotation.X, player.Rotation.Y, player.Rotation.Z,
-                player.Scale.X, player.Scale.Y, player.Scale.Z);
+
         }
 
         #endregion
