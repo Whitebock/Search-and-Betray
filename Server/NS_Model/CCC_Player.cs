@@ -108,10 +108,12 @@ namespace Server.NS_Model
             List<byte> temp = new List<byte>();
 
             // Player stats.
+            /*
             temp.Add(ID);
             temp.Add(TeamID);
             temp.Add(Health);
             temp.Add(Armour);
+            */
 
             // Player transform.
             byte[] pos = Position;
@@ -124,7 +126,7 @@ namespace Server.NS_Model
             temp.AddRange(vel);
             temp.AddRange(scl);
 
-            temp.AddRange(Encoding.Unicode.GetBytes(Username));
+            //temp.AddRange(Encoding.Unicode.GetBytes(Username));
 
             return temp.ToArray();
         }

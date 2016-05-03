@@ -10,7 +10,7 @@ public class OnlinePlayerUI_Manager : MonoBehaviour
 	 */
 
 	private Transform onlinePlayer, myCamera, myCameraPos;	// -onlinePlayer- ist der Spieler dem diese UI zugewiesen ist
-	private OnlinePlayerInfo info;									// Die Daten die angezeigt werden können (z. B. "info.PlayerName")
+	private OnlinePlayerInfo info;							// Die Daten die angezeigt werden können (z. B. "info.PlayerName")
 	private Vector3 difference;								// Vector3 zwischen Kamera und diesem Spieler
 	public bool visible;									// Ob der Spieler diesen Spieler sehen kann
 	public float offset = 2f;								// Abstand zwischen der Kamera und der UI
@@ -57,13 +57,13 @@ public class OnlinePlayerUI_Manager : MonoBehaviour
 	{
 		// Initialisierungen
 		myCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-		myCameraPos = GameObject.Find("PlayerCameraPos").transform;
+		myCameraPos = myCamera.GetComponent<MainCameraManager>().MyCam;
 	}
 
-	void Update()
+	void LateUpdate()
 	{
 		// Sobald kein Spieler diesem Skript mehr zugewiesen ist, wird das Objekt zerstört
-		if (onlinePlayer != null)
+		if (onlinePlayer != null && myCameraPos.gameObject.activeSelf)
 		{
 			// Gesamte UI positionieren
 			difference = onlinePlayer.position + myCameraPos.localPosition - myCamera.position;

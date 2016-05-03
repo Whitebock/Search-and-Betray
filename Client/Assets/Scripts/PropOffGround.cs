@@ -50,15 +50,16 @@ public class PropOffGround : MonoBehaviour
 			{
 				switch(item.tag)
 				{
-					// Props mit diesem Tag werden gelöscht
+					// Props mit diesen Tags werden gelöscht
+					case "Collectable":
 					case "Untagged":
 						GameObject.Destroy(item.gameObject);
 						break;
 
-					// Props mit diesem Tag werden deaktiviert
+					// Props mit diesen Tags werden umgebracht
 					case "Enemy":
 					case "Player":
-						item.gameObject.SetActive(false); // oder eine Todessequenz
+						item.gameObject.SetActive(false);
 						break;
 
 					// Benachrichtigung für unbehandelte tags (Nur einmalig)

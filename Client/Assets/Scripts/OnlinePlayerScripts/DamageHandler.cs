@@ -14,7 +14,14 @@ public class DamageHandler : MonoBehaviour
 	public float factor = 1f;					// Damit wird der Schaden multipliziert (z. B. für Kopfschüsse)
 
 	public int Armor
-	{ get { return armor; } set { armor = value; } }
+	{
+		get { return armor; }
+		set
+		{
+			if (value > 0) armor = value;
+			else armor = 0;
+		}
+	}
 
 	void Start()
 	{
@@ -22,14 +29,15 @@ public class DamageHandler : MonoBehaviour
 		attachedPlayer = transform.GetComponentInParent<OnlinePlayerInfo>();
 	}
 
-	void TakeDamage(int hitpoints)
+	public void TakeDamage(int hitpoints)
 	{
-		hitpoints -= armor;
+		// Eventuellen Schutz vom Damage abziehen
+		hitpoints -= Armor;
+		Armor -= hitpoints;
 		if (hitpoints <= 0) return;
 
 		// Hier Muss der Damage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
 		//DEMAGE = (int)Mathf.Floor(hitpoints * factor);
-
-		armor = 0;
+		Debug.Log("Damage: " + (int)Mathf.Floor(hitpoints * factor));
 	}
 }

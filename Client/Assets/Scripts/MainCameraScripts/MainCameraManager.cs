@@ -12,11 +12,11 @@ public class MainCameraManager : MonoBehaviour
 	 */
 
 	private MouseLook mouseLook;			// Refferrenz auf das "Umgucken-Skript"
-	private int currentCam = 0;				// Ausgewählte Sicht
+	public int currentCam = 0;				// Ausgewählte Sicht
 	private Transform myCam;				// Eigene Ego-Sicht
 	private Transform[] otherCam;			// 3rd-Person-Sichten (andere Spieler)
 	private FreeCameraMovement movement;	// Referenz auf die "Freie Kamera"-Steuerung
-	private bool spectatorMode = false;		// Kann zwischen den Views hin- und herschalten
+	public bool spectatorMode = false;		// Kann zwischen den Views hin- und herschalten
 	private bool notPressed = false;		// Hilfsvariable zum Umschalten der Kamera
 	private int lastSpec = 1;				// Letzter Spieler dem zugeguckt wurde
 
@@ -30,23 +30,19 @@ public class MainCameraManager : MonoBehaviour
 			else CurrentCam = 1;					// Spectatormodus =  AN | Kamera direkt auf den ersten Spieler setzen
 		}
 	}
-
 	public int CurrentCam
 	{
 		get { return currentCam; }
 		set
 		{
-			if (value == -1)
-			{
-				movement.Initialise();			// Freie Kamerabewegung aktivieren
-				lastSpec = currentCam;			// Letzten beobachteten Spieler merken
-			}
-			else movement.enabled = false;		// Freie Kamerabewegung sperren
 			currentCam = SwitchCamera(value);
+			if (currentCam != -1) movement.enabled = false;		// Freie Kamerabewegung sperren
 		}
 	}
+	public Transform MyCam
+	{ get { return myCam; } }
 
-	void Start()
+	public void Awake()
 	{
 		// Initialisierungen
 		mouseLook = GetComponent<MouseLook>();
@@ -55,7 +51,7 @@ public class MainCameraManager : MonoBehaviour
 		UpdateCams();
 	}
 
-	void Update()
+	void LateUpdate()
 	{
 		// ----------------- Testzeile (Mit "H" in den Spectatormodus wechseln) -----------------
 		if (Input.GetKeyDown(KeyCode.H)) SpectatorMode = !SpectatorMode;
@@ -84,7 +80,7 @@ public class MainCameraManager : MonoBehaviour
 					else if (switchPlayer == 0) notPressed = true; // Erneutes Wechseln der Sicht verhindern, wenn die Taste dazu noch nicht losgelassen wurde
 				}
 			}
-			else if (switchFreeAnd3rd) CurrentCam = lastSpec; // Ansicht wechseln: freie Kamera --> 3rd-Person
+			else if (switchFreeAnd3rd && lastSpec != 0) CurrentCam = lastSpec; // Ansicht wechseln: freie Kamera --> 3rd-Person
 		}
 
 		// MainKamera an Position "kleben"
@@ -104,8 +100,23 @@ public class MainCameraManager : MonoBehaviour
 		}
 	}
 
+	// Kamera an Position setzen (unbeweglich)
+	public void FrezzeCamera()
+	{
+		spectatorMode = false;
+		currentCam = -1;								// Kamera vom aktuellen Anker lösen
+		movement.enabled = mouseLook.enabled = false;	// Kamera unbeweglich machen
+	}
+
+	// Kamera aus fester Position lösen
+	public void UnfrezzeCamera(bool spectatorMode)
+	{
+		SpectatorMode = spectatorMode;					// Kamera in den gewünschten Modus bringen
+		movement.enabled = mouseLook.enabled = true;	// Kamera beweglich machen
+	}
+
 	// Alle Spectatoransichten finden
-	private void UpdateCams()
+	public void UpdateCams()
 	{
 		GameObject[] x = GameObject.FindGameObjectsWithTag("OnlinePlayerCam");
 		otherCam = new Transform[x.Length];
@@ -127,7 +138,12 @@ public class MainCameraManager : MonoBehaviour
 			mouseLook.PlayerPos();
 			return 0;
 		}
-		else if (cam == -1) return -1;
+		else if (cam == -1)
+		{
+			movement.Initialise();			// Freie Kamerabewegung aktivieren
+			lastSpec = currentCam;			// Letzten beobachteten Spieler merken
+			return -1;
+		}
 		else if (Available(cam)) // Auf 3rd-Person stellen, wenn der Spieler verfügbar ist
 		{
 			mouseLook.Tr_vertical = otherCam[cam - 1].parent;
@@ -141,6 +157,11 @@ public class MainCameraManager : MonoBehaviour
 			{
 				mouseLook.Tr_vertical = otherCam[x - 1].parent;
 				mouseLook.Tr_horizontal = otherCam[x - 1].parent;
+			}
+			else
+			{
+				movement.Initialise();			// Freie Kamerabewegung aktivieren
+				lastSpec = currentCam;			// Letzten beobachteten Spieler merken
 			}
 			return x;
 		}
