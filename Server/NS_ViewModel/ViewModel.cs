@@ -102,7 +102,7 @@ namespace Server.NS_ViewModel
         private void OnClientDisconnect(CCC_Player player)
         {
             PlayerData p = ConvertPlayerData(player);
-
+            
             for (int i = 0; i < clients.Count; i++)
             {
                 if (clients[i].ID == p.ID)

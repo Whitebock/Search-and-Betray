@@ -25,7 +25,7 @@ public class ConnectMenu : MonoBehaviour {
 
     void Start()
     {
-        client = CCC_Client.CreateInstance();
+        client = CCC_Client.Instance;
         inputIP.text = IPUtils.GetLocalAddress().ToString();
         inputPort.text = client.Port.ToString();
         inputUsername.text = "";
@@ -74,6 +74,6 @@ public class ConnectMenu : MonoBehaviour {
             return;
         }
 
-        SceneManager.LoadScene("MapTest");
+        SceneManager.LoadScene("Testscene");
     }
 }

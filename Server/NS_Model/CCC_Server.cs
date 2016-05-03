@@ -170,7 +170,7 @@ namespace Server.NS_Model
 
                 client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK));
 
-                CCC_Player player = new CCC_Player(client,players.Count + 1, username);
+                CCC_Player player = new CCC_Player(client, players.Count + 1, username);
 
                 CCC_Packet joinPacket = new CCC_Packet(CCC_Packet.Type.PLAYER_JOIN);
                 List<byte> temp = new List<byte>();
@@ -205,14 +205,26 @@ namespace Server.NS_Model
 
         private void Player_TransformChanged(CCC_Player player)
         {
+            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);
+            packet.Data = player.Serialize();
+
             for (int i = 0; i < players.Count; i++)
             {
                 if (players[i].ID == player.ID)
                 {
                     players[i] = player;
-                    break;
+                }
+
+                try
+                {
+                    players[i].Client.Send(packet);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
                 }
             }
+
             PlayerMoved(player);
         }
 
@@ -223,7 +235,10 @@ namespace Server.NS_Model
                 if (players[i].ID == player.ID)
                 {
                     players.RemoveAt(i);
-                    break;
+                }
+                else
+                {
+                    // Send
                 }
             }
             PlayerDisconnected(player);

@@ -31,12 +31,23 @@ public class CCC_Client
         }
     }
 
+    public static CCC_Client Instance
+    {
+        get
+        {
+            if (singleton == null)
+            {
+                singleton = new CCC_Client();
+            }
+            return singleton;
+        }
+    }
     #endregion
 
     #region Delegates
 
     public delegate void JoinEvent(int playerid, string playername);
-    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 scale);
+    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale);
 
     #endregion
 
@@ -47,15 +58,7 @@ public class CCC_Client
 
     #endregion
 
-    #region Constructors / Singleton
-    public static CCC_Client CreateInstance()
-    {
-        if (singleton == null)
-        {
-            singleton = new CCC_Client();
-        }
-        return singleton;
-    }
+    #region Constructors
     private CCC_Client()
     {
         client = new Client();
@@ -67,6 +70,8 @@ public class CCC_Client
     private void OnDataReceived(byte[] data)
     {
         CCC_Packet packet = data;
+        Debug.Log("[DEEP SERVER] " + packet.Flag);
+        
         if (packet.Flag == CCC_Packet.Type.PLAYER_JOIN)
         {
             int playerid = packet.Data[0];
@@ -88,12 +93,17 @@ public class CCC_Client
             rotatation.y = BitConverter.ToSingle(packet.Data, 17);
             rotatation.z = BitConverter.ToSingle(packet.Data, 21);
 
-            Vector3 scale = new Vector3();
-            scale.x = BitConverter.ToSingle(packet.Data, 25);
-            scale.y = BitConverter.ToSingle(packet.Data, 29);
-            scale.z = BitConverter.ToSingle(packet.Data, 33);
+            Vector3 velocity = new Vector3();
+            velocity.x = BitConverter.ToSingle(packet.Data, 25);
+            velocity.y = BitConverter.ToSingle(packet.Data, 29);
+            velocity.z = BitConverter.ToSingle(packet.Data, 33);
 
-            OnPlayerUpdate(playerid, position, Quaternion.Euler(rotatation), scale);
+            Vector3 scale = new Vector3();
+            scale.x = BitConverter.ToSingle(packet.Data, 37);
+            scale.y = BitConverter.ToSingle(packet.Data, 41);
+            scale.z = BitConverter.ToSingle(packet.Data, 45);
+            
+            OnPlayerUpdate(playerid, position, Quaternion.Euler(rotatation), velocity, scale);
         }
         else
         {
