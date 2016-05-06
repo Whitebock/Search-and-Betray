@@ -1,13 +1,6 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ShiftMovement.cs">
-    <Files>
-      <File FileName="Assets\Scripts\ShiftMovement.cs" Line="30" Column="29" />
-      <File FileName="Assets\Scripts\PlayerScripts\Movement.cs" Line="38" Column="31" />
-      <File FileName="Assets\Scripts\PlayerScripts\Jumping.cs" Line="42" Column="21" />
-      <File FileName="Assets\Scripts\PlayerScripts\PlayerInfo.cs" Line="68" Column="27" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

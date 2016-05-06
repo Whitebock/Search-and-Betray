@@ -56,6 +56,7 @@ public class PlayerInfo : MonoBehaviour
 		get { return isGrounded; }
 		set
 		{
+			// isGrounded-Event abfeuern
 			if (On_Player_isGrounded != null && isGrounded != value) On_Player_isGrounded(value);
 			isGrounded = value;
 		}
@@ -67,8 +68,9 @@ public class PlayerInfo : MonoBehaviour
 		get { return isCrouchingInp; }
 		set
 		{
-			isCrouchingInp = value;
+			// isCrouching-Event abfeuern
 			if (On_Inp_Crouch != null) On_Inp_Crouch(value);
+			isCrouchingInp = value;
 		}
 	}
 	public static bool IsCrouching													// Ist tatsächlich geduckt
@@ -127,6 +129,7 @@ public class PlayerInfo : MonoBehaviour
 
 	void OnDisabled()
 	{
+		// Inaktiv-Event abfeuern
 		if (On_Player_Disabled != null) On_Player_Disabled();
 	}
 
@@ -135,7 +138,6 @@ public class PlayerInfo : MonoBehaviour
 	{
 		// Position und Velocity senden
 		Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
-
 		client.SendTransform(transform, hilf);
 	}
 

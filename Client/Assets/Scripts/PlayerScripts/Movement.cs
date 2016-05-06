@@ -43,7 +43,7 @@ public class Movement : MonoBehaviour
 
 			// Am Bodem
 			Vector3 move = transform.localToWorldMatrix * new Vector3(inp_horizontal * speed_horizontal, 0f, inp_vertical * speed_vertical);
-			if (newMovement) PlayerInfo.Phy.velocity = Quaternion.FromToRotation(transform.up, newMovement.up) * move;
+			if (newMovement) PlayerInfo.Phy.velocity = Quaternion.FromToRotation(Vector3.up, newMovement.up) * move;
 			else PlayerInfo.Phy.velocity = new Vector3(0f, PlayerInfo.Phy.velocity.y, 0f) + move;
 
 		}
@@ -61,20 +61,7 @@ public class Movement : MonoBehaviour
 		NormalMovement();
 	}
 
-	public void NormalMovement()
-	{
-		try { Destroy(GetComponent<ConstantForce>()); } catch {}
-		PlayerInfo.Phy.useGravity = true;
-		newMovement = null;
-	}
-	public void NormalMovement(Vector3 vel)
-	{
-		try { Destroy(GetComponent<ConstantForce>()); } catch {}
-		PlayerInfo.Phy.useGravity = true;
-		newMovement = null;
-		PlayerInfo.Phy.velocity = new Vector3(vel.x, vel.y, vel.z);
-	}
-
+	// Die Bewegung drehen und die Schwerkraft verlagern um sich z. B. auf Treppen und Leitern bewegen zu können
 	public void ShiftMovement(Transform newMovement, Vector3 gravityDirection)
 	{
 		// Schwerkraft verschieben um Abrutschen zu vermeiden
@@ -83,7 +70,24 @@ public class Movement : MonoBehaviour
 		gravityDirection = (newMovement.localToWorldMatrix * gravityDirection).normalized;
 		newGravity.force = new Vector3(gravityDirection.x * Physics.gravity.x, gravityDirection.y * Physics.gravity.y, gravityDirection.z * Physics.gravity.z);
 
-		// Bewegung anpassen
+		// Neu Achse auf der sich jetzt bewegt wird deffinieren
 		this.newMovement = newMovement;
+	}
+
+	// Die Bewegung wieder auf den normalen Zustand zurücksetzen
+	public void NormalMovement()
+	{
+		// Schwerkraft entfernen
+		try { Destroy(GetComponent<ConstantForce>()); } catch {}
+
+		// Normale Schwerkraft aktivieren
+		PlayerInfo.Phy.useGravity = true;
+
+		// Bewegung wieder auf die normale Achse zurücksetzen
+		if (newMovement)
+		{
+			PlayerInfo.Phy.velocity = Quaternion.FromToRotation(newMovement.up, Vector3.up) * PlayerInfo.Phy.velocity;
+			newMovement = null;
+		}
 	}
 }

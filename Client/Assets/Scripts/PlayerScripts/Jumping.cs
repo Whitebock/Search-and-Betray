@@ -4,7 +4,7 @@ using System.Collections;
 public class Jumping : MonoBehaviour
 {
 	public float jumpforce = 7f;					// Sprungkraft
-	public bool canJump = false;
+	public bool canJump = false;					// Ob man Springen kann, egal ob man Bodenkantakt hat
 	private float jumpFactor, jumpFactorIncrease;	// Zur Berechnung der Anlaufs
 
 	void Start()
@@ -31,7 +31,7 @@ public class Jumping : MonoBehaviour
 	void Jump()
 	{
 		// Springen blockieren
-		if ((!PlayerInfo.IsGrounded || PlayerInfo.IsCrouching || PlayerInfo.Unconscious) && !canJump) return;
+		if (!PlayerInfo.IsGrounded && !canJump || PlayerInfo.IsCrouching || PlayerInfo.Unconscious) return;
 
 		// Springen
 		PlayerInfo.Phy.AddForce(0f, jumpforce * jumpFactor, 0f, ForceMode.VelocityChange);
