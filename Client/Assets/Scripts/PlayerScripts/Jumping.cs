@@ -4,6 +4,7 @@ using System.Collections;
 public class Jumping : MonoBehaviour
 {
 	public float jumpforce = 7f;					// Sprungkraft
+	public bool canJump = false;
 	private float jumpFactor, jumpFactorIncrease;	// Zur Berechnung der Anlaufs
 
 	void Start()
@@ -30,9 +31,14 @@ public class Jumping : MonoBehaviour
 	void Jump()
 	{
 		// Springen blockieren
-		if (!PlayerInfo.IsGrounded || PlayerInfo.IsCrouching || PlayerInfo.Unconscious) return;
+		if ((!PlayerInfo.IsGrounded || PlayerInfo.IsCrouching || PlayerInfo.Unconscious) && !canJump) return;
 
 		// Springen
 		PlayerInfo.Phy.AddForce(0f, jumpforce * jumpFactor, 0f, ForceMode.VelocityChange);
+	}
+
+	public void OnDisable()
+	{
+		canJump = false;
 	}
 }

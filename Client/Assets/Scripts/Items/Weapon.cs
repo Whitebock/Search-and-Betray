@@ -6,7 +6,7 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    public string name;				//Name of Weapon
+    public string weaponName;		//Name of Weapon
     public int damage;				//Damage of Weapon
     public int shotsPerSecond;		//Shots that can be fired per second
     public uint shotsTotal;			//Total number of shots that the weapons holds

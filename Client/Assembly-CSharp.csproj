@@ -74,6 +74,7 @@
      <Compile Include="Assets\Scripts\PlayerScripts\WeaponHinge.cs" />
      <Compile Include="Assets\Scripts\PositionAdjust.cs" />
      <Compile Include="Assets\Scripts\PropOffGround.cs" />
+     <Compile Include="Assets\Scripts\ShiftMovement.cs" />
      <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
      <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Manager.cs" />
      <Compile Include="Assets\Scripts\UI\Player_UI_Tools.cs" />

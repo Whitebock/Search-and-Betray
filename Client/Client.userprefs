@@ -1,14 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerScripts\PlayerInfo.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ShiftMovement.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayerScripts\PlayerInfo.cs" Line="130" Column="9" />
-      <File FileName="Assets\Scripts\Items\CollectableBase.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\OnlinePlayerScripts\OnlinePlayerInfo.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MainCameraScripts\MainCameraManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PlayerScripts\CharacterPickUp.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Items\CollectableWeapon.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\LocalGameManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\ShiftMovement.cs" Line="30" Column="29" />
+      <File FileName="Assets\Scripts\PlayerScripts\Movement.cs" Line="38" Column="31" />
+      <File FileName="Assets\Scripts\PlayerScripts\Jumping.cs" Line="42" Column="21" />
+      <File FileName="Assets\Scripts\PlayerScripts\PlayerInfo.cs" Line="68" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
