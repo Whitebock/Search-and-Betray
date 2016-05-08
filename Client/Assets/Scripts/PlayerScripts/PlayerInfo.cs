@@ -31,8 +31,12 @@ public class PlayerInfo : MonoBehaviour
 	 */
     public delegate void Del_Inp_Jump();
 	public static event Del_Inp_Jump On_Inp_Jump;
-	public delegate void Del_Crouch(bool isCrouching);
-	public static event Del_Crouch On_Inp_Crouch;
+	public delegate void Del_Inp_Crouch(bool isCrouching);
+	public static event Del_Inp_Crouch On_Inp_Crouch;
+	public delegate void Del_Player_Disabled();
+	public static event Del_Player_Disabled On_Player_Disabled;
+	public delegate void Del_Player_isGrounded(bool isGrounded);
+	public static event Del_Player_isGrounded On_Player_isGrounded;
 
 	// Properties
 	public static int PlayerID														// Spieler-ID
@@ -48,24 +52,29 @@ public class PlayerInfo : MonoBehaviour
 	public static float Inp_vertical												// Input "Vorwärts/Rückwärts"
 	{ get { return inp_vertical; } }
 	public static bool IsGrounded													// Hat bodenkontakt
-	{ get { return isGrounded; } }
+	{
+		get { return isGrounded; }
+		set
+		{
+			// isGrounded-Event abfeuern
+			if (On_Player_isGrounded != null && isGrounded != value) On_Player_isGrounded(value);
+			isGrounded = value;
+		}
+	}
 	public static bool CrouchToggle													// Ob die Crouch-Taste nicht gedrück gehalten werden muss
 	{ get { return crouchToggle; } set { crouchToggle = value; } }
 	public static bool IsCrouchingInp												// Möchte geduckt sein
-	{ get { return isCrouchingInp; } }
-	public static bool IsCrouching													// Ist tatsächlich geduckt
-	{ 
-		get { return isCrouching; }
+	{
+		get { return isCrouchingInp; }
 		set
 		{
-			isCrouching = value;
-			// ------------------ Simulierte Netzwerkschnittstelle ------------------
-			// Ob Ich geduckt bin senden
-			if (value) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Crouch, "true");
-			else Netzwerk_Simulator.Senden(playerID, -1, PackageType.Crouch, "false");
-			// ----------------------------------------------------------------------
+			// isCrouching-Event abfeuern
+			if (On_Inp_Crouch != null) On_Inp_Crouch(value);
+			isCrouchingInp = value;
 		}
 	}
+	public static bool IsCrouching													// Ist tatsächlich geduckt
+	{ get { return isCrouching; } set { isCrouching = value; } }
 	public static bool Unconscious													// Bewegungen sollen blockiert werden
 	{ get { return unconscious; } set { unconscious = value; } }
 
@@ -87,42 +96,23 @@ public class PlayerInfo : MonoBehaviour
 		// Springen Event
 		if (Input.GetButtonDown("Jump") && On_Inp_Jump != null) On_Inp_Jump();
 
-		// Ducken Event
-		if (On_Inp_Crouch != null)
+		// Ducken Event | Ducken gedrückt halten oder toggeln
+		if (crouchToggle && Input.GetButtonDown("Crouch")) IsCrouchingInp = !isCrouchingInp;
+		else
 		{
-			// Ducken gedrückt halten oder toggeln
-			if (crouchToggle)
+			// Ducken gedrückt halten
+			if (Input.GetButtonDown("Crouch"))
 			{
-				// Ducken toggeln
-				if (Input.GetButtonDown("Crouch"))
-				{
-					if (isCrouchingInp)
-					{
-						On_Inp_Crouch(false);
-						isCrouchingInp = false;
-					}
-					else
-					{
-						On_Inp_Crouch(true);
-						isCrouchingInp = true;
-					}
-				}
+				isCrouchingInp = true;
+				On_Inp_Crouch(true);
 			}
-			else
+			else if (Input.GetButtonUp("Crouch"))
 			{
-				// Ducken gedrückt halten
-				if (Input.GetButtonDown("Crouch"))
-				{
-					isCrouchingInp = true;
-					On_Inp_Crouch(true);
-				}
-				else if (Input.GetButtonUp("Crouch"))
-				{
-					isCrouchingInp = false;
-					On_Inp_Crouch(false);
-				}
+				isCrouchingInp = false;
+				On_Inp_Crouch(false);
 			}
 		}
+<<<<<<< HEAD
 
         // --------------------- Netzwerkschnittstelle ---------------------
 
@@ -135,10 +125,14 @@ public class PlayerInfo : MonoBehaviour
 
         // ------------------------------------------------------------------
     }
+=======
+    }
+
+>>>>>>> origin/master
     void FixedUpdate()
 	{
 		// Bodenkontakt
-		isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
+		IsGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
 	}
 
 	// Todessequenz
@@ -147,11 +141,26 @@ public class PlayerInfo : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
+	void OnDisabled()
+	{
+		// Inaktiv-Event abfeuern
+		if (On_Player_Disabled != null) On_Player_Disabled();
+	}
+
+	// ------------------------- Netzwerk -------------------------
+	void SendTransform()
+	{
+		// Position und Velocity senden
+		Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
+		client.SendTransform(transform, hilf);
+	}
+
     public void Disconnect()
     {
         client.Disconnect();
         SceneManager.LoadScene("Menu");
-    }
+	}
+	// ------------------------------------------------------------
 }
 
 /*/ ------------------ Simulierte Netzwerkschnittstelle ------------------
@@ -168,8 +177,6 @@ Netzwerk_Simulator.Senden(playerID, -1, PackageType.Rotation, transform.rotation
 // Granatenwurf senden
 if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
 // ----------------------------------------------------------------------*/
-
-
 
 /*/ Bewustlosigkeit (Blockiert Bewegungen. Gut für AddForce.)
 public void ThempUnconsciousnes(float sec)
