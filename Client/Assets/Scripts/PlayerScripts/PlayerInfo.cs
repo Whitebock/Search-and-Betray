@@ -76,7 +76,6 @@ public class PlayerInfo : MonoBehaviour
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
         client = CCC_Client.Instance;
-        InvokeRepeating("SendTransform", 0, 0.2f);
     }
 
 	void Update()
@@ -127,19 +126,14 @@ public class PlayerInfo : MonoBehaviour
 
         // --------------------- Netzwerkschnittstelle ---------------------
 
-        
+        Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
+
+        client.SendTransform(transform, hilf);
 
         // Granatenwurf senden
         //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
 
         // ------------------------------------------------------------------
-    }
-    void SendTransform()
-    {
-        // Position und Velocity senden
-        Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
-
-        client.SendTransform(transform, hilf);
     }
     void FixedUpdate()
 	{

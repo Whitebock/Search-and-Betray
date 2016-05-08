@@ -28,7 +28,7 @@ public class ConnectMenu : MonoBehaviour {
         client = CCC_Client.Instance;
         inputIP.text = IPUtils.GetLocalAddress().ToString();
         inputPort.text = client.Port.ToString();
-        inputUsername.text = "";
+        inputUsername.text = "Testuser";
         labelVersion.text = "v" + CCC_Packet.Version.ToString();
     }
 

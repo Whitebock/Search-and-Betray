@@ -7,6 +7,7 @@ using WhiteNet;
 using WhiteNet.Client;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CCC_Client
 {
@@ -17,18 +18,57 @@ public class CCC_Client
     private static CCC_Client singleton;
     #endregion
 
+    private struct DeserializedPlayer
+    {
+        public int ID { get; set; }
+        public int TeamID { get; set; }
+        public int Health { get; set; }
+        public int Armour { get; set; }
+        public Vector3 Position { get; set; }
+        public Quaternion Rotation { get; set; }
+        public Vector3 Velocity { get; set; }
+        public Vector3 Scale { get; set; }
+        public string Username { get; set; }
+        public DeserializedPlayer(byte[] serializedData)
+        {
+            ID = serializedData[0];
+            TeamID = 0;
+            Health = 0;
+            Armour = 0;
+
+            Vector3 pos = new Vector3();
+            pos.x = BitConverter.ToSingle(serializedData, 1);
+            pos.y = BitConverter.ToSingle(serializedData, 5);
+            pos.z = BitConverter.ToSingle(serializedData, 9);
+            Position = pos;
+            
+            Vector3 rot = new Vector3();
+            rot.x = BitConverter.ToSingle(serializedData, 13);
+            rot.y = BitConverter.ToSingle(serializedData, 17);
+            rot.z = BitConverter.ToSingle(serializedData, 21);
+            Rotation = Quaternion.Euler(rot);
+
+            Vector3 vel = new Vector3();
+            vel.x = BitConverter.ToSingle(serializedData, 25);
+            vel.y = BitConverter.ToSingle(serializedData, 29);
+            vel.z = BitConverter.ToSingle(serializedData, 33);
+            Velocity = vel;
+
+            Vector3 scl = new Vector3();
+            scl.x = BitConverter.ToSingle(serializedData, 37);
+            scl.y = BitConverter.ToSingle(serializedData, 41);
+            scl.z = BitConverter.ToSingle(serializedData, 45);
+            Scale = scl;
+
+            byte[] ubytes = serializedData.Skip(49).ToArray();
+            Username = Encoding.Unicode.GetString(ubytes);
+        }
+    }
     #region Properties
     public int Port
     {
-        get
-        {
-            return port;
-        }
-
-        set
-        {
-            port = value;
-        }
+        get { return port; }
+        set { port = value; }
     }
 
     public static CCC_Client Instance
@@ -36,9 +76,7 @@ public class CCC_Client
         get
         {
             if (singleton == null)
-            {
                 singleton = new CCC_Client();
-            }
             return singleton;
         }
     }
@@ -47,6 +85,7 @@ public class CCC_Client
     #region Delegates
 
     public delegate void JoinEvent(int playerid, string playername);
+    public delegate void SyncEvent(Dictionary<int, string> players);
     public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale);
 
     #endregion
@@ -55,12 +94,14 @@ public class CCC_Client
 
     public event JoinEvent OnPlayerJoin = delegate { };
     public event UpdateEvent OnPlayerUpdate = delegate { };
-
+    public event SyncEvent OnSync = delegate { };
     #endregion
 
     #region Constructors
     private CCC_Client()
     {
+        Console.SetOut(new UnityTextWriter());
+        Application.runInBackground = true;
         client = new Client();
         client.DataReceived += OnDataReceived;
     }
@@ -70,8 +111,7 @@ public class CCC_Client
     private void OnDataReceived(byte[] data)
     {
         CCC_Packet packet = data;
-        Debug.Log("[DEEP SERVER] " + packet.Flag);
-        
+
         if (packet.Flag == CCC_Packet.Type.PLAYER_JOIN)
         {
             int playerid = packet.Data[0];
@@ -79,31 +119,37 @@ public class CCC_Client
 
             OnPlayerJoin(playerid, username);
         }
-        else if(packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
+        else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
         {
-            int playerid = packet.Data[0];
+            DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
-            Vector3 position = new Vector3();
-            position.x = BitConverter.ToSingle(packet.Data, 1);
-            position.y = BitConverter.ToSingle(packet.Data, 5);
-            position.z = BitConverter.ToSingle(packet.Data, 9);
+            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale);
+        }
+        else if (packet.Flag == CCC_Packet.Type.SYNC_TABLE)
+        {
+            Dictionary<int, string> syncdata = new Dictionary<int, string>();
+            int i = 0;
+            try
+            {
+                do
+                {
+                    UInt16 length = BitConverter.ToUInt16(packet.Data, i);
+                    i += 2;
+                    byte[] serialized = packet.Data.Skip(i).Take(length).ToArray();
+                    DeserializedPlayer d = new DeserializedPlayer(serialized);
 
-            Vector3 rotatation = new Vector3();
-            rotatation.x = BitConverter.ToSingle(packet.Data, 13);
-            rotatation.y = BitConverter.ToSingle(packet.Data, 17);
-            rotatation.z = BitConverter.ToSingle(packet.Data, 21);
+                    syncdata.Add(d.ID, d.Username);
+                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale);
 
-            Vector3 velocity = new Vector3();
-            velocity.x = BitConverter.ToSingle(packet.Data, 25);
-            velocity.y = BitConverter.ToSingle(packet.Data, 29);
-            velocity.z = BitConverter.ToSingle(packet.Data, 33);
+                    i += serialized.Length;
 
-            Vector3 scale = new Vector3();
-            scale.x = BitConverter.ToSingle(packet.Data, 37);
-            scale.y = BitConverter.ToSingle(packet.Data, 41);
-            scale.z = BitConverter.ToSingle(packet.Data, 45);
-            
-            OnPlayerUpdate(playerid, position, Quaternion.Euler(rotatation), velocity, scale);
+                } while (i < packet.Data.Length - 1);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+            OnSync(syncdata);
         }
         else
         {
@@ -196,8 +242,9 @@ public class CCC_Client
                 client.Disconnect();
                 throw new Exception("You are not whitelisted on this server");
         }
-        
 
+        PlayerInfo.PlayerID = loginresponse.Data[0];
+        PlayerInfo.PlayerName = Encoding.Unicode.GetString(loginresponse.Data.Skip(1).ToArray());
         client.BeginRead();
     }
 
@@ -218,11 +265,11 @@ public class CCC_Client
         data.AddRange(BitConverter.GetBytes(transform.position.x));
         data.AddRange(BitConverter.GetBytes(transform.position.y));
         data.AddRange(BitConverter.GetBytes(transform.position.z));
-        
+
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.x));
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.y));
         data.AddRange(BitConverter.GetBytes(transform.rotation.eulerAngles.z));
-        
+
         data.AddRange(BitConverter.GetBytes(velocity.x));
         data.AddRange(BitConverter.GetBytes(velocity.y));
         data.AddRange(BitConverter.GetBytes(velocity.z));
@@ -232,10 +279,10 @@ public class CCC_Client
         data.AddRange(BitConverter.GetBytes(transform.localScale.z));
 
         packet.Data = data.ToArray();
-        
+
         client.Send(packet);
     }
-    
+
     public void SendCrouch(bool crouching)
     {
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_CROUTCH);

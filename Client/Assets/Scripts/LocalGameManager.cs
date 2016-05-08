@@ -19,6 +19,23 @@ public class LocalGameManager : MonoBehaviour
         spawns = new Transform[transform.childCount];
         for (int i = 0; i < transform.childCount; i++) spawns[i] = transform.GetChild(i);
         CCC_Client.Instance.OnPlayerJoin += ConnectOnlinePlayer;
+        CCC_Client.Instance.OnSync += OnSync;
+    }
+
+    private void OnSync(Dictionary<int, string> players)
+    {
+        foreach (KeyValuePair<int, string> s in players)
+        {
+            bool found = false;
+            foreach (OnlinePlayerInfo op in onlinePlayer)
+                if (s.Key == op.PlayerID)
+                { found = true; break; }
+
+            if (!found && s.Key != PlayerInfo.PlayerID)
+            {
+                ConnectOnlinePlayer(s.Key, s.Value);
+            }
+        }
     }
 
     void Update()

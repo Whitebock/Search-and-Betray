@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using WhiteNet.Server;
 
 namespace Server.NS_Model
@@ -16,6 +17,7 @@ namespace Server.NS_Model
         // Server 
         private WhiteNet.Server.Server server;
         private int port;
+        private Timer synctimer;
 
         // Game
         private List<CCC_Player> players;
@@ -30,6 +32,7 @@ namespace Server.NS_Model
         #region Delegates
 
         public delegate void PlayerEvent(CCC_Player player);
+        public delegate void DateTimeEvent(DateTime datetime);
 
         #endregion
 
@@ -38,6 +41,7 @@ namespace Server.NS_Model
         public event PlayerEvent PlayerConnected = delegate { };
         public event PlayerEvent PlayerMoved = delegate { };
         public event PlayerEvent PlayerDisconnected = delegate { };
+        public event DateTimeEvent Sync = delegate { };
 
         #endregion
 
@@ -68,6 +72,12 @@ namespace Server.NS_Model
             // Temp for testing
             gameRunning = false;
             players = new List<CCC_Player>();
+
+            synctimer = new Timer(10000);
+            synctimer.Elapsed += SendSync;
+            synctimer.Enabled = true;
+            synctimer.AutoReset = true;
+            
         }
         #endregion
 
@@ -75,11 +85,37 @@ namespace Server.NS_Model
         public void Start()
         {
             server.StartListener(port);
+            synctimer.Start();
         }
 
         public void Stop()
         {
             server.StopListener();
+            synctimer.Stop();
+        }
+
+        private void SendSync(object sender = null, ElapsedEventArgs e = null)
+        {
+            // Get sync table.
+            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.SYNC_TABLE);
+            List<byte> table = new List<byte>();
+            for (int i = 0; i < players.Count; i++)
+            {
+                byte[] serialize = players[i].Serialize();
+                UInt16 length = (UInt16)serialize.Length;
+
+                table.AddRange(BitConverter.GetBytes(length));
+                table.AddRange(serialize);
+            }
+            packet.Data = table.ToArray();
+
+            // Send to all players.
+            for (int i = 0; i < players.Count; i++)
+            {
+                players[i].Client.Send(packet);
+            }
+
+            Sync(DateTime.Now);
         }
         #endregion
 
@@ -167,10 +203,13 @@ namespace Server.NS_Model
                 // Check Whitelist.
 
                 // Check Blacklist.
-
-                client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK));
-
+                
                 CCC_Player player = new CCC_Player(client, players.Count + 1, username);
+
+                List<byte> loginresponse = new List<byte>();
+                loginresponse.Add(player.ID);
+                loginresponse.AddRange(Encoding.Unicode.GetBytes(player.Username));
+                client.Send(new CCC_Packet(CCC_Packet.Type.LOGIN_OK, loginresponse.ToArray()));
 
                 CCC_Packet joinPacket = new CCC_Packet(CCC_Packet.Type.PLAYER_JOIN);
                 List<byte> temp = new List<byte>();
@@ -190,6 +229,9 @@ namespace Server.NS_Model
 
                 player.Logout += Player_Logout;
                 player.TransformChanged += Player_TransformChanged;
+
+                // Sync
+                SendSync();
             }
             /**********************************************
              * Unknown Packet
@@ -210,19 +252,11 @@ namespace Server.NS_Model
 
             for (int i = 0; i < players.Count; i++)
             {
-                if (players[i].ID == player.ID)
-                {
+                if (players[i] == player)
                     players[i] = player;
-                }
-
-                try
-                {
-                    players[i].Client.Send(packet);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
+                else
+                    try { players[i].Client.Send(packet); }
+                    catch (Exception) { players.RemoveAt(i); }
             }
 
             PlayerMoved(player);
@@ -232,7 +266,7 @@ namespace Server.NS_Model
         {
             for (int i = 0; i < players.Count; i++)
             {
-                if (players[i].ID == player.ID)
+                if (players[i] == player)
                 {
                     players.RemoveAt(i);
                 }

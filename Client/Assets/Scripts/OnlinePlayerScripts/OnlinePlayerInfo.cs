@@ -59,7 +59,6 @@ public class OnlinePlayerInfo : MonoBehaviour
     // ---------------------- Netzwerkschnittstelle ----------------------
     private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale)
     {
-        Debug.Log("[SERVER] (" + playerid + ") moved. (" + PlayerID + ")");
         if (PlayerID != playerid) return;
 
         Dispatcher.Instance.Invoke(delegate ()
