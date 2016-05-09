@@ -155,7 +155,7 @@ public class PlayerInfo : MonoBehaviour
     public void Disconnect()
     {
         client.Disconnect();
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("MainMenu");
 	}
 	// ------------------------------------------------------------
 }

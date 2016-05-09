@@ -457,6 +457,11 @@ public class MainMenuManagment : MonoBehaviour
 		}
 	}
 
+	public void QuitGame()
+	{
+		Application.Quit();
+	}
+
 	public void ChangeMenuVolume(float volume)
 	{
 		ui_mainFX.volume = volume;
@@ -560,8 +565,8 @@ public class MainMenuManagment : MonoBehaviour
 			return new UIRespond(e.Message,ui_failed);
 		}
 
-		SceneManager.LoadScene("MapTest");
-		return new UIRespond(client.ToString());
+		SceneManager.LoadScene("Testscene");
+		return new UIRespond("CONNECTING");
 
 	}
 
