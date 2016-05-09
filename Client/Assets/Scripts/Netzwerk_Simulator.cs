@@ -7,8 +7,6 @@ using System.Collections;
  * der sich an dem event "NetzwerkStream" angemeldet hat.
  * Der letzte Parameter enthält Informationen (String in diesem Fall) und die ersten drei sind zur
  * erleichterten Bedienung.
- * 
- * "-1" bei -empfaenger- (2. Parameter) heiß "an alle".
  */
 
 public enum PackageType

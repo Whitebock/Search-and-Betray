@@ -40,6 +40,7 @@
                     <RowDefinition Height="30"></RowDefinition>
                     <RowDefinition Height="30"></RowDefinition>
                     <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
@@ -47,11 +48,13 @@
                 <Label Grid.Column="0" Grid.Row="1" Content="LocalAddress:"></Label>
                 <Label Grid.Column="0" Grid.Row="2" Content="PublicAddress:"></Label>
                 <Label Grid.Column="0" Grid.Row="3" Content="Running:"></Label>
+                <Label Grid.Column="0" Grid.Row="4" Content="Last Sync:"></Label>
 
                 <Label Grid.Column="1" Grid.Row="0" Content="{Binding Port}"></Label>
                 <Label Grid.Column="1" Grid.Row="1" Content="{Binding LocalAddress}"></Label>
                 <Label Grid.Column="1" Grid.Row="2" Content="{Binding PublicAddress}"></Label>
                 <Label Grid.Column="1" Grid.Row="3" Content="{Binding Running}"></Label>
+                <Label Grid.Column="1" Grid.Row="4" Content="{Binding LastSync}"></Label>
             </Grid>
         </Grid>
         

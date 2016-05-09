@@ -170,12 +170,11 @@ namespace WhiteNet.Client
 
                 DataReceived(packet);
 
-                if (tcpClient.Connected && reading)
-                    tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
-                else
-                    reading = false;
+                tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
             }
-            catch (Exception) { }
+            catch (Exception e) {
+                throw e;
+            }
         }
         #endregion
     }

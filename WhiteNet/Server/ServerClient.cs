@@ -42,13 +42,15 @@ namespace WhiteNet.Server
         #region Events
 
         public event ByteEvent DataReceived = delegate { };
+        public event ByteEvent Timeout = delegate { };
 
         #endregion
 
         #region Constructors
         public ServerClient(TcpClient tcp)
         {
-            this.tcpClient = tcp;
+            tcpClient = tcp;
+            tcpClient.ReceiveTimeout = 500;
             IPEndPoint endpoint = (IPEndPoint)tcp.Client.LocalEndPoint;
             address = endpoint.Address;
 
@@ -86,7 +88,6 @@ namespace WhiteNet.Server
                 throw new Exception("Already reading");
             reading = true;
             tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, tcpClient);
-            Console.WriteLine("STARTED_READ");
         }
         public void EndRead()
         {
@@ -120,23 +121,32 @@ namespace WhiteNet.Server
         #region Thread Methodes
         private void OnRead(IAsyncResult result)
         {
-                Stream s = tcpClient.GetStream();
-
+            Stream s = tcpClient.GetStream();
+            byte[] packet = new byte[0];
+            try
+            {
                 // Get the header (length of the packet).
                 byte[] header = new byte[2];
                 s.Read(header, 0, 2);
                 UInt16 length = BitConverter.ToUInt16(header, 0);
 
                 // Now read the actual data.
-                byte[] packet = new byte[length];
+                packet = new byte[length];
                 s.Read(packet, 0, length);
+            }
+            catch (IOException)
+            {
+                // Timeout.
+                EndRead();
+                return;
+            }
 
-                DataReceived(packet);
+            DataReceived(packet);
 
-                if (tcpClient.Connected && reading)
-                    tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
-                else
-                    reading = false;
+            if (tcpClient.Connected && reading)
+                tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
+            else
+                reading = false;
         }
         #endregion
 

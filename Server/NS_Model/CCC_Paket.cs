@@ -13,7 +13,7 @@ namespace Server.NS_Model
         /// Version needs to be updated if there were changes
         /// to the protocol, to inform the client/server
         /// </summary>
-        public static byte Version { get { return 5; } }
+        public static byte Version { get { return 6; } }
 
         /*
         ----------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace Server.NS_Model
         Login
         |   ->      | LOGIN                     | username
 
-        |   <-      | LOGIN_OK                  |
+        |   <-      | LOGIN_OK                  | id, username
         |           | USERNAME_TAKEN            |
         |           | USERNAME_INVALID          |
         |           | GAME_FULL                 |
@@ -43,7 +43,7 @@ namespace Server.NS_Model
 
         Game -> Player
         |   <-      | PLAYER_JOIN               | id, username
-        |   <-      | PLAYER_TABLE              | array with all player objects (position, orientation, etc.)
+        |   <-      | SYNC_TABLE                | array with all objects
         |   <-      | PLAYER_UPDATE             | position, rotation, scale
         |   ->      | PLAYER_MOVE               | position, rotation, scale
         |   ->      | PLAYER_CROUTCH            | bool
@@ -87,7 +87,7 @@ namespace Server.NS_Model
 
             //Game -> Player
             PLAYER_JOIN = 80,
-            PLAYER_TABLE,
+            SYNC_TABLE,
             PLAYER_UPDATE,
             PLAYER_MOVE,
             PLAYER_CROUTCH,

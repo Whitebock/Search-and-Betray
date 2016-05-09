@@ -11,7 +11,7 @@ public class CCC_Packet
     /// Version needs to be updated if there were changes
     /// to the protocol, to inform the client/server
     /// </summary>
-    public static byte Version { get { return 5; } }
+    public static byte Version { get { return 6; } }
 
     /*
     ----------------------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ public class CCC_Packet
     Login
     |   ->      | LOGIN                     | username
 
-    |   <-      | LOGIN_OK                  |
+    |   <-      | LOGIN_OK                  | id, username
     |           | USERNAME_TAKEN            |
     |           | USERNAME_INVALID          |
     |           | GAME_FULL                 |
@@ -41,7 +41,7 @@ public class CCC_Packet
 
     Game -> Player
     |   <-      | PLAYER_JOIN               | id, username
-    |   <-      | PLAYER_TABLE              | array with all player objects (position, orientation, etc.)
+    |   <-      | SYNC_TABLE                | array with all objects
     |   <-      | PLAYER_UPDATE             | position, rotation, scale
     |   ->      | PLAYER_MOVE               | position, rotation, scale
     |   ->      | PLAYER_CROUTCH            | bool
@@ -85,7 +85,7 @@ public class CCC_Packet
 
         //Game -> Player
         PLAYER_JOIN = 80,
-        PLAYER_TABLE,
+        SYNC_TABLE,
         PLAYER_UPDATE,
         PLAYER_MOVE,
         PLAYER_CROUTCH,
@@ -153,6 +153,10 @@ public class CCC_Packet
 
     public static implicit operator CCC_Packet(byte[] packet)
     {
+        if (packet.Length == 0)
+        {
+            return new CCC_Packet(Type.LOGOUT);
+        }
         Type type = (Type)packet[0];
         byte[] data = packet.Skip(1).ToArray();
         CCC_Packet d = new CCC_Packet(type, data);

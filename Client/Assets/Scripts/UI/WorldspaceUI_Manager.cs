@@ -13,12 +13,12 @@ public class WorldspaceUI_Manager : MonoBehaviour
 	// UI-Prefab das erzeugt wird.
 	public Transform onlinePlayerUI;
 
-	public void MakeUI(Transform newPlayer)
+	public OnlinePlayerUI_Manager MakeUI(Transform newPlayer)
 	{
 		if (onlinePlayerUI == null)
 		{
 			Debug.Log("Kein PlayerUI-Prefab gefunden!");
-			return;
+			return null;
 		}
 
 		// UI erzeugen
@@ -28,6 +28,10 @@ public class WorldspaceUI_Manager : MonoBehaviour
 		newUI.SetParent(transform, false);
 
 		// UI dem Spieler zuweisen, dessen Informationen angezeigt werden sollen.
-		newUI.GetComponentInChildren<OnlinePlayerUI_Manager>().OnlinePlayer = newPlayer;
+		OnlinePlayerUI_Manager manager = newUI.GetComponent<OnlinePlayerUI_Manager>();
+		manager.OnlinePlayer = newPlayer;
+
+		// UI als Referenz zurückgeben
+		return manager;
 	}
 }

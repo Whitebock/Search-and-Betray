@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,31 +71,45 @@
     <Reference Include="WhiteNet">
       <HintPath>Assets\Scripts\Network\WhiteNet.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>Assets\Scripts\Network\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\AnimatorPlayer.cs" />
-    <Compile Include="Assets\Scripts\MainCameraMenager.cs" />
-    <Compile Include="Assets\Scripts\MouseLook.cs" />
+    <Compile Include="Assets\Animation\Player\AnimatorPlayer.cs" />
+    <Compile Include="Assets\Animation\WeaponPos\AnimatorWeaponPos.cs" />
+    <Compile Include="Assets\Scripts\Items\CollectableBase.cs" />
+    <Compile Include="Assets\Scripts\Items\CollectableWeapon.cs" />
+    <Compile Include="Assets\Scripts\Items\Weapon.cs" />
+    <Compile Include="Assets\Scripts\LocalGameManager.cs" />
+    <Compile Include="Assets\Scripts\MainCameraScripts\FreeCameraMovement.cs" />
+    <Compile Include="Assets\Scripts\MainCameraScripts\MainCameraManager.cs" />
+    <Compile Include="Assets\Scripts\MainCameraScripts\MouseLook.cs" />
+    <Compile Include="Assets\Scripts\MainCameraScripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Client.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Packet.cs" />
     <Compile Include="Assets\Scripts\Network\ConnectMenu.cs" />
+    <Compile Include="Assets\Scripts\Network\Dispatcher.cs" />
+    <Compile Include="Assets\Scripts\Network\UnityTextWriter.cs" />
     <Compile Include="Assets\Scripts\Netzwerk_Simulator.cs" />
-    <Compile Include="Assets\Scripts\OnlinePlayerScripts\DemageHandler.cs" />
+    <Compile Include="Assets\Scripts\OnlinePlayerScripts\DamageHandler.cs" />
     <Compile Include="Assets\Scripts\OnlinePlayerScripts\OnlinePlayerInfo.cs" />
     <Compile Include="Assets\Scripts\OnlinePlayerScripts\PosAdjust_OnlinePlayer_Crouch.cs" />
     <Compile Include="Assets\Scripts\OnlinePlayerScripts\PosAdjust_OnlinePlayer_NotGrounded.cs" />
+    <Compile Include="Assets\Scripts\PlayerScripts\CharacterPickUp.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\CrouchHandling.cs" />
+    <Compile Include="Assets\Scripts\PlayerScripts\FireWeapon.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\Jumping.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\Movement.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PlayerInfo.cs" />
     <Compile Include="Assets\Scripts\PlayerScripts\PosAdjust_Player_Crouch.cs" />
+    <Compile Include="Assets\Scripts\PlayerScripts\WeaponHinge.cs" />
     <Compile Include="Assets\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Scripts\PropOffGround.cs" />
-    <Compile Include="Assets\Scripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
-    <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Menager.cs" />
+    <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Manager.cs" />
     <Compile Include="Assets\Scripts\UI\Player_UI_Tools.cs" />
-    <Compile Include="Assets\Scripts\UI\WorldspaceUI_Menager.cs" />
+    <Compile Include="Assets\Scripts\UI\WorldspaceUI_Manager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

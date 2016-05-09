@@ -28,6 +28,7 @@ namespace Server.NS_ViewModel
         private IPAddress publicAddress;
         private int port;
         private bool running;
+        private DateTime lastSync;
 
         private CCC_Server server;
         #endregion
@@ -69,6 +70,11 @@ namespace Server.NS_ViewModel
             get { return running; }
             set { running = value; OnPropertyChanged(); }
         }
+        public DateTime LastSync
+        {
+            get { return lastSync; }
+            set { lastSync = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Events
@@ -88,12 +94,19 @@ namespace Server.NS_ViewModel
             LocalAddress = IPUtils.GetLocalAddress();
             PublicAddress = IPUtils.GetPublicAddress();
             Running = false;
+            LastSync = DateTime.MinValue;
             startCommand = new RelayCommand(OnStartExecuted, OnStartCanExecute);
             stopCommand = new RelayCommand(OnStopExecuted, OnStopCanExecute);
             
             server.PlayerConnected += OnClientConnect;
             server.PlayerDisconnected += OnClientDisconnect;
             server.PlayerMoved += OnPlayerMove;
+            server.Sync += Server_Sync;
+        }
+
+        private void Server_Sync(DateTime datetime)
+        {
+            LastSync = datetime;
         }
 
         #endregion
@@ -102,7 +115,7 @@ namespace Server.NS_ViewModel
         private void OnClientDisconnect(CCC_Player player)
         {
             PlayerData p = ConvertPlayerData(player);
-
+            
             for (int i = 0; i < clients.Count; i++)
             {
                 if (clients[i].ID == p.ID)
@@ -206,6 +219,7 @@ namespace Server.NS_ViewModel
             try
             {
                 server.Stop();
+                Clients.Clear();
                 Running = false;
             }
             catch (Exception)

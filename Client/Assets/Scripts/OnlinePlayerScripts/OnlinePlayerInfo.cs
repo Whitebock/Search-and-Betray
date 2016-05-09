@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Network;
 
 public class OnlinePlayerInfo : MonoBehaviour
 {
@@ -14,18 +15,21 @@ public class OnlinePlayerInfo : MonoBehaviour
 	private string playerName = "Test-Spieler";		// Spielername
 	private bool isCrouching;						// Ob Spieler gerade geduckt ist
 
+	private OnlinePlayerUI_Manager uiManager;		// Spieler-UI
 	private AnimatorPlayer anim;					// Animationen
 	private bool isGrounded;						// Ob spieler Bodenkontackt hat
 	public DamageHandler bodyDamageHandler;			// Refferenz auf die Hitbox, die mit einer Brustpanzerung geschützt werden kann.
 
-	// Testvariablen
-	public Vector3 posOffset = new Vector3(30f, 0f, 0f);	// Wo der Spieler statt der echten Position sein soll (nur zum testen!)
+	// ----- Testvariablen -----
+	// Wo der Spieler statt der echten Position sein soll (für Testzwecke)
+	public Vector3 posOffset = new Vector3(0f, 0f, 0f);
+	// -------------------------
 
 	// Properties
 	public int PlayerID
-	{ get { return playerID; } }
+	{ get { return playerID; } set { playerID = value; } }
 	public string PlayerName
-	{ get { return playerName; } }
+	{ get { return playerName; } set { playerName = value; if (uiManager) uiManager.UpdateValues(); } }
 	public bool IsCrouching
 	{ get { return isCrouching; } }
 	public bool IsGrounded
@@ -34,58 +38,44 @@ public class OnlinePlayerInfo : MonoBehaviour
 	void Start()
 	{
 		// Objekt umbenennen
-		transform.name += "_" + playerName;
+		transform.name = "OnlinePlayer_" + playerName;
 
-		// Initialisierungen
+		// Animator initialisieren
 		anim = new AnimatorPlayer(GetComponentInChildren<Animator>());
 
 		// UI initialisieren (und ggf. Fehler abfangen)
 		GameObject x = GameObject.Find("WorldspaceUIs");
-		if (x != null) x.GetComponent<WorldspaceUI_Manager>().MakeUI(transform);
-		else Debug.Log("Objekt \"WorldspaceUIs\" not found!");
+		if (x != null) uiManager = x.GetComponent<WorldspaceUI_Manager>().MakeUI(transform);
+		else Debug.LogError("GAME: Objekt \"WorldspaceUIs\" not found!\nOnline player information (such as nickname) will not be displayed.");
 
-		// GitHub Test
-		// asgaer
+		// SpectatorKamera initialisieren
+		GameObject.Find("MainCamera").GetComponent<MainCameraManager>().UpdateCams();
 
-		// ------------------ Simulierte Netzwerkschnittstelle ------------------
-		Netzwerk_Simulator.NetzwerkStream += Stream;
-		// ----------------------------------------------------------------------
-	}
+        // ---------------------- Netzwerkschnittstelle ----------------------
+        CCC_Client.Instance.OnPlayerUpdate += OnPlayerUpdate;
+		// -------------------------------------------------------------------
+	}    
 
-	// ------------------ Simulierte Netzwerkschnittstelle ------------------
-	// Daten auspacken und nutzen
-	void Stream(int sender, int empfaenger, PackageType typ, string info)
+    // ---------------------- Netzwerkschnittstelle ----------------------
+    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale)
+    {
+        if (PlayerID != playerid) return;
+
+        Dispatcher.Instance.Invoke(delegate ()
+        {
+            transform.position = position;
+            transform.rotation = rotation;
+            transform.localScale = scale;
+
+            anim.Speed_straight = Mathf.Lerp(anim.Speed_straight, velocity.z, 0.6f);
+            anim.Speed_sideways = Mathf.Lerp(anim.Speed_sideways, velocity.x, 0.6f);
+        });
+    }
+    void OnDestroy()
 	{
-		string[] msg = info.Split(new char[]{ ',' });
-		float[] hilf = new float[msg.Length];
-		for(int i = 0; i < msg.Length; i++) float.TryParse(msg[i], out hilf[i]);
-
-		switch(typ)
-		{
-		case PackageType.Position:	// Positionsdaten
-			transform.position = new Vector3(hilf[0] + posOffset.x, hilf[1] + posOffset.y, hilf[2] + posOffset.z);
-			break;
-		case PackageType.Rotation:	// Ausrichtung empfangen
-			transform.rotation = new Quaternion(hilf[0], hilf[1], hilf[2], hilf[3]);
-			break;
-		case PackageType.Crouch:	// Ob Spieler geduckt ist
-			if (info == "true") isCrouching = true;
-			else isCrouching = false;
-			break;
-		case PackageType.Velocity:	// Ob Spieler geduckt ist
-			anim.Speed_straight = Mathf.Lerp(anim.Speed_straight, hilf[2], 0.6f);
-			anim.Speed_sideways = Mathf.Lerp(anim.Speed_sideways, hilf[0], 0.6f);
-			break;
-		case PackageType.Granade:
-			anim.Throw();
-			break;
-		}
-	}
-	void OnDestroy()
-	{
-		Netzwerk_Simulator.NetzwerkStream -= Stream;
-	}
-	// ----------------------------------------------------------------------
+        CCC_Client.Instance.OnPlayerUpdate -= OnPlayerUpdate;
+    }
+	// -------------------------------------------------------------------
 
 	void Update()
 	{

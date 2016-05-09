@@ -40,3 +40,17 @@ H:\#PRG\Combat-in-Candahar-City-Server-Login\Server\obj\Debug\NS_View\View.baml
 H:\#PRG\Combat-in-Candahar-City-Server-Login\Server\obj\Debug\Server.g.resources
 H:\#PRG\Combat-in-Candahar-City-Server-Login\Server\obj\Debug\Server.Properties.Resources.resources
 H:\#PRG\Combat-in-Candahar-City-Server-Login\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+D:\Server\bin\Debug\Server.exe.config
+D:\Server\obj\Debug\Server.exe
+D:\Server\obj\Debug\Server.pdb
+D:\Server\bin\Debug\Server.exe
+D:\Server\bin\Debug\Server.pdb
+D:\Server\bin\Debug\WhiteNet.dll
+D:\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+D:\Server\obj\Debug\NS_View\View.g.cs
+D:\Server\obj\Debug\Server_MarkupCompile.cache
+D:\Server\obj\Debug\Server_MarkupCompile.lref
+D:\Server\obj\Debug\NS_View\View.baml
+D:\Server\obj\Debug\Server.g.resources
+D:\Server\obj\Debug\Server.Properties.Resources.resources
+D:\Server\obj\Debug\Server.csproj.GenerateResource.Cache

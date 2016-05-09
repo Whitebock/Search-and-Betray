@@ -111,6 +111,9 @@
     <Reference Include="WhiteNet">
       <HintPath>Assets\Scripts\Network\WhiteNet.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>Assets\Scripts\Network\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Client.CSharp.csproj">

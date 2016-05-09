@@ -85,6 +85,7 @@ namespace Server.NS_Model
             CCC_Packet response = data;
             if (response.Flag == CCC_Packet.Type.PLAYER_MOVE)
             {
+
                 byte[] posbytes = response.Data.Skip(0).Take(12).ToArray();
                 byte[] rotbytes = response.Data.Skip(12).Take(12).ToArray();
                 byte[] velbytes = response.Data.Skip(24).Take(12).ToArray();
@@ -103,15 +104,21 @@ namespace Server.NS_Model
             }
         }
         #endregion
-        public byte[] Serialize ()
+        public byte[] Serialize()
         {
+            // Biggest packet size
+            // 4 + 48 + Username
+
             List<byte> temp = new List<byte>();
 
             // Player stats.
             temp.Add(ID);
+            /*
+            
             temp.Add(TeamID);
             temp.Add(Health);
             temp.Add(Armour);
+            */
 
             // Player transform.
             byte[] pos = Position;
@@ -127,6 +134,15 @@ namespace Server.NS_Model
             temp.AddRange(Encoding.Unicode.GetBytes(Username));
 
             return temp.ToArray();
+        }
+
+        public static bool operator ==(CCC_Player p1, CCC_Player p2)
+        {
+            return p1.ID == p2.ID;
+        }
+        public static bool operator !=(CCC_Player p1, CCC_Player p2)
+        {
+            return p1.ID != p2.ID;
         }
 
         public override string ToString()
