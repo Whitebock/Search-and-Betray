@@ -50,6 +50,8 @@ public class MainMenuManagment : MonoBehaviour
 	public Slider ui_PreferencesVolume;
 	public Toggle ui_PreferencesFullscreen;
 
+	private bool onChange = false;
+
 	// Use this for initialization
 	/// <summary>
 	/// Start this instance.
@@ -62,6 +64,7 @@ public class MainMenuManagment : MonoBehaviour
 		Player_SetValidationsOnInput();
 		Player_PrepareUI();
 		Preferences_PrepareUI();
+		onChange = true;
 	}
 
 	/// <summary>
@@ -328,29 +331,41 @@ public class MainMenuManagment : MonoBehaviour
 
 	public void Preferences_SelectResolution(Int32 value)
 	{
-		//Screen.SetResolution(Screen.resolutions[value].width,Screen.resolutions[value].width,Screen.fullScreen);
-		PlayChangeFX();
-		Debug.Log("Resolution :" + Screen.resolutions[value].width + "x" + Screen.resolutions[value].width);
+		if (onChange) 
+		{
+			Screen.SetResolution(Screen.resolutions[value].width,Screen.resolutions[value].width,Screen.fullScreen);
+			PlayChangeFX();
+			Debug.Log("Resolution :" + Screen.resolutions[value].width + "x" + Screen.resolutions[value].width);
+		}
 	}
 
 	public void Preferences_SelectQuality(Int32 value)
 	{
-		QualitySettings.SetQualityLevel(value);
-		PlayChangeFX();
-		Debug.Log("Quality: " + QualitySettings.names[value]);
+		if (onChange) 
+		{
+			QualitySettings.SetQualityLevel(value);
+			PlayChangeFX();
+			Debug.Log("Quality: " + QualitySettings.names[value]);
+		}
 	}
 
 	public void Preferences_SelectVolume(Single value)
 	{
-		ChangeMenuVolume(ui_PreferencesVolume.value);
-		PlayChangeFX();
+		if (onChange) 
+		{
+			ChangeMenuVolume(ui_PreferencesVolume.value);
+			PlayChangeFX();
+		}
 	}
 
 	public void Preferences_ToggleFullscreen(bool full)
 	{
-		Screen.fullScreen = full;
-		Debug.Log("Fullscreen: " + full);
-		PlayChangeFX();
+		if (onChange) 
+		{
+			Screen.fullScreen = full;
+			Debug.Log("Fullscreen: " + full);
+			PlayChangeFX();
+		}
 	}
 
 	public void Preferences_Save()
@@ -395,40 +410,6 @@ public class MainMenuManagment : MonoBehaviour
 		{
 			ChangeMenuVolume(PlayerPrefs.GetFloat("MainVolume"));
 		}
-
-		//Screen Resolution
-		if (PlayerPrefs.HasKey("ResolutionWidth") && PlayerPrefs.HasKey("ResolutionHeight"))
-		{
-			//Screen.SetResolution(PlayerPrefs.GetInt("ResolutionWidth"),PlayerPrefs.GetInt("ResolutionHeight"),Screen.fullScreen);
-		}
-		else
-		{
-			PlayerPrefs.SetInt("ResolutionWidth",Screen.currentResolution.width);
-			PlayerPrefs.SetInt("ResolutionHeight",Screen.currentResolution.height);
-		}
-
-		//Screen Quality
-		if (PlayerPrefs.HasKey("MainQuality")) 
-		{
-			QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("MainQuality"));
-		}
-		else
-		{
-			PlayerPrefs.SetInt("MainQuality",QualitySettings.GetQualityLevel());
-		}
-
-		//Fullscreen
-		if (PlayerPrefs.HasKey("Fullscreen")) 
-		{
-			Screen.fullScreen = Convert.ToBoolean(PlayerPrefs.GetString("Fullscreen"));
-		}
-		else
-		{
-			Screen.fullScreen = true;
-			PlayerPrefs.SetString("Fullscreen","true");
-		}
-
-
 	}
 
 	public void OpenTab()
