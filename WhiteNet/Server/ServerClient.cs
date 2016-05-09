@@ -50,7 +50,7 @@ namespace WhiteNet.Server
         public ServerClient(TcpClient tcp)
         {
             tcpClient = tcp;
-            tcpClient.ReceiveTimeout = 500;
+            tcpClient.ReceiveTimeout = 1000;
             IPEndPoint endpoint = (IPEndPoint)tcp.Client.LocalEndPoint;
             address = endpoint.Address;
 
@@ -137,6 +137,7 @@ namespace WhiteNet.Server
             catch (IOException)
             {
                 // Timeout.
+                Timeout(new byte[0]);
                 EndRead();
                 return;
             }

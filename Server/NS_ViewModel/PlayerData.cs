@@ -13,6 +13,7 @@ namespace Server.NS_ViewModel
         public int Armour { get; set; }
         public int TeamID { get; set; }
         public string Username { get; set; }
+        public bool Crouching { get; set; }
 
         public Vector3 Scale { get; set; }
         public Vector3 Rotation { get; set; }

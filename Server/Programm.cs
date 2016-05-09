@@ -2,6 +2,7 @@
 using Server.NS_View;
 using Server.NS_ViewModel;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace Server
@@ -11,6 +12,13 @@ namespace Server
         [STAThread]
         static void Main(string[] args)
         {
+            // Check for required DLL.
+            if (!File.Exists("WhiteNet.dll"))
+            {
+                MessageBox.Show("Missing WhiteNet.dll");
+                return;
+            }
+
             // Check Arguments.
             bool gui = false;
             foreach (string argument in args)

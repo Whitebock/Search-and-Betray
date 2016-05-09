@@ -1,17 +1,11 @@
 ﻿using Server.NS_Model;
-using Server.NS_Utils;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using WhiteNet;
-using WhiteNet.Server;
 
 
 namespace Server.NS_ViewModel
@@ -101,6 +95,7 @@ namespace Server.NS_ViewModel
             server.PlayerConnected += OnClientConnect;
             server.PlayerDisconnected += OnClientDisconnect;
             server.PlayerMoved += OnPlayerMove;
+            server.PlayerCrouch += OnPlayerCrouch;
             server.Sync += Server_Sync;
         }
 
@@ -116,17 +111,17 @@ namespace Server.NS_ViewModel
         {
             PlayerData p = ConvertPlayerData(player);
             
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < Clients.Count; i++)
             {
-                if (clients[i].ID == p.ID)
+                if (Clients[i].ID == p.ID)
                 {
                     // This code is required because it is not possible to edit 
                     // an ObservableCollection outside the UI thread.
                     if (Application.Current != null)
                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
-                        { clients.RemoveAt(i); });
+                        { Clients.RemoveAt(i); });
                     else
-                        clients.RemoveAt(i);
+                        Clients.RemoveAt(i);
 
                     break;
                 }
@@ -143,9 +138,9 @@ namespace Server.NS_ViewModel
             // an ObservableCollection outside the UI thread.
             if (Application.Current != null)
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
-                { clients.Add(p); });
+                { Clients.Add(p); });
             else
-                clients.Add(p);
+                Clients.Add(p);
 
             PlayerConnected(p);
         }
@@ -154,22 +149,42 @@ namespace Server.NS_ViewModel
         {
             PlayerData p = ConvertPlayerData(player);
             
-            for (int i = 0; i < clients.Count; i++)
+            for (int i = 0; i < Clients.Count; i++)
             {
-                if (clients[i].ID == p.ID)
+                if (Clients[i].ID == p.ID)
                 {
                     // This code is required because it is not possible to edit 
                     // an ObservableCollection outside the UI thread.
                     if (Application.Current != null)
                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
-                        { clients[i] = p; });
+                        { Clients[i] = p; });
                     else
-                        clients[i] = p;
+                        Clients[i] = p;
 
                     break;
                 }
             }
             PlayerMoved(p);
+        }
+        private void OnPlayerCrouch(CCC_Player player)
+        {
+            PlayerData p = ConvertPlayerData(player);
+
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                if (Clients[i].ID == p.ID)
+                {
+                    // This code is required because it is not possible to edit 
+                    // an ObservableCollection outside the UI thread.
+                    if (Application.Current != null)
+                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
+                        { Clients[i] = p; });
+                    else
+                        Clients[i] = p;
+
+                    break;
+                }
+            }
         }
         #endregion
 
@@ -183,6 +198,7 @@ namespace Server.NS_ViewModel
             p.Username = player.Username;
             p.Health = player.Health;
             p.Armour = player.Armour;
+            p.Crouching = player.Crouching;
 
             PlayerData.Vector3 pos = new PlayerData.Vector3();
             pos.X = player.Position.X;

@@ -20,47 +20,44 @@ public class CCC_Client
 
     private struct DeserializedPlayer
     {
-        public int ID { get; set; }
-        public int TeamID { get; set; }
-        public int Health { get; set; }
-        public int Armour { get; set; }
-        public Vector3 Position { get; set; }
-        public Quaternion Rotation { get; set; }
-        public Vector3 Velocity { get; set; }
-        public Vector3 Scale { get; set; }
-        public string Username { get; set; }
+        public int ID, TeamID, Health, Armour;
+        public bool Crouching;
+        public Vector3 Position, Velocity, Scale;
+        public Quaternion Rotation;
+        public string Username;
         public DeserializedPlayer(byte[] serializedData)
         {
             ID = serializedData[0];
-            TeamID = 0;
-            Health = 0;
-            Armour = 0;
+            TeamID = serializedData[1];
+            Health = serializedData[2];
+            Armour = serializedData[3];
+            Crouching = BitConverter.ToBoolean(serializedData, 4);
 
             Vector3 pos = new Vector3();
-            pos.x = BitConverter.ToSingle(serializedData, 1);
-            pos.y = BitConverter.ToSingle(serializedData, 5);
-            pos.z = BitConverter.ToSingle(serializedData, 9);
+            pos.x = BitConverter.ToSingle(serializedData, 5);
+            pos.y = BitConverter.ToSingle(serializedData, 9);
+            pos.z = BitConverter.ToSingle(serializedData, 13);
             Position = pos;
             
             Vector3 rot = new Vector3();
-            rot.x = BitConverter.ToSingle(serializedData, 13);
-            rot.y = BitConverter.ToSingle(serializedData, 17);
-            rot.z = BitConverter.ToSingle(serializedData, 21);
+            rot.x = BitConverter.ToSingle(serializedData, 17);
+            rot.y = BitConverter.ToSingle(serializedData, 21);
+            rot.z = BitConverter.ToSingle(serializedData, 25);
             Rotation = Quaternion.Euler(rot);
 
             Vector3 vel = new Vector3();
-            vel.x = BitConverter.ToSingle(serializedData, 25);
-            vel.y = BitConverter.ToSingle(serializedData, 29);
-            vel.z = BitConverter.ToSingle(serializedData, 33);
+            vel.x = BitConverter.ToSingle(serializedData, 29);
+            vel.y = BitConverter.ToSingle(serializedData, 33);
+            vel.z = BitConverter.ToSingle(serializedData, 37);
             Velocity = vel;
 
             Vector3 scl = new Vector3();
-            scl.x = BitConverter.ToSingle(serializedData, 37);
-            scl.y = BitConverter.ToSingle(serializedData, 41);
-            scl.z = BitConverter.ToSingle(serializedData, 45);
+            scl.x = BitConverter.ToSingle(serializedData, 41);
+            scl.y = BitConverter.ToSingle(serializedData, 45);
+            scl.z = BitConverter.ToSingle(serializedData, 49);
             Scale = scl;
 
-            byte[] ubytes = serializedData.Skip(49).ToArray();
+            byte[] ubytes = serializedData.Skip(53).ToArray();
             Username = Encoding.Unicode.GetString(ubytes);
         }
     }
@@ -86,7 +83,7 @@ public class CCC_Client
 
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
-    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale);
+    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching);
 
     #endregion
 
@@ -115,7 +112,7 @@ public class CCC_Client
         if (packet.Flag == CCC_Packet.Type.PLAYER_JOIN)
         {
             int playerid = packet.Data[0];
-            string username = packet.GetString(1);
+            string username = Encoding.Unicode.GetString(packet.Data.Skip(1).ToArray());
 
             OnPlayerJoin(playerid, username);
         }
@@ -123,9 +120,9 @@ public class CCC_Client
         {
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
-            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale);
+            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching);
         }
-        else if (packet.Flag == CCC_Packet.Type.SYNC_TABLE)
+        else if (packet.Flag == CCC_Packet.Type.SYNC)
         {
             Dictionary<int, string> syncdata = new Dictionary<int, string>();
             int i = 0;
@@ -139,7 +136,7 @@ public class CCC_Client
                     DeserializedPlayer d = new DeserializedPlayer(serialized);
 
                     syncdata.Add(d.ID, d.Username);
-                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale);
+                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching);
 
                     i += serialized.Length;
 
@@ -177,7 +174,7 @@ public class CCC_Client
         // Disconnect.
         client.Disconnect();
 
-        string temp = response.GetString();
+        string temp = Encoding.Unicode.GetString(response.Data);
         return temp.Split(';');
     }
 
@@ -250,8 +247,8 @@ public class CCC_Client
 
     public void Disconnect()
     {
-        client.Send(new CCC_Packet(CCC_Packet.Type.LOGOUT));
         client.EndRead();
+        client.Send(new CCC_Packet(CCC_Packet.Type.LOGOUT));
         client.Disconnect();
     }
     #endregion
@@ -285,7 +282,7 @@ public class CCC_Client
 
     public void SendCrouch(bool crouching)
     {
-        CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_CROUTCH);
+        CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_CROUCH);
         packet.Data = BitConverter.GetBytes(crouching);
 
         client.Send(packet);
@@ -299,7 +296,7 @@ public class CCC_Client
         if (amount > 255)
             amount = byte.MaxValue;
 
-        CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SEND_DAMAGE);
+        CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SHOOT);
         packet.Data = new byte[2];
         packet.Data[0] = (byte)playerid;
         packet.Data[1] = (byte)amount;

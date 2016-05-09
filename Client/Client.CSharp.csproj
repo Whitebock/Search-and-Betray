@@ -80,6 +80,7 @@
     <Compile Include="Assets\Animation\WeaponPos\AnimatorWeaponPos.cs" />
     <Compile Include="Assets\Scripts\Items\CollectableBase.cs" />
     <Compile Include="Assets\Scripts\Items\CollectableWeapon.cs" />
+    <Compile Include="Assets\Scripts\Items\Tracer.cs" />
     <Compile Include="Assets\Scripts\Items\Weapon.cs" />
     <Compile Include="Assets\Scripts\LocalGameManager.cs" />
     <Compile Include="Assets\Scripts\MainCameraScripts\FreeCameraMovement.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Assets\Scripts\MainCameraScripts\SpectatorCollide.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Client.cs" />
     <Compile Include="Assets\Scripts\Network\CCC_Packet.cs" />
-    <Compile Include="Assets\Scripts\Network\ConnectMenu.cs" />
     <Compile Include="Assets\Scripts\Network\Dispatcher.cs" />
     <Compile Include="Assets\Scripts\Network\UnityTextWriter.cs" />
     <Compile Include="Assets\Scripts\Netzwerk_Simulator.cs" />
@@ -106,9 +106,15 @@
     <Compile Include="Assets\Scripts\PlayerScripts\WeaponHinge.cs" />
     <Compile Include="Assets\Scripts\PositionAdjust.cs" />
     <Compile Include="Assets\Scripts\PropOffGround.cs" />
+    <Compile Include="Assets\Scripts\ShiftMovement.cs" />
+    <Compile Include="Assets\Scripts\UI\FX\Loader.cs" />
+    <Compile Include="Assets\Scripts\UI\FX\SceneFading.cs" />
+    <Compile Include="Assets\Scripts\UI\FX\Splash.cs" />
     <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
+    <Compile Include="Assets\Scripts\UI\MainMenuManagment.cs" />
     <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Manager.cs" />
     <Compile Include="Assets\Scripts\UI\Player_UI_Tools.cs" />
+    <Compile Include="Assets\Scripts\UI\UISoundControl.cs" />
     <Compile Include="Assets\Scripts\UI\WorldspaceUI_Manager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

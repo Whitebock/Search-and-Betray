@@ -25,8 +25,8 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Start Server" Command="{Binding Path=StartCommand}"/>
-                <Button Grid.Column="1" Content="Stop Server" Command="{Binding Path=StopCommand}"></Button>
+                <Button Grid.Column="0" Content="Start Server" Command="{Binding Path=StartCommand}" Background="White" Margin="1"/>
+                <Button Grid.Column="1" Content="Stop Server" Command="{Binding Path=StopCommand}" Background="White" Margin="1"/>
             </Grid>
 
             <Grid Grid.Row="1">
@@ -81,7 +81,7 @@
                 </TabItem>
                 
                 <TabItem Header="Transforms">
-                    <DataGrid ItemsSource="{Binding Path=Clients}" AutoGenerateColumns="False">
+                    <DataGrid ItemsSource="{Binding Path=Clients}" AutoGenerateColumns="False" Background="White">
                         <DataGrid.Columns>
                             
                             <!--Position-->
@@ -160,11 +160,12 @@
                 </TabItem>
                 
                 <TabItem Header="Stats">
-                    <DataGrid ItemsSource="{Binding Clients}" AutoGenerateColumns="False">
+                    <DataGrid ItemsSource="{Binding Clients}" AutoGenerateColumns="False" Background="White">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Team" Binding="{Binding TeamID}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Health" Binding="{Binding Health}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Armour" Binding="{Binding Armour}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Crouching" Binding="{Binding Crouching}"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
@@ -176,8 +177,8 @@
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Kick"></Button>
-                <Button Grid.Column="1" Content="Ban"></Button>
+                <Button Grid.Column="0" Content="Kick" Background="White" Margin="1"/>
+                <Button Grid.Column="1" Content="Ban" Background="White" Margin="1"/>
             </Grid>
         </Grid>
     </Grid>

@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Text;
 using UnityEngine.SceneManagement;
+using WhiteNet;
 
 public class MainMenuManagment : MonoBehaviour 
 {
@@ -65,6 +66,9 @@ public class MainMenuManagment : MonoBehaviour
 		Player_PrepareUI();
 		Preferences_PrepareUI();
 		onChange = true;
+
+        ui_connectionIpAdress.text = IPUtils.GetLocalAddress().ToString();
+        ui_connectionPort.text =  63001 + "";
 	}
 
 	/// <summary>

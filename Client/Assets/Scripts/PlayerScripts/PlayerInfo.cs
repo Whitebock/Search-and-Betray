@@ -4,24 +4,23 @@ using UnityEngine.SceneManagement;
 
 public class PlayerInfo : MonoBehaviour
 {
-	/*
+    /*
 	 * In dieser Klasse laufen alle Informationen, Events und Zustände des Spielers zusammen und werden statisch zur
 	 * Verfügung gestellt. Physikalische Abfragen (z. B. -isGrounded-) und Spielerinput wird auch hier gehändelt.
 	 * Alle Propertys (Setter) und -Update()- können für Netzwerkübertragungen genutzt werden.
 	 */
 
-	// Felder
-	private static int playerID = 1;
+    #region Felder
+    private static int playerID = 1;
 	private static string playerName = "Test-Player";
 	private static int lifeEnergy;
 
 	private static Rigidbody phy;
 	private static float inp_horizontal, inp_vertical;
 	private static bool isGrounded, isCrouchingInp, isCrouching, crouchToggle, unconscious;
+    #endregion
 
-    private CCC_Client client;
-
-    // Events
+    #region Events
     /*
 	 * Erklärung:
 	 * Delegates fangen mit "Del_" an. Events mit "On_".
@@ -37,21 +36,20 @@ public class PlayerInfo : MonoBehaviour
 	public static event Del_Player_Disabled On_Player_Disabled;
 	public delegate void Del_Player_isGrounded(bool isGrounded);
 	public static event Del_Player_isGrounded On_Player_isGrounded;
+    #endregion
 
-	// Properties
-	public static int PlayerID														// Spieler-ID
-	{ get { return playerID; } set { playerID = value; } }
-	public static string PlayerName													// Spielername
-	{ get { return playerName; } set { playerName = value; } }
+    #region Properties
+    public static int PlayerID { get; set; }										// Spieler-ID
+	public static string PlayerName { get; set; }									// Spielername
 	public static int LifeEnergy													// Leben
 	{ get { return lifeEnergy; } set { if (value <= 100) lifeEnergy = value; } }
-	public static Rigidbody Phy														// Rigitbody des Spielers
-	{ get { return phy; } }
-	public static float Inp_horizontal												// Input "Seitwärts"
-	{ get { return inp_horizontal; } }
-	public static float Inp_vertical												// Input "Vorwärts/Rückwärts"
-	{ get { return inp_vertical; } }
-	public static bool IsGrounded													// Hat bodenkontakt
+	public static Rigidbody Phy                                                     // Rigitbody des Spielers
+    { get { return phy; } }
+    public static float Inp_horizontal                                              // Input "Seitwärts"
+    { get { return inp_horizontal; } }
+    public static float Inp_vertical                                                // Input "Vorwärts/Rückwärts"
+    { get { return inp_vertical; } }
+    public static bool IsGrounded													// Hat bodenkontakt
 	{
 		get { return isGrounded; }
 		set
@@ -61,9 +59,9 @@ public class PlayerInfo : MonoBehaviour
 			isGrounded = value;
 		}
 	}
-	public static bool CrouchToggle													// Ob die Crouch-Taste nicht gedrück gehalten werden muss
-	{ get { return crouchToggle; } set { crouchToggle = value; } }
-	public static bool IsCrouchingInp												// Möchte geduckt sein
+	public static bool CrouchToggle { get; set; } // Ob die Crouch-Taste nicht gedrück gehalten werden muss.
+
+    public static bool IsCrouchingInp // Möchte geduckt sein.
 	{
 		get { return isCrouchingInp; }
 		set
@@ -73,18 +71,26 @@ public class PlayerInfo : MonoBehaviour
 			isCrouchingInp = value;
 		}
 	}
-	public static bool IsCrouching													// Ist tatsächlich geduckt
-	{ get { return isCrouching; } set { isCrouching = value; } }
-	public static bool Unconscious													// Bewegungen sollen blockiert werden
-	{ get { return unconscious; } set { unconscious = value; } }
+    public static bool IsCrouching               // Ist tatsächlich geduckt.
+    {
+        get { return isCrouching; }
+        set
+        {
+            isCrouching = value;
 
-	void Start()
+            // Send crouch info.
+            CCC_Client.Instance.SendCrouch(value);
+        }
+    }
+    public static bool Unconscious { get; set; } // Bewegungen sollen blockiert werden.
+    #endregion
+
+    void Start()
 	{
 		// Initialisierungen
 		phy = GetComponent<Rigidbody>();
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
-        client = CCC_Client.Instance;
     }
 
 	void Update()
@@ -118,7 +124,7 @@ public class PlayerInfo : MonoBehaviour
 
         Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
 
-        client.SendTransform(transform, hilf);
+        CCC_Client.Instance.SendTransform(transform, hilf);
 
         // Granatenwurf senden
         //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
@@ -145,16 +151,10 @@ public class PlayerInfo : MonoBehaviour
 	}
 
 	// ------------------------- Netzwerk -------------------------
-	void SendTransform()
-	{
-		// Position und Velocity senden
-		Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
-		client.SendTransform(transform, hilf);
-	}
 
     public void Disconnect()
     {
-        client.Disconnect();
+        CCC_Client.Instance.Disconnect();
         SceneManager.LoadScene("MainMenu");
 	}
 	// ------------------------------------------------------------

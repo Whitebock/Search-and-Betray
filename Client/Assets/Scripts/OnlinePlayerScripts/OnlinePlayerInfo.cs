@@ -57,7 +57,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	}    
 
     // ---------------------- Netzwerkschnittstelle ----------------------
-    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale)
+    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching)
     {
         if (PlayerID != playerid) return;
 
@@ -66,6 +66,7 @@ public class OnlinePlayerInfo : MonoBehaviour
             transform.position = position;
             transform.rotation = rotation;
             transform.localScale = scale;
+            isCrouching = crouching;
 
             anim.Speed_straight = Mathf.Lerp(anim.Speed_straight, velocity.z, 0.6f);
             anim.Speed_sideways = Mathf.Lerp(anim.Speed_sideways, velocity.x, 0.6f);

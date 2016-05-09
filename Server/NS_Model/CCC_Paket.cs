@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.NS_Model
 {
@@ -13,7 +11,7 @@ namespace Server.NS_Model
         /// Version needs to be updated if there were changes
         /// to the protocol, to inform the client/server
         /// </summary>
-        public static byte Version { get { return 6; } }
+        public static byte Version { get { return 7; } }
 
         /*
         ----------------------------------------------------------------------------------------------------------------
@@ -43,28 +41,38 @@ namespace Server.NS_Model
 
         Game -> Player
         |   <-      | PLAYER_JOIN               | id, username
-        |   <-      | SYNC_TABLE                | array with all objects
-        |   <-      | PLAYER_UPDATE             | position, rotation, scale
-        |   ->      | PLAYER_MOVE               | position, rotation, scale
-        |   ->      | PLAYER_CROUTCH            | bool
-        |   ->      | PLAYER_SEND_DAMAGE        | id, amount
-        |   <-      | PLAYER_RECIEVE_DAMAGE     | amount
+        |           | PLAYER_UPDATE             | player object
+
+        |   ->      | PLAYER_MOVE               | position, rotation, velocity, scale
+        |           | PLAYER_CROUCH             | bool
+        |           | PLAYER_SHOOT              | [hitplayer] position [amount, playerid]
+        |   <-      | PLAYER_SHOOT              | [hitplayer] position [amount, playerid]
+        
+        |   <-      | SYNC                      | all objects
 
         Game -> Prop
         |   ->      | PROP_NEW                  | type; position
+        |           | PROP_MOVE                 | id; position, rotation
+
         |   <-      | PROP_CREATED              | id; type; position
-        |   ->      | PROP_MOVE                 | id; position
+        |           | PROP_UPDATE               | prop object
+        |           | PROP_DELETE               | id
 
         Chat
-        |   ->      | SEND_MESSAGE              | text
-        |   <-      | RECIEVE_MESSAGE           | id, text
+        |   ->      | MESSAGE                   | text
+        |   <-      | MESSAGE                   | id, text
 
         Logout
         |   ->      | LOGOUT                    |
 
+        |   <-      | LOGOUT                    | id
+        |           | TIMEOUT                   | id
+        |           | KICK                      | id
+        |           | BAN                       | id
+
         ----------------------------------------------------------------------------------------------------------------
         */
-
+        
         public enum Type : byte
         {
             //Handshake
@@ -85,26 +93,30 @@ namespace Server.NS_Model
             BLACKLIST,
             WHITELIST,
 
-            //Game -> Player
+            // Player
             PLAYER_JOIN = 80,
-            SYNC_TABLE,
             PLAYER_UPDATE,
             PLAYER_MOVE,
-            PLAYER_CROUTCH,
-            PLAYER_SEND_DAMAGE,
-            PLAYER_RECIEVE_DAMAGE,
+            PLAYER_CROUCH,
+            PLAYER_SHOOT,
 
-            //Game -> Prop
+            SYNC = 90,
+
+            // Prop
             PROP_NEW = 100,
             PROP_CREATED,
             PROP_MOVE,
+            PROP_DELETE,
+            PROP_UPDATE,
 
             //Chat
-            SEND_MESSAGE = 120,
-            RECIEVE_MESSAGE,
+            MESSAGE = 120,
 
             //Logout
-            LOGOUT = 140
+            LOGOUT = 140,
+            TIMEOUT,
+            KICK,
+            BAN
         }
 
         #region Properties
@@ -133,15 +145,6 @@ namespace Server.NS_Model
             Flag = flag;
             Data = new byte[0];
         }
-        #endregion
-
-        #region Basic Data Conversion 
-
-        public string GetString(int offset = 0)
-        {
-            return Encoding.Unicode.GetString(Data.Skip(offset).ToArray());
-        }
-
         #endregion
 
         #region Operators

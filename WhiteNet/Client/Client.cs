@@ -64,6 +64,7 @@ namespace WhiteNet.Client
             try
             {
                 tcpClient = new TcpClient();
+                tcpClient.ReceiveTimeout = 1000;
                 tcpClient.Connect(address, port);
                 writer = new BinaryWriter(tcpClient.GetStream());
                 connected = true;

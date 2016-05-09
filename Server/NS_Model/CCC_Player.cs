@@ -44,6 +44,7 @@ namespace Server.NS_Model
         public byte Armour { get; private set; }
         public byte TeamID { get; private set; }
         public string Username { get; private set; }
+        public bool Crouching { get; private set; }
 
         // Gameobject 
         public Vector3 Scale { get; private set; }
@@ -63,9 +64,27 @@ namespace Server.NS_Model
         #endregion
 
         #region Events
-
+        /// <summary>
+        /// Will be fired when the player moves, rotates, 
+        /// changes velocity or changes scale
+        /// </summary>
         public event PlayerEvent TransformChanged = delegate { };
+
+        /// <summary>
+        /// Will be fired when the player starts crouching,
+        /// or stops crouching.
+        /// </summary>
+        public event PlayerEvent Crouch = delegate { };
+
+        /// <summary>
+        /// Will be fired when the player disconnects
+        /// </summary>
         public event PlayerEvent Logout = delegate { };
+
+        /// <summary>
+        /// Will be fired on timeout
+        /// </summary>
+        public event PlayerEvent Timeout = delegate { };
 
         #endregion
 
@@ -75,10 +94,16 @@ namespace Server.NS_Model
             Client = client;
             ID = (byte)id;
             Username = username;
+            Crouching = false;
+            Health = 100;
+            Armour = 50;
             
             Client.DataReceived += OnDataReceived;
+            Client.Timeout += OnTimeout;
             Client.BeginRead();
         }
+
+        #endregion
 
         private void OnDataReceived(byte[] data)
         {
@@ -98,27 +123,41 @@ namespace Server.NS_Model
 
                 TransformChanged(this);
             }
+            else if (response.Flag == CCC_Packet.Type.PLAYER_CROUCH)
+            {
+                Crouching = BitConverter.ToBoolean(response.Data, 0);
+                Crouch(this);
+            }
             else if (response.Flag == CCC_Packet.Type.LOGOUT)
             {
                 Logout(this);
             }
         }
-        #endregion
+
+        private void OnTimeout(byte[] data)
+        {
+            Timeout(this);
+        }
+
+        /// <summary>
+        /// Serialize Player object, including all stats.
+        /// (Health, Position, etc.)
+        /// </summary>
+        /// <returns>Serialized bytes</returns>
         public byte[] Serialize()
         {
-            // Biggest packet size
-            // 4 + 48 + Username
-
             List<byte> temp = new List<byte>();
 
             // Player stats.
             temp.Add(ID);
-            /*
-            
             temp.Add(TeamID);
             temp.Add(Health);
             temp.Add(Armour);
-            */
+
+            // A bit overkill to use an entire byte,
+            // might use the empty space for something else
+            // in the future.
+            temp.Add(BitConverter.GetBytes(Crouching)[0]);
 
             // Player transform.
             byte[] pos = Position;
@@ -136,6 +175,7 @@ namespace Server.NS_Model
             return temp.ToArray();
         }
 
+        #region Operators
         public static bool operator ==(CCC_Player p1, CCC_Player p2)
         {
             return p1.ID == p2.ID;
@@ -144,7 +184,21 @@ namespace Server.NS_Model
         {
             return p1.ID != p2.ID;
         }
+        #endregion
 
+        #region Overrides
+        public override bool Equals(object obj)
+        {
+            CCC_Player p = (CCC_Player)obj;
+            if (p != null && p.ID == ID)
+                return true;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
+        }
         public override string ToString()
         {
             return String.Format("{0}[({1}, {2}, {3}), ({4}, {5}, {6}), ({7}, {8}, {9})]",
@@ -153,7 +207,7 @@ namespace Server.NS_Model
                 Rotation.X, Rotation.Y, Rotation.Z,
                 Scale.X, Scale.Y, Scale.Z);
         }
-
+        #endregion
 
     }
 }
