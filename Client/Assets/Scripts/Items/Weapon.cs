@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour
 	public AudioClip emptySound;	//Sound played when magazine is empty
     AudioSource myAudioSource;
 
-    uint shotsInMag;				//Current bullet count in mag
+    public uint shotsInMag;				//Current bullet count in mag
     bool readyToShoot;
     bool reloading;
 

@@ -118,6 +118,7 @@
     <Compile Include="Assets\Scripts\UI\FX\SceneFading.cs" />
     <Compile Include="Assets\Scripts\UI\FX\Splash.cs" />
     <Compile Include="Assets\Scripts\UI\FaceCamera.cs" />
+    <Compile Include="Assets\Scripts\UI\HUDManagment.cs" />
     <Compile Include="Assets\Scripts\UI\MainMenuManagment.cs" />
     <Compile Include="Assets\Scripts\UI\OnlinePlayerUI_Manager.cs" />
     <Compile Include="Assets\Scripts\UI\Player_UI_Tools.cs" />
