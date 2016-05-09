@@ -550,7 +550,7 @@ public class MainMenuManagment : MonoBehaviour
 			return new UIRespond(e.Message,ui_failed);
 		}
 
-		SceneManager.LoadScene("Testscene");
+		SceneManager.LoadScene("Game");
 		return new UIRespond("CONNECTING");
 
 	}
