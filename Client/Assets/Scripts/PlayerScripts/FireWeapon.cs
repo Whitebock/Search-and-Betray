@@ -48,6 +48,12 @@ public class FireWeapon : MonoBehaviour {
         {
             MyWeapon.Reload();
         }
+
+        if (myWeapon != null)
+        {
+            HUDManagment.SetWeaponInfo(myWeapon.weaponName, (int)myWeapon.shotsInMag, (int)myWeapon.shotsTotal);
+            HUDManagment.SetFireMode(myWeapon.singleShot ? FireMode.Single : FireMode.Automatic);
+        }
 	}
 
     private void ApplyRecoil()

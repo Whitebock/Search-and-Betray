@@ -13,10 +13,12 @@ public class CollectableWeapon : CollectableBase
 
 	public override void PickUp()
 	{
-		phy.isKinematic = true;
+
+        phy.isKinematic = true;
 		if (col_item) col_item.enabled = false;
 		col_triggerzone.enabled = false;
 		this.enabled = false;
+         
 	}
 
 	public void Drop()
@@ -27,6 +29,7 @@ public class CollectableWeapon : CollectableBase
 		phy.velocity = PlayerInfo.Phy.velocity;
 		phy.AddForce(transform.localToWorldMatrix * dropforce, ForceMode.Impulse);
 		Invoke("ActivatePickUp", pickUpCooldown);
+        HUDManagment.SetWeaponInfo("None",0,0);
 	}
 
 	private void ActivatePickUp()
