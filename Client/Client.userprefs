@@ -4,7 +4,7 @@
     <Files>
       <File FileName="Assets/Scripts/UI/WorldspaceUI_Manager.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/SpectatorCollide.cs" Line="39" Column="95" />
-      <File FileName="Assets/Scripts/UI/MainMenuManagment.cs" Line="193" Column="6" />
+      <File FileName="Assets/Scripts/UI/MainMenuManagment.cs" Line="15" Column="13" />
       <File FileName="Assets/Scripts/Network/CCC_Client.cs" Line="20" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
