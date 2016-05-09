@@ -546,7 +546,7 @@ public class MainMenuManagment : MonoBehaviour
 		//server.port; <- Port
 		//server.name; <- Player Name
 
-		CCC_Client client = CCC_Client.CreateInstance();
+		CCC_Client client = CCC_Client.Instance;
 
 		client.Port = server.port;
 

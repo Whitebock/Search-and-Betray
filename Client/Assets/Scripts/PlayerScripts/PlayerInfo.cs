@@ -112,7 +112,7 @@ public class PlayerInfo : MonoBehaviour
 				On_Inp_Crouch(false);
 			}
 		}
-<<<<<<< HEAD
+
 
         // --------------------- Netzwerkschnittstelle ---------------------
 
@@ -125,10 +125,7 @@ public class PlayerInfo : MonoBehaviour
 
         // ------------------------------------------------------------------
     }
-=======
-    }
 
->>>>>>> origin/master
     void FixedUpdate()
 	{
 		// Bodenkontakt
