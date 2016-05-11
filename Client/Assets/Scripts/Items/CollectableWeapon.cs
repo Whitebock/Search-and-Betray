@@ -30,6 +30,7 @@ public class CollectableWeapon : CollectableBase
 		phy.AddForce(transform.localToWorldMatrix * dropforce, ForceMode.Impulse);
 		Invoke("ActivatePickUp", pickUpCooldown);
         HUDManagment.SetWeaponInfo("None",0,0);
+        HUDManagment.SetCrosshair(false);
 	}
 
 	private void ActivatePickUp()

@@ -53,6 +53,7 @@ public class FireWeapon : MonoBehaviour {
         {
             HUDManagment.SetWeaponInfo(myWeapon.weaponName, (int)myWeapon.shotsInMag, (int)myWeapon.shotsTotal);
             HUDManagment.SetFireMode(myWeapon.singleShot ? FireMode.Single : FireMode.Automatic);
+            HUDManagment.SetCrosshair(true);
         }
 	}
 
@@ -84,7 +85,15 @@ public class FireWeapon : MonoBehaviour {
         {
             if (hit.transform.gameObject.GetComponent<DamageHandler>())
             {
-                hit.transform.gameObject.GetComponent<DamageHandler>().TakeDamage(MyWeapon.damage);
+                Debug.Log("SEND_SHOT_DAMAGE");
+                //hit.transform.gameObject.GetComponent<DamageHandler>().TakeDamage(MyWeapon.damage);
+                int playerid = hit.transform.gameObject.GetComponent<OnlinePlayerInfo>().PlayerID;
+                CCC_Client.Instance.SendShot(hit.point, playerid, MyWeapon.damage);
+            }
+            else
+            {
+                Debug.Log("SEND_SHOT_1");
+                CCC_Client.Instance.SendShot(hit.point);
             }
         }
         else
@@ -92,7 +101,8 @@ public class FireWeapon : MonoBehaviour {
             hit = new RaycastHit();
             hit.point =  ray.GetPoint(300);
             hit.distance = 300;
-            
+            Debug.Log("SEND_SHOT_2");
+            CCC_Client.Instance.SendShot(hit.point);
         }
 
         //Setting ray origin to weapon

@@ -83,7 +83,8 @@ public class CCC_Client
 
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
-    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching);
+    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health);
+    public delegate void ShootEvent(Vector3 position);
 
     #endregion
 
@@ -92,6 +93,8 @@ public class CCC_Client
     public event JoinEvent OnPlayerJoin = delegate { };
     public event UpdateEvent OnPlayerUpdate = delegate { };
     public event SyncEvent OnSync = delegate { };
+    public event ShootEvent OnPlayerShoot = delegate { };
+
     #endregion
 
     #region Constructors
@@ -120,7 +123,17 @@ public class CCC_Client
         {
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
-            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching);
+            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
+        }
+        else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
+        {
+            bool hit = BitConverter.ToBoolean(packet.Data, 0);
+            Vector3 position = new Vector3();
+            position.x = BitConverter.ToSingle(packet.Data, 1);
+            position.y = BitConverter.ToSingle(packet.Data, 5);
+            position.z = BitConverter.ToSingle(packet.Data, 9);
+            Debug.Log("SHOT_RECIEVED");
+            OnPlayerShoot(position);
         }
         else if (packet.Flag == CCC_Packet.Type.SYNC)
         {
@@ -136,7 +149,7 @@ public class CCC_Client
                     DeserializedPlayer d = new DeserializedPlayer(serialized);
 
                     syncdata.Add(d.ID, d.Username);
-                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching);
+                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
 
                     i += serialized.Length;
 
@@ -288,7 +301,7 @@ public class CCC_Client
         client.Send(packet);
     }
 
-    public void SendDamage(int playerid, int amount)
+    public void SendShot(Vector3 position, int? playerid = null, int? amount = null)
     {
         if (playerid > 255)
             throw new ArgumentException("PlayerID is too large", "playerid");
@@ -297,9 +310,19 @@ public class CCC_Client
             amount = byte.MaxValue;
 
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SHOOT);
-        packet.Data = new byte[2];
-        packet.Data[0] = (byte)playerid;
-        packet.Data[1] = (byte)amount;
+        List<byte> temp = new List<byte>();
+
+        temp.Add(BitConverter.GetBytes(playerid.HasValue)[0]);
+        temp.AddRange(BitConverter.GetBytes(position.x));
+        temp.AddRange(BitConverter.GetBytes(position.y));
+        temp.AddRange(BitConverter.GetBytes(position.z));
+
+        if (playerid.HasValue)
+        {
+            temp.Add((byte)playerid);
+            temp.Add((byte)amount);
+        }
+        packet.Data = temp.ToArray();
 
         client.Send(packet);
     }

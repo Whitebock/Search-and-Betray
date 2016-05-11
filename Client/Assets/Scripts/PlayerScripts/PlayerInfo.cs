@@ -4,23 +4,22 @@ using UnityEngine.SceneManagement;
 
 public class PlayerInfo : MonoBehaviour
 {
-    /*
+	/*
 	 * In dieser Klasse laufen alle Informationen, Events und Zustände des Spielers zusammen und werden statisch zur
 	 * Verfügung gestellt. Physikalische Abfragen (z. B. -isGrounded-) und Spielerinput wird auch hier gehändelt.
 	 * Alle Propertys (Setter) und -Update()- können für Netzwerkübertragungen genutzt werden.
 	 */
 
-    #region Felder
-    private static int playerID = 1;
+	// Felder
+	private static int playerID = 1;
 	private static string playerName = "Test-Player";
 	private static int lifeEnergy;
 
 	private static Rigidbody phy;
 	private static float inp_horizontal, inp_vertical;
 	private static bool isGrounded, isCrouchingInp, isCrouching, crouchToggle, unconscious;
-    #endregion
 
-    #region Events
+    // Events
     /*
 	 * Erklärung:
 	 * Delegates fangen mit "Del_" an. Events mit "On_".
@@ -36,20 +35,27 @@ public class PlayerInfo : MonoBehaviour
 	public static event Del_Player_Disabled On_Player_Disabled;
 	public delegate void Del_Player_isGrounded(bool isGrounded);
 	public static event Del_Player_isGrounded On_Player_isGrounded;
-    #endregion
 
-    #region Properties
-    public static int PlayerID { get; set; }										// Spieler-ID
-	public static string PlayerName { get; set; }									// Spielername
+	// Properties
+	public static int PlayerID														// Spieler-ID
+	{ get { return playerID; } set { playerID = value; } }
+	public static string PlayerName													// Spielername
+	{ get { return playerName; } set { playerName = value; } }
 	public static int LifeEnergy													// Leben
-	{ get { return lifeEnergy; } set { if (value <= 100) lifeEnergy = value; } }
-	public static Rigidbody Phy                                                     // Rigitbody des Spielers
-    { get { return phy; } }
-    public static float Inp_horizontal                                              // Input "Seitwärts"
-    { get { return inp_horizontal; } }
-    public static float Inp_vertical                                                // Input "Vorwärts/Rückwärts"
-    { get { return inp_vertical; } }
-    public static bool IsGrounded													// Hat bodenkontakt
+	{
+        get { return lifeEnergy; }
+        set {
+            
+            lifeEnergy = value;
+        }
+    }
+	public static Rigidbody Phy														// Rigitbody des Spielers
+	{ get { return phy; } }
+	public static float Inp_horizontal												// Input "Seitwärts"
+	{ get { return inp_horizontal; } }
+	public static float Inp_vertical												// Input "Vorwärts/Rückwärts"
+	{ get { return inp_vertical; } }
+	public static bool IsGrounded													// Hat bodenkontakt
 	{
 		get { return isGrounded; }
 		set
@@ -59,9 +65,9 @@ public class PlayerInfo : MonoBehaviour
 			isGrounded = value;
 		}
 	}
-	public static bool CrouchToggle { get; set; } // Ob die Crouch-Taste nicht gedrück gehalten werden muss.
-
-    public static bool IsCrouchingInp // Möchte geduckt sein.
+	public static bool CrouchToggle													// Ob die Crouch-Taste nicht gedrück gehalten werden muss
+	{ get { return crouchToggle; } set { crouchToggle = value; } }
+	public static bool IsCrouchingInp												// Möchte geduckt sein
 	{
 		get { return isCrouchingInp; }
 		set
@@ -71,29 +77,28 @@ public class PlayerInfo : MonoBehaviour
 			isCrouchingInp = value;
 		}
 	}
-    public static bool IsCrouching               // Ist tatsächlich geduckt.
-    {
+	public static bool IsCrouching													// Ist tatsächlich geduckt
+	{
         get { return isCrouching; }
-        set
-        {
+        set {
             isCrouching = value;
-
-            // Send crouch info.
             CCC_Client.Instance.SendCrouch(value);
         }
     }
-    public static bool Unconscious { get; set; } // Bewegungen sollen blockiert werden.
-    #endregion
+	public static bool Unconscious													// Bewegungen sollen blockiert werden
+	{ get { return unconscious; } set { unconscious = value; } }
 
-    void Start()
+	void Start()
 	{
 		// Initialisierungen
 		phy = GetComponent<Rigidbody>();
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
+        CCC_Client.Instance.OnPlayerUpdate += Client_OnPlayerUpdate;
     }
+    
 
-	void Update()
+    void Update()
 	{
 		// Input registrieren
 		inp_horizontal = Input.GetAxisRaw("Horizontal");
@@ -150,8 +155,16 @@ public class PlayerInfo : MonoBehaviour
 		if (On_Player_Disabled != null) On_Player_Disabled();
 	}
 
-	// ------------------------- Netzwerk -------------------------
+    // ------------------------- Netzwerk -------------------------
 
+    private void Client_OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health)
+    {
+        if (playerid == PlayerID)
+        {
+            LifeEnergy = health;
+            HUDManagment.SetPlayerHealth(health);
+        }
+    }
     public void Disconnect()
     {
         CCC_Client.Instance.Disconnect();
@@ -162,17 +175,17 @@ public class PlayerInfo : MonoBehaviour
 
 /*/ ------------------ Simulierte Netzwerkschnittstelle ------------------
 // Position senden
-Netzwerk_Simulator.Senden(playerID, -1, PackageType.Position, transform.position.x + "," + transform.position.y + "," + transform.position.z);
+Netzwerk_Simulator.Senden(1, playerID, PackageType.Position, transform.position.x + "," + transform.position.y + "," + transform.position.z);
 
 // Geschwindigkeit (für den Animator) senden
 Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
-Netzwerk_Simulator.Senden(playerID, -1, PackageType.Velocity, hilf.x + "," + hilf.y + "," + hilf.z);
+Netzwerk_Simulator.Senden(1, playerID, PackageType.Velocity, hilf.x + "," + hilf.y + "," + hilf.z);
 
 // Ausrichtung senden
-Netzwerk_Simulator.Senden(playerID, -1, PackageType.Rotation, transform.rotation.x + "," + transform.rotation.y + "," + transform.rotation.z + "," + transform.rotation.w);
+Netzwerk_Simulator.Senden(1, playerID, PackageType.Rotation, transform.rotation.x + "," + transform.rotation.y + "," + transform.rotation.z + "," + transform.rotation.w);
 
 // Granatenwurf senden
-if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
+if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(1, playerID, PackageType.Granade, "");
 // ----------------------------------------------------------------------*/
 
 /*/ Bewustlosigkeit (Blockiert Bewegungen. Gut für AddForce.)

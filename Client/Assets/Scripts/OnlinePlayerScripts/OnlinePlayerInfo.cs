@@ -57,7 +57,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	}    
 
     // ---------------------- Netzwerkschnittstelle ----------------------
-    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching)
+    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health)
     {
         if (PlayerID != playerid) return;
 

@@ -32,8 +32,8 @@ public class DamageHandler : MonoBehaviour
 	public void TakeDamage(int hitpoints)
 	{
 		// Eventuellen Schutz vom Damage abziehen
-		hitpoints -= Armor;
-		Armor -= hitpoints;
+		//hitpoints -= Armor;
+		//Armor -= hitpoints;
 		if (hitpoints <= 0) return;
 
 		// Hier Muss der Damage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)

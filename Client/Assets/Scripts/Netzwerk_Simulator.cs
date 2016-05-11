@@ -11,7 +11,7 @@ using System.Collections;
 
 public enum PackageType
 {
-	Position, Rotation, Crouch, Demage, Granade, Velocity
+	Position, Rotation, Crouch, Demage, Granade, Velocity, pickedUp
 };
 
 public class Netzwerk_Simulator

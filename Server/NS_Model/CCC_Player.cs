@@ -60,6 +60,7 @@ namespace Server.NS_Model
         #region Delegates
 
         public delegate void PlayerEvent(CCC_Player player);
+        public delegate void ShootEvent(CCC_Player player, Vector3 position, int? playerid = null, int? amount = null);
 
         #endregion
 
@@ -85,6 +86,11 @@ namespace Server.NS_Model
         /// Will be fired on timeout
         /// </summary>
         public event PlayerEvent Timeout = delegate { };
+
+        /// <summary>
+        /// Will be when someone shoots
+        /// </summary>
+        public event ShootEvent Shoot = delegate { };
 
         #endregion
 
@@ -127,6 +133,26 @@ namespace Server.NS_Model
             {
                 Crouching = BitConverter.ToBoolean(response.Data, 0);
                 Crouch(this);
+            }
+            else if (response.Flag == CCC_Packet.Type.PLAYER_SHOOT)
+            {
+                bool hitplayer = BitConverter.ToBoolean(response.Data, 0);
+
+                Vector3 position = new Vector3();
+                position.X = BitConverter.ToSingle(response.Data, 1);
+                position.Y = BitConverter.ToSingle(response.Data, 5);
+                position.Z = BitConverter.ToSingle(response.Data, 9);
+                
+                if (hitplayer)
+                {
+                    byte amount = response.Data[10];
+                    byte id = response.Data[11];
+                    Shoot(this, position, id, amount);
+                }
+                else
+                {
+                    Shoot(this, position);
+                }
             }
             else if (response.Flag == CCC_Packet.Type.LOGOUT)
             {
@@ -173,6 +199,18 @@ namespace Server.NS_Model
             temp.AddRange(Encoding.Unicode.GetBytes(Username));
 
             return temp.ToArray();
+        }
+
+        public bool TakeDamage(byte amount)
+        {
+            if (Health - amount < 0)
+            {
+                Health = 0;
+                return true;
+            }
+
+            Health -= amount;
+            return false;
         }
 
         #region Operators

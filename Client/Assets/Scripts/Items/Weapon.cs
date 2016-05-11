@@ -6,20 +6,22 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    public string weaponName;		//Name of Weapon
-    public int damage;				//Damage of Weapon
-    public int shotsPerSecond;		//Shots that can be fired per second
-    public uint shotsTotal;			//Total number of shots that the weapons holds
-    public uint shotsPerMag;		//Count of shots per magazine
+    public string weaponName;			//Name of Weapon
+    public int damage;					//Damage of Weapon
+    public int shotsPerSecond;			//Shots that can be fired per second
+    public uint shotsTotal;				//Total number of shots that the weapons holds
+    public uint shotsPerMag;			//Count of shots per magazine
     public float recoilForce;
-    public bool singleShot;			//Is the weapon to shoot full automatic
-    public float reloadTime;		//Time needed for one reload
-    public AudioClip shotSound;		//Sound played when shooting
-	public AudioClip reloadSound;	//Sound played when reload
-	public AudioClip emptySound;	//Sound played when magazine is empty
+    public bool singleShot;				//Is the weapon to shoot full automatic
+    public float reloadTime;			//Time needed for one reload
+    public AudioClip shotSound;			//Sound played when shooting
+	public AudioClip reloadStartSound;	//Sound played when started reloading
+	public AudioClip reloadFinishSound;	//Sound played when finished reload
+	public AudioClip emptySound;		//Sound played when magazine is empty
     AudioSource myAudioSource;
+	AnimatorWeaponPos anim;
 
-    public uint shotsInMag;				//Current bullet count in mag
+    public uint shotsInMag;					//Current bullet count in mag
     bool readyToShoot;
     bool reloading;
 
@@ -29,6 +31,7 @@ public class Weapon : MonoBehaviour
         reloading = false;
         myAudioSource = GetComponent<AudioSource>();
         shotsInMag = shotsPerMag;
+		anim = new AnimatorWeaponPos(GameObject.Find("PlayerWeaponPos").GetComponent<Animator>());
 	}
 	
     public bool TriggerDown()
@@ -36,6 +39,7 @@ public class Weapon : MonoBehaviour
         if (readyToShoot && shotsInMag > 0 && !reloading)
 		{
             PlaySound(shotSound);
+			anim.Shoot();
             shotsInMag--;
 			NotReadyToShoot();
             return true;
@@ -51,7 +55,7 @@ public class Weapon : MonoBehaviour
 
     public void TriggerUp()
     {
-        if (singleShot && !reloading) Invoke("SmallReload", 0.3f);
+        if (singleShot && !reloading) Invoke("SmallReload", 1.0f / shotsPerSecond);
     }
 
     public bool Reload()
@@ -60,7 +64,9 @@ public class Weapon : MonoBehaviour
         {
             readyToShoot = false;
             reloading = true;
-            PlaySound(reloadSound);
+			PlaySound(reloadStartSound);
+			anim.StartReload();
+			Invoke("ReloadAlmostFinished", reloadTime - 0.5f);
             Invoke("ReloadFinish", reloadTime);
 			return true;
         }
@@ -76,6 +82,12 @@ public class Weapon : MonoBehaviour
 	void SmallReload()
 	{
 		readyToShoot = true;
+	}
+
+	void ReloadAlmostFinished()
+	{
+		PlaySound(reloadFinishSound);
+		anim.FinishReload();
 	}
 
     void ReloadFinish()

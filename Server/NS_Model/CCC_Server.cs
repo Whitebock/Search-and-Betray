@@ -242,6 +242,7 @@ namespace Server.NS_Model
                 player.TransformChanged += Player_TransformChanged;
                 player.Crouch += Player_Crouch;
                 player.Timeout += Player_Timeout;
+                player.Shoot += Player_Shoot;
 
                 // Sync
                 SendSync();
@@ -279,36 +280,16 @@ namespace Server.NS_Model
 
         private void Player_Crouch(CCC_Player player)
         {
-            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);
-            packet.Data = player.Serialize();
-
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (players[i] == player)
-                    players[i] = player;
-                else
-                    try { players[i].Client.Send(packet); }
-                    catch (Exception) { players.RemoveAt(i); }
-            }
+            SendPlayerUpdate(player);
 
             PlayerCrouch(player);
         }
 
         private void Player_TransformChanged(CCC_Player player)
         {
-            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);
-            packet.Data = player.Serialize();
+                SendPlayerUpdate(player);
 
-            for (int i = 0; i < players.Count; i++)
-            {
-                if (players[i] == player)
-                    players[i] = player;
-                else
-                    try { players[i].Client.Send(packet); }
-                    catch (Exception) { players.RemoveAt(i); }
-            }
-
-            PlayerMoved(player);
+             PlayerMoved(player);
         }
 
         private void Player_Logout(CCC_Player player)
@@ -329,6 +310,56 @@ namespace Server.NS_Model
                 }
             }
             PlayerDisconnected(player);
+        }
+
+        private void Player_Shoot(CCC_Player player, CCC_Player.Vector3 position, int? playerid = null, int? amount = null)
+        {
+            Debug.WriteLine("{0} shot {1} with {2}", player.ID, playerid, amount);
+            // Check if a player was hit.
+            if (playerid.HasValue)
+            {
+                for (int i = 0; i < players.Count; i++)
+                {
+                    // Find player that was hit.
+                    if (players[i].ID == playerid)
+                    {
+                        // Get damage amount.
+                        int damage = 0;
+                        if (amount.HasValue)
+                            damage = amount.Value;
+
+                        // Set health and send update
+                        players[i].TakeDamage((byte)damage);
+                        SendPlayerUpdate(players[i]);
+                    }
+                }
+            }
+
+            // Send shoot packet
+            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SHOOT);
+            packet.Data = position;
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i] != player)
+                    try { players[i].Client.Send(packet); }
+                    catch (Exception) { players.RemoveAt(i); }
+            }
+        }
+
+        private void SendPlayerUpdate(CCC_Player player)
+        {
+            CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);
+            packet.Data = player.Serialize();
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i] == player)
+                    players[i] = player;
+                else
+                    try { players[i].Client.Send(packet); }
+                    catch (Exception) { players.RemoveAt(i); }
+            }
         }
         #endregion
     }

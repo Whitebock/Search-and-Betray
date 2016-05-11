@@ -37,7 +37,7 @@ namespace Server
             ViewModel viewmodel = new ViewModel();
 
             // Create view.
-            if (gui || true)
+            if (gui)
             {
                 Application a = new Application();
                 View view = new View();

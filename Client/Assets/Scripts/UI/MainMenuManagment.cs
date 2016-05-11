@@ -68,7 +68,7 @@ public class MainMenuManagment : MonoBehaviour
 		onChange = true;
 
         ui_connectionIpAdress.text = IPUtils.GetLocalAddress().ToString();
-        ui_connectionPort.text =  63001 + "";
+        ui_connectionPort.text = 63001 + "";
 	}
 
 	/// <summary>
@@ -550,7 +550,7 @@ public class MainMenuManagment : MonoBehaviour
 			return new UIRespond(e.Message,ui_failed);
 		}
 
-		SceneManager.LoadScene("Game");
+		SceneManager.LoadScene("CandaharCity");
 		return new UIRespond("CONNECTING");
 
 	}

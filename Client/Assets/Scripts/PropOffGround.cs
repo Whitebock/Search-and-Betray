@@ -24,7 +24,7 @@ public class PropOffGround : MonoBehaviour
 		int i = 0;
 		Rigidbody hilf = null;
 		try { hilf = transform.GetChild(i).GetComponent<Rigidbody>(); } catch {};
-		if (hilf == null) return;
+		//if (hilf == null) return;
 
 		// Alle Child-Objekte mit einem Rigitbody als Referenz in -props- ablegen
 		while(hilf != null)

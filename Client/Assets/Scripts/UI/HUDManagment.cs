@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class HUDManagment : MonoBehaviour 
 {
@@ -16,10 +17,12 @@ public class HUDManagment : MonoBehaviour
 	public static Text weaponInfo;
 	public static Text currentAmmo;
 	public static Text maxAmmo;
+    public static Image crosshair;
 
 	[Header("Weapon Mode")]
 	public static Text fireMode;
 
+     
 	/// <summary>
 	/// Start this instance. Searches gameobjects for static attributes.
 	/// </summary>
@@ -33,7 +36,8 @@ public class HUDManagment : MonoBehaviour
 		currentAmmo = GameObject.Find("Text_CurrentAmmo").GetComponent<Text>();
 		maxAmmo = GameObject.Find("Text_MaxAmmo").GetComponent<Text>();
 		fireMode = GameObject.Find("Text_FireMode").GetComponent<Text>();
-	}
+        crosshair = GameObject.Find("Crosshair").GetComponent<Image>();
+    }
 
 	/// <summary>
 	/// Sets the player info [Name or position. E.G. "Playername" or "Traitor".
@@ -108,7 +112,7 @@ public class HUDManagment : MonoBehaviour
 	/// <param name="firemode">Firemode as selectable from enum</param>
 	public static void SetFireMode(FireMode firemode)
 	{
-		fireMode.text = firemode.ToString();
+		fireMode.text = Convert.ToString(firemode.ToString()[0].ToString());
 	}
 
 	/// <summary>
@@ -126,6 +130,15 @@ public class HUDManagment : MonoBehaviour
 			GameObject.Find("HUD").GetComponent<CanvasGroup>().alpha = 0.0F;
 		}
 	}
+
+    /// <summary>
+    /// Method to turn crosshair on and off
+    /// </summary>
+    /// <param name="on">Indicates new status of crosshair</param>
+    public static void SetCrosshair(bool on)
+    {
+        crosshair.enabled = on;
+    }
 }
 
 /// <summary>

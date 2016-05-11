@@ -62,13 +62,10 @@ public class Movement : MonoBehaviour
 	}
 
 	// Die Bewegung drehen und die Schwerkraft verlagern um sich z. B. auf Treppen und Leitern bewegen zu können
-	public void ShiftMovement(Transform newMovement, Vector3 gravityDirection)
+	public void ShiftMovement(Transform newMovement)
 	{
 		// Schwerkraft verschieben um Abrutschen zu vermeiden
 		PlayerInfo.Phy.useGravity = false;
-		ConstantForce newGravity = gameObject.AddComponent<ConstantForce>();
-		gravityDirection = (newMovement.localToWorldMatrix * gravityDirection).normalized;
-		newGravity.force = new Vector3(gravityDirection.x * Physics.gravity.x, gravityDirection.y * Physics.gravity.y, gravityDirection.z * Physics.gravity.z);
 
 		// Neu Achse auf der sich jetzt bewegt wird deffinieren
 		this.newMovement = newMovement;
@@ -77,9 +74,6 @@ public class Movement : MonoBehaviour
 	// Die Bewegung wieder auf den normalen Zustand zurücksetzen
 	public void NormalMovement()
 	{
-		// Schwerkraft entfernen
-		try { Destroy(GetComponent<ConstantForce>()); } catch {}
-
 		// Normale Schwerkraft aktivieren
 		PlayerInfo.Phy.useGravity = true;
 
