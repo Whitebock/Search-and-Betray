@@ -27,8 +27,4 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-*.lnk
-*.txt
 *.cache
-*.png
-*.meta
