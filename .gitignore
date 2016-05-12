@@ -3,6 +3,8 @@ Unity generated
 ===========================
 Client/Temp/
 Client/Library/
+Client/**/*.csproj
+Client/**/*.sln
 
 ========================
 Visual Studio generated
