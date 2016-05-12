@@ -5,6 +5,7 @@ Client/Temp/
 Client/Library/
 Client/**/*.csproj
 Client/**/*.sln
+Client/**/*.userprefs
 
 ========================
 Visual Studio generated
