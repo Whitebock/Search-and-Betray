@@ -13,6 +13,10 @@ public class DamageHandler : MonoBehaviour
 	private int armor = 0;						// Panzerung die vor der Lebensenergie abgezogen wird
 	public float factor = 1f;					// Damit wird der Schaden multipliziert (z. B. für Kopfschüsse)
 
+	public OnlinePlayerInfo AttachedPlayer
+	{ get { return attachedPlayer; } }
+	public float Factor
+	{ get { return factor; } }
 	public int Armor
 	{
 		get { return armor; }
@@ -32,12 +36,11 @@ public class DamageHandler : MonoBehaviour
 	public void TakeDamage(int hitpoints)
 	{
 		// Eventuellen Schutz vom Damage abziehen
-		//hitpoints -= Armor;
-		//Armor -= hitpoints;
+		hitpoints -= Armor;
+		Armor -= hitpoints;
 		if (hitpoints <= 0) return;
 
 		// Hier Muss der Damage ins Netzwerk gesendet werden + wer ihn bekommt (attachedPlayer.PlayerID)
 		//DEMAGE = (int)Mathf.Floor(hitpoints * factor);
-		Debug.Log("Damage: " + (int)Mathf.Floor(hitpoints * factor));
 	}
 }

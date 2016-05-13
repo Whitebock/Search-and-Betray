@@ -40,10 +40,16 @@ public class Tracer : MonoBehaviour {
     /// <param name="hit">The hit object of the raycast.</param>
     public void StartTracer(Ray myRay, RaycastHit hit)
     {
+		if (hit.transform == null)
+		{
+			hit = new RaycastHit();
+			hit.point = myRay.GetPoint(300);
+			hit.distance = 300;
+		}
+
         myLineRenderer = gameObject.GetComponent<LineRenderer>();
         this.myRay = myRay;
         this.myRaycastHit = hit;
-        
     }
 
     /// <summary>
