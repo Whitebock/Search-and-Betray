@@ -11,8 +11,9 @@ public class OnlinePlayerInfo : MonoBehaviour
 	 */
 
 	// Felder
-	private int playerID;							// Spieler-ID
-	private string playerName = "Test-Spieler";		// Spielername
+	private int playerID;                           // Spieler-ID
+    private int teamID;                             //TeamID
+    private string playerName = "Test-Spieler";		// Spielername
 	private bool isCrouching;						// Ob Spieler gerade geduckt ist
 
 	private OnlinePlayerUI_Manager uiManager;		// Spieler-UI
@@ -34,8 +35,9 @@ public class OnlinePlayerInfo : MonoBehaviour
 	{ get { return isCrouching; } }
 	public bool IsGrounded
 	{ get { return isGrounded; } }
-
-	void Start()
+    public int TeamID
+    { get { return teamID; } set { playerID = value; } }
+    void Start()
 	{
 		// Objekt umbenennen
 		transform.name = "OnlinePlayer_" + playerName;
