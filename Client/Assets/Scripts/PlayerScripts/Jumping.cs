@@ -4,8 +4,11 @@ using System.Collections;
 public class Jumping : MonoBehaviour
 {
 	public float jumpforce = 7f;					// Sprungkraft
-	public bool canJump = false;					// Ob man Springen kann, egal ob man Bodenkantakt hat
+	private bool canJump = false;					// Ob man Springen kann, egal ob man Bodenkantakt hat
 	private float jumpFactor, jumpFactorIncrease;	// Zur Berechnung der Anlaufs
+
+	public bool CanJump
+	{ get { return canJump; } set { canJump = value; } }
 
 	void Start()
 	{
