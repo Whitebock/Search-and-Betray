@@ -30,7 +30,7 @@ public class ShiftMovement : MonoBehaviour
 	{
 		if (other.gameObject.layer != playerLayer) return;	// Spieler herrausfiltern (mit "playerLayer")
 		movement.ShiftMovement(transform);					// Bewegung des Spielers auf die neue Achse anpassen
-		jumping.canJump = canJump;							// Springen blockieren (wenn eingestellt mit "canJump")
+		jumping.CanJump = canJump;							// Springen blockieren (wenn eingestellt mit "canJump")
 		PlayerInfo.On_Player_isGrounded += PlayerGrounded;	// Fall abfangen -> Spieler berührt wieder den Boden
 		PlayerInfo.On_Inp_Jump += PlayerJumpedOff;			// Fall abfangen -> Spieler springt ab
 	}
@@ -39,7 +39,7 @@ public class ShiftMovement : MonoBehaviour
 	{
 		if (other.gameObject.layer != playerLayer) return;	// Spieler herrausfiltern (mit "playerLayer")
 		movement.NormalMovement();							// Bewegung zurücksetzen
-		jumping.canJump = false;							// Springen wieder erlauben
+		jumping.CanJump = false;							// Springen wieder erlauben
 		PlayerInfo.On_Player_isGrounded -= PlayerGrounded;	// Fall nicht mehr abfangen -> Spieler berührt wieder den Boden
 		PlayerInfo.On_Inp_Jump -= PlayerJumpedOff;			// Fall nicht mehr abfangen -> Spieler springt ab
 	}
@@ -49,7 +49,7 @@ public class ShiftMovement : MonoBehaviour
 	{
 		if (!grounded) return;		// Checken ob der Spieler den Boden berührt oder nicht mehr berührt
 		movement.NormalMovement();	// Bewegung zurücksetzen
-		jumping.canJump = false;	// Springen wieder erlauben
+		jumping.CanJump = false;	// Springen wieder erlauben
 	}
 
 	// Spieler hat den Einflussbereich verlassen weil er abgesprungen ist
@@ -57,7 +57,7 @@ public class ShiftMovement : MonoBehaviour
 	{
 		if (!canJump) return;		// Checken ob der Spieler abspringen darft (mit "canJump")
 		movement.NormalMovement();	// Bewegung zurücksetzen
-		jumping.canJump = false;	// Springen wieder erlauben
+		jumping.CanJump = false;	// Springen wieder erlauben
 	}
 
 	// Events abmelden wenn der Spieler inaktiv ist
