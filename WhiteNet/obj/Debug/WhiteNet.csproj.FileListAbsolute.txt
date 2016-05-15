@@ -23,3 +23,8 @@ D:\Combat-in-Candahar-City-Server-Login\WhiteNet\bin\Debug\WhiteNet.pdb
 D:\Combat-in-Candahar-City-Server-Login\WhiteNet\obj\Debug\WhiteNet.csprojResolveAssemblyReference.cache
 D:\Combat-in-Candahar-City-Server-Login\WhiteNet\obj\Debug\WhiteNet.dll
 D:\Combat-in-Candahar-City-Server-Login\WhiteNet\obj\Debug\WhiteNet.pdb
+E:\Projekte\GitHub\Search-and-Betray\WhiteNet\bin\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Search-and-Betray\WhiteNet\bin\Debug\WhiteNet.pdb
+E:\Projekte\GitHub\Search-and-Betray\WhiteNet\obj\Debug\WhiteNet.csprojResolveAssemblyReference.cache
+E:\Projekte\GitHub\Search-and-Betray\WhiteNet\obj\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Search-and-Betray\WhiteNet\obj\Debug\WhiteNet.pdb

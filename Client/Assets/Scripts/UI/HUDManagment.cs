@@ -22,11 +22,14 @@ public class HUDManagment : MonoBehaviour
 	[Header("Weapon Mode")]
 	public static Text fireMode;
 
-     
-	/// <summary>
-	/// Start this instance. Searches gameobjects for static attributes.
-	/// </summary>
-	void Start()
+    [Header("Connection Status")]
+    public static Text connectionStatus;
+
+
+    /// <summary>
+    /// Start this instance. Searches gameobjects for static attributes.
+    /// </summary>
+    void Start()
 	{
 		playerInfo = GameObject.Find("Text_PlayerInfo").GetComponent<Text>();
 		playerColor = GameObject.Find("User_Color").GetComponent<Image>();
@@ -36,6 +39,7 @@ public class HUDManagment : MonoBehaviour
 		currentAmmo = GameObject.Find("Text_CurrentAmmo").GetComponent<Text>();
 		maxAmmo = GameObject.Find("Text_MaxAmmo").GetComponent<Text>();
 		fireMode = GameObject.Find("Text_FireMode").GetComponent<Text>();
+        connectionStatus = GameObject.Find("Text_ConnectionStatus").GetComponent<Text>();
         crosshair = GameObject.Find("Crosshair").GetComponent<Image>();
     }
 
@@ -138,6 +142,11 @@ public class HUDManagment : MonoBehaviour
     public static void SetCrosshair(bool on)
     {
         crosshair.enabled = on;
+    }
+
+    public static void SetConnectionStatus(string status)
+    {
+        connectionStatus.text = status;
     }
 }
 
