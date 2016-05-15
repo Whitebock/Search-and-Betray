@@ -157,12 +157,12 @@ public class PlayerInfo : MonoBehaviour
 
     // ------------------------- Netzwerk -------------------------
 
-    private void Client_OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health)
+    private void Client_OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-        if (playerid == PlayerID)
+        if (player.ID == PlayerID)
         {
-            LifeEnergy = health;
-            HUDManagment.SetPlayerHealth(health);
+            LifeEnergy = player.Health;
+            HUDManagment.SetPlayerHealth(player.Health);
         }
     }
     public void Disconnect()
