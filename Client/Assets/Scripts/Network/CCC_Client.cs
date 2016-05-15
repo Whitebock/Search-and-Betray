@@ -18,7 +18,7 @@ public class CCC_Client
     private static CCC_Client singleton;
     #endregion
 
-    private struct DeserializedPlayer
+    public struct DeserializedPlayer
     {
         public int ID, TeamID, Health, Armour;
         public bool Crouching;
@@ -83,7 +83,7 @@ public class CCC_Client
 
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
-    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health);
+    public delegate void UpdateEvent(DeserializedPlayer player);
     public delegate void ShootEvent(Vector3 position);
 
     #endregion
@@ -104,6 +104,7 @@ public class CCC_Client
         Application.runInBackground = true;
         client = new Client();
         client.DataReceived += OnDataReceived;
+        client.Timeout += OnTimeout;
     }
 
     #endregion
@@ -123,7 +124,7 @@ public class CCC_Client
         {
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
-            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
+            OnPlayerUpdate(d);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
         {
@@ -149,7 +150,7 @@ public class CCC_Client
                     DeserializedPlayer d = new DeserializedPlayer(serialized);
 
                     syncdata.Add(d.ID, d.Username);
-                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
+                    OnPlayerUpdate(d);
 
                     i += serialized.Length;
 
@@ -165,6 +166,11 @@ public class CCC_Client
         {
             Debug.Log(packet.Flag);
         }
+    }
+    
+    private void OnTimeout(byte[] data)
+    {
+        HUDManagment.SetConnectionStatus("Server Timeout");
     }
 
     #region Network Methodes
@@ -267,8 +273,25 @@ public class CCC_Client
     #endregion
 
     #region Send Methodes
+    private void SendPacket(CCC_Packet packet)
+    {
+        if (client.Connected)
+        {
+            try
+            {
+                client.Send(packet);
+            }
+            catch (Exception)
+            {
+                HUDManagment.SetConnectionStatus("Lost connection");
+            }
+        }
+        else
+            HUDManagment.SetConnectionStatus("Not connected to a Server");
+    }
     public void SendTransform(Transform transform, Vector3 velocity)
     {
+        
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_MOVE);
 
         List<byte> data = new List<byte>();
@@ -290,7 +313,7 @@ public class CCC_Client
 
         packet.Data = data.ToArray();
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     public void SendCrouch(bool crouching)
@@ -298,7 +321,7 @@ public class CCC_Client
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_CROUCH);
         packet.Data = BitConverter.GetBytes(crouching);
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     public void SendShot(Vector3 position, int? playerid = null, int? amount = null)
@@ -324,7 +347,7 @@ public class CCC_Client
         }
         packet.Data = temp.ToArray();
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     #endregion
