@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 
+//Borucki
+
 public class HUDManagment : MonoBehaviour 
 {
 	[Header("Player Information")]
