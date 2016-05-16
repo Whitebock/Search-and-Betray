@@ -50,7 +50,7 @@ namespace WhiteNet.Server
         public ServerClient(TcpClient tcp)
         {
             tcpClient = tcp;
-            tcpClient.ReceiveTimeout = 500;
+            tcpClient.ReceiveTimeout = 5000;
             IPEndPoint endpoint = (IPEndPoint)tcp.Client.LocalEndPoint;
             address = endpoint.Address;
 
@@ -71,7 +71,17 @@ namespace WhiteNet.Server
 
             // Get the header (length of the packet).
             byte[] header = new byte[2];
-            s.Read(header, 0, 2);
+            try
+            {
+                s.Read(header, 0, 2);
+            }
+            catch (IOException e)
+            {
+                // Timeout.
+                Timeout(new byte[0]);
+                EndRead();
+                throw new IOException("Read Timeout", e);
+            }
             UInt16 length = BitConverter.ToUInt16(header, 0);
 
             // Now read the actual data.
@@ -137,6 +147,7 @@ namespace WhiteNet.Server
             catch (IOException)
             {
                 // Timeout.
+                Timeout(new byte[0]);
                 EndRead();
                 return;
             }

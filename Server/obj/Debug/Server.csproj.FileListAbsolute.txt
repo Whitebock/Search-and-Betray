@@ -54,3 +54,17 @@ D:\Server\obj\Debug\NS_View\View.baml
 D:\Server\obj\Debug\Server.g.resources
 D:\Server\obj\Debug\Server.Properties.Resources.resources
 D:\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+E:\Projekte\GitHub\Search-and-Betray\Server\bin\Debug\Server.exe.config
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.exe
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.pdb
+E:\Projekte\GitHub\Search-and-Betray\Server\bin\Debug\Server.exe
+E:\Projekte\GitHub\Search-and-Betray\Server\bin\Debug\Server.pdb
+E:\Projekte\GitHub\Search-and-Betray\Server\bin\Debug\WhiteNet.dll
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\NS_View\View.g.cs
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server_MarkupCompile.cache
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server_MarkupCompile.lref
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\NS_View\View.baml
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.g.resources
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.Properties.Resources.resources
+E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.csproj.GenerateResource.Cache

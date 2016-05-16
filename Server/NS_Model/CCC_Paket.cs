@@ -159,9 +159,7 @@ namespace Server.NS_Model
         public static implicit operator CCC_Packet(byte[] packet)
         {
             if (packet.Length == 0)
-            {
-                return new CCC_Packet(Type.LOGOUT);
-            }
+                throw new ArgumentOutOfRangeException("packet", packet, "Array must at least contain one byte");
             Type type = (Type)packet[0];
             byte[] data = packet.Skip(1).ToArray();
             CCC_Packet d = new CCC_Packet(type, data);
