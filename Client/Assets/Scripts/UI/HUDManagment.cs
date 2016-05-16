@@ -6,31 +6,39 @@ using System;
 public class HUDManagment : MonoBehaviour 
 {
 	[Header("Player Information")]
-	public static Text playerInfo;
+	private static Text playerInfo;
 
 	[Header("Player Status")]
-	public static Image playerColor;
-	public static Slider playerHealth;
-	public static Slider playerArmor;
+	private static Image playerColor;
+	private static Slider playerHealth;
+	private static Slider playerArmor;
 
 	[Header("Weapon Status")]
-	public static Text weaponInfo;
-	public static Text currentAmmo;
-	public static Text maxAmmo;
-    public static Image crosshair;
+	private static Text weaponInfo;
+	private static Text currentAmmo;
+	private static Text maxAmmo;
+	private static Image crosshair;
 
 	[Header("Weapon Mode")]
-	public static Text fireMode;
+	private static Text fireMode;
 
     [Header("Connection Status")]
-    public static Text connectionStatus;
+	private static GameObject connectionPanel;
+	private static Text connectionStatus;
+	private static Image connectionImage;
+
+	//Sprites
+	private static Sprite connectionLost;
+	private static Sprite connectionTimeOut;
+	private static Sprite connectionNotConnected;
 
 
     /// <summary>
     /// Start this instance. Searches gameobjects for static attributes.
     /// </summary>
-    void Start()
+    void Awake()
 	{
+		//Bind static avaible objects
 		playerInfo = GameObject.Find("Text_PlayerInfo").GetComponent<Text>();
 		playerColor = GameObject.Find("User_Color").GetComponent<Image>();
 		playerHealth = GameObject.Find("Slider_Health").GetComponent<Slider>();
@@ -41,6 +49,14 @@ public class HUDManagment : MonoBehaviour
 		fireMode = GameObject.Find("Text_FireMode").GetComponent<Text>();
         connectionStatus = GameObject.Find("Text_ConnectionStatus").GetComponent<Text>();
         crosshair = GameObject.Find("Crosshair").GetComponent<Image>();
+
+		//Search Resources
+		connectionLost = Resources.Load<Sprite>("IconLost");
+		connectionTimeOut = Resources.Load<Sprite>("IconTime");
+		connectionNotConnected = Resources.Load<Sprite>("IconNo");
+
+		//Setup 
+		SetConnectionStatus(ConnectionStatus.Estabalished);
     }
 
 	/// <summary>
@@ -105,7 +121,7 @@ public class HUDManagment : MonoBehaviour
 	/// <param name="weaponMaxAmmo">Weapon max ammo. Maximal ammo that fits into weapon.</param>
 	public static void SetWeaponInfo(string currentWeaponinfo, int weaponCurrentAmmo, int weaponMaxAmmo)
 	{
-		weaponInfo.text = currentWeaponinfo;
+		weaponInfo.text = currentWeaponinfo.ToUpper();
 		currentAmmo.text = weaponCurrentAmmo.ToString();
 		maxAmmo.text = weaponMaxAmmo.ToString();
 	}
@@ -144,9 +160,75 @@ public class HUDManagment : MonoBehaviour
         crosshair.enabled = on;
     }
 
-    public static void SetConnectionStatus(string status)
+	/// <summary>
+	/// Sets the connection status on HUD.
+	/// </summary>
+	/// <param name="mainstatus">Select a status from ConnectionStatus-enum. Estabalished will deactivate the hud message.</param>
+	/// <param name="statustext">Already provided by enum, but you can overwrite the message if neccessary</param>
+	public static void SetConnectionStatus(ConnectionStatus mainstatus, string statustext = null)
     {
-        connectionStatus.text = status;
+		//Bind additional objects
+		connectionStatus = GameObject.Find("Text_ConnectionStatus").GetComponent<Text>();
+		connectionImage = GameObject.Find("Image_ConnectionState").GetComponent<Image>();
+		connectionPanel = GameObject.Find("Panel_ConnectionState");
+
+
+		if (mainstatus != ConnectionStatus.Estabalished) 
+		{
+			switch (mainstatus) 
+			{
+			case ConnectionStatus.Lost:
+				connectionImage.color = new Color(251,68,0,255);
+				connectionImage.sprite = connectionLost;
+				if (statustext != null) 
+				{
+					connectionStatus.text = statustext.ToUpper();
+				} 
+				else 
+				{
+					connectionStatus.text = "CONNECTION LOST";
+				}
+				connectionPanel.GetComponent<CanvasGroup>().alpha = 1.0F;
+				break;
+			case ConnectionStatus.TimeOut:
+				connectionImage.sprite = connectionTimeOut;
+				connectionImage.color = new Color(0,213,255,255);
+				if (statustext != null) 
+				{
+					connectionStatus.text = statustext.ToUpper();
+				} 
+				else 
+				{
+					connectionStatus.text = "TIME OUT";
+				}
+				connectionPanel.GetComponent<CanvasGroup>().alpha = 1.0F;
+				break;
+			case ConnectionStatus.NotConnected:
+				connectionImage.sprite = connectionNotConnected;
+				connectionImage.color = new Color(255,0,0,255);
+				if (statustext != null) 
+				{
+					connectionStatus.text = statustext.ToUpper();
+				} 
+				else 
+				{
+					connectionStatus.text = "NOT CONNECTED";
+				}
+				connectionPanel.GetComponent<CanvasGroup>().alpha = 1.0F;
+				break;
+			default:
+				connectionPanel.GetComponent<CanvasGroup>().alpha = 0.0F;
+				connectionStatus.text = string.Empty;
+				connectionImage = null;
+				break;
+			}
+		}
+		else
+		{
+			connectionPanel.GetComponent<CanvasGroup>().alpha = 0.0F;
+			connectionStatus.text = string.Empty;
+			connectionImage = null;
+		}
     }
 }
 
@@ -157,4 +239,12 @@ public enum FireMode
 {
 	Automatic = 'A',
 	Single = 'S'
+}
+
+public enum ConnectionStatus
+{
+	Lost,
+	TimeOut,
+	NotConnected,
+	Estabalished
 }

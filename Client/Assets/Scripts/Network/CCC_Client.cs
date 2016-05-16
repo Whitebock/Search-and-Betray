@@ -170,7 +170,7 @@ public class CCC_Client
     
     private void OnTimeout(byte[] data)
     {
-        HUDManagment.SetConnectionStatus("Server Timeout");
+		HUDManagment.SetConnectionStatus(ConnectionStatus.TimeOut);
     }
 
     #region Network Methodes
@@ -283,11 +283,13 @@ public class CCC_Client
             }
             catch (Exception)
             {
-                HUDManagment.SetConnectionStatus("Lost connection");
+				HUDManagment.SetConnectionStatus(ConnectionStatus.Lost);
             }
         }
         else
-            HUDManagment.SetConnectionStatus("Not connected to a Server");
+		{
+			HUDManagment.SetConnectionStatus(ConnectionStatus.NotConnected);
+		}
     }
     public void SendTransform(Transform transform, Vector3 velocity)
     {
