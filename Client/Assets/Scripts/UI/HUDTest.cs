@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//Borucki
+
+
 public class HUDTest : MonoBehaviour {
 
 	[Header("Main HUD Test")]
