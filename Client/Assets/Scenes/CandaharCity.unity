@@ -871,19 +871,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11449222, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_Color.r
@@ -3394,7 +3394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79c891d1198b4464db250e5bfd33c7ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onlinePlayerPrefab: {fileID: 409882, guid: 538c92f124f96a847a8b0ac0f012f444, type: 2}
+  onlinePlayerPrefab: {fileID: 412604, guid: 42c182c1681cd7441a5b46205e72542b, type: 2}
 --- !u!4 &1824462303
 Transform:
   m_ObjectHideFlags: 0
