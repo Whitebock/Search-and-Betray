@@ -6,7 +6,7 @@ using System;
 
 public class LocalGameManager : MonoBehaviour
 {
-    public Transform[] onlinePlayerPrefabs;                                            // Prefab mit dem neue OnlineSpieler instanziiert werden
+    public Transform onlinePlayerPrefab;                                            // Prefab mit dem neue OnlineSpieler instanziiert werden
     private List<OnlinePlayerInfo> onlinePlayer = new List<OnlinePlayerInfo>();     // Liste aller OnlineSpieler
     private PlayerInfo player;                                                      // Referenz auf den Spieler
     private MainCameraManager cameraManager;                                        // Referenz auf den KameraManager
@@ -106,24 +106,17 @@ public class LocalGameManager : MonoBehaviour
         cameraManager.UnfrezzeCamera(false);
     }
     // ---------------------------------------------- OnlineSpieler ----------------------------------------------
-    private void ConnectOnlinePlayer(int id, string name, int teamID)
+    private void ConnectOnlinePlayer(int id, string name)
     {
         Dispatcher.Instance.Invoke(delegate ()
         {
             // OnlinePlayer instanziieren
-            if (teamID <= onlinePlayerPrefabs.Length)
-            {
-                OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefabs[teamID -1]).GetComponent<OnlinePlayerInfo>();
-            }
-            else
-            {
-                OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefabs[0]).GetComponent<OnlinePlayerInfo>();
-            }
+                OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefab).GetComponent<OnlinePlayerInfo>();
 
             // OnlinePlayer initialisieren
             newPlayer.PlayerID = id;
             newPlayer.PlayerName = name;
-            newPlayer.TeamID = teamID;
+            newPlayer.TeamID = 0;
 
             // Referenz merken
             onlinePlayer.Add(newPlayer);
