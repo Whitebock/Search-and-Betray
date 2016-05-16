@@ -81,7 +81,7 @@ public class CCC_Client
 
     #region Delegates
 
-    public delegate void JoinEvent(int playerid, string playername);
+    public delegate void JoinEvent(int playerid, string playername, int teamID);
     public delegate void SyncEvent(Dictionary<int, string> players);
     public delegate void UpdateEvent(DeserializedPlayer player);
     public delegate void ShootEvent(Vector3 position);
@@ -117,8 +117,8 @@ public class CCC_Client
         {
             int playerid = packet.Data[0];
             string username = Encoding.Unicode.GetString(packet.Data.Skip(1).ToArray());
-
-            OnPlayerJoin(playerid, username);
+            int teamID = packet.Data[2];
+            OnPlayerJoin(playerid, username, teamID);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
         {
