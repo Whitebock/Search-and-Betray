@@ -9,6 +9,9 @@ using System.Text;
 using UnityEngine.SceneManagement;
 using WhiteNet;
 
+//Borucki
+
+
 public class MainMenuManagment : MonoBehaviour 
 {
 	/// ! Attributes 

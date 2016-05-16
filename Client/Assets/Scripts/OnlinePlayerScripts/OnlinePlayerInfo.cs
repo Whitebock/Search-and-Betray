@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Network;
 
@@ -11,8 +11,9 @@ public class OnlinePlayerInfo : MonoBehaviour
 	 */
 
 	// Felder
-	private int playerID;							// Spieler-ID
-	private string playerName = "Test-Spieler";		// Spielername
+	private int playerID;                           // Spieler-ID
+    private int teamID;                             //TeamID
+    private string playerName = "Test-Spieler";		// Spielername
 	private bool isCrouching;						// Ob Spieler gerade geduckt ist
 
 	private OnlinePlayerUI_Manager uiManager;		// Spieler-UI
@@ -34,8 +35,9 @@ public class OnlinePlayerInfo : MonoBehaviour
 	{ get { return isCrouching; } }
 	public bool IsGrounded
 	{ get { return isGrounded; } }
-
-	void Start()
+    public int TeamID
+    { get { return teamID; } set { playerID = value; } }
+    void Start()
 	{
 		// Objekt umbenennen
 		transform.name = "OnlinePlayer_" + playerName;
@@ -57,19 +59,19 @@ public class OnlinePlayerInfo : MonoBehaviour
 	}    
 
     // ---------------------- Netzwerkschnittstelle ----------------------
-    private void OnPlayerUpdate(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health)
+    private void OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-        if (PlayerID != playerid) return;
+        if (PlayerID != player.ID) return;
 
         Dispatcher.Instance.Invoke(delegate ()
         {
-            transform.position = position;
-            transform.rotation = rotation;
-            transform.localScale = scale;
-            isCrouching = crouching;
+            transform.position = player.Position;
+            transform.rotation = player.Rotation;
+            transform.localScale = player.Scale;
+            isCrouching = player.Crouching;
 
-            anim.Speed_straight = Mathf.Lerp(anim.Speed_straight, velocity.z, 0.6f);
-            anim.Speed_sideways = Mathf.Lerp(anim.Speed_sideways, velocity.x, 0.6f);
+            anim.Speed_straight = Mathf.Lerp(anim.Speed_straight, player.Velocity.z, 0.6f);
+            anim.Speed_sideways = Mathf.Lerp(anim.Speed_sideways, player.Velocity.x, 0.6f);
         });
     }
     void OnDestroy()
