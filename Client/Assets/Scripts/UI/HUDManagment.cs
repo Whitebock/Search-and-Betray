@@ -63,6 +63,7 @@ public class HUDManagment : MonoBehaviour
 	/// <param name="health">The health that should be set.</param>
 	public static void SetPlayerHealth(int health)
 	{
+        Debug.Log("Setting health");
 		playerHealth.value = health;
 	}
 

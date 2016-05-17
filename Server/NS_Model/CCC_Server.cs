@@ -314,7 +314,11 @@ namespace Server.NS_Model
 
         private void Player_Shoot(CCC_Player player, CCC_Player.Vector3 position, int? playerid = null, int? amount = null)
         {
-            Debug.WriteLine("{0} shot {1} with {2}", player.ID, playerid, amount);
+            List<byte> shootpacket = new List<byte>();
+            shootpacket.AddRange(BitConverter.GetBytes(playerid.HasValue));
+            byte[] pos = position;
+            shootpacket.AddRange(pos);
+
             // Check if a player was hit.
             if (playerid.HasValue)
             {
@@ -330,6 +334,8 @@ namespace Server.NS_Model
 
                         // Set health and send update
                         players[i].TakeDamage((byte)damage);
+                        shootpacket.Add((byte)damage);
+                        shootpacket.Add(players[i].ID);
                         SendPlayerUpdate(players[i]);
                     }
                 }
@@ -337,7 +343,7 @@ namespace Server.NS_Model
 
             // Send shoot packet
             CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SHOOT);
-            packet.Data = position;
+            packet.Data = shootpacket.ToArray();
 
             for (int i = 0; i < players.Count; i++)
             {

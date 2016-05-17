@@ -18,7 +18,7 @@ public class CCC_Client
     private static CCC_Client singleton;
     #endregion
 
-    private struct DeserializedPlayer
+    public struct DeserializedPlayer
     {
         public int ID, TeamID, Health, Armour;
         public bool Crouching;
@@ -83,7 +83,7 @@ public class CCC_Client
 
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
-    public delegate void UpdateEvent(int playerid, Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 scale, bool crouching, int health);
+    public delegate void UpdateEvent(DeserializedPlayer player);
     public delegate void ShootEvent(Vector3 position);
 
     #endregion
@@ -123,7 +123,7 @@ public class CCC_Client
         {
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
-            OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
+            OnPlayerUpdate(d);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
         {
@@ -132,8 +132,9 @@ public class CCC_Client
             position.x = BitConverter.ToSingle(packet.Data, 1);
             position.y = BitConverter.ToSingle(packet.Data, 5);
             position.z = BitConverter.ToSingle(packet.Data, 9);
-            Debug.Log("SHOT_RECIEVED");
+
             OnPlayerShoot(position);
+            Debug.Log("SHOT_RECIEVED");
         }
         else if (packet.Flag == CCC_Packet.Type.SYNC)
         {
@@ -149,7 +150,7 @@ public class CCC_Client
                     DeserializedPlayer d = new DeserializedPlayer(serialized);
 
                     syncdata.Add(d.ID, d.Username);
-                    OnPlayerUpdate(d.ID, d.Position, d.Rotation, d.Velocity, d.Scale, d.Crouching, d.Health);
+                    OnPlayerUpdate(d);
 
                     i += serialized.Length;
 
