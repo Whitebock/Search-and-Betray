@@ -104,6 +104,7 @@ public class CCC_Client
         Application.runInBackground = true;
         client = new Client();
         client.DataReceived += OnDataReceived;
+        client.Timeout += OnTimeout;
     }
 
     #endregion
@@ -116,7 +117,6 @@ public class CCC_Client
         {
             int playerid = packet.Data[0];
             string username = Encoding.Unicode.GetString(packet.Data.Skip(1).ToArray());
-
             OnPlayerJoin(playerid, username);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
@@ -166,6 +166,11 @@ public class CCC_Client
         {
             Debug.Log(packet.Flag);
         }
+    }
+    
+    private void OnTimeout(byte[] data)
+    {
+		HUDManagment.SetConnectionStatus(ConnectionStatus.TimeOut);
     }
 
     #region Network Methodes
@@ -268,8 +273,27 @@ public class CCC_Client
     #endregion
 
     #region Send Methodes
+    private void SendPacket(CCC_Packet packet)
+    {
+        if (client.Connected)
+        {
+            try
+            {
+                client.Send(packet);
+            }
+            catch (Exception)
+            {
+				HUDManagment.SetConnectionStatus(ConnectionStatus.Lost);
+            }
+        }
+        else
+		{
+			HUDManagment.SetConnectionStatus(ConnectionStatus.NotConnected);
+		}
+    }
     public void SendTransform(Transform transform, Vector3 velocity)
     {
+        
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_MOVE);
 
         List<byte> data = new List<byte>();
@@ -291,7 +315,7 @@ public class CCC_Client
 
         packet.Data = data.ToArray();
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     public void SendCrouch(bool crouching)
@@ -299,7 +323,7 @@ public class CCC_Client
         CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_CROUCH);
         packet.Data = BitConverter.GetBytes(crouching);
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     public void SendShot(Vector3 position, int? playerid = null, int? amount = null)
@@ -325,7 +349,7 @@ public class CCC_Client
         }
         packet.Data = temp.ToArray();
 
-        client.Send(packet);
+        SendPacket(packet);
     }
 
     #endregion

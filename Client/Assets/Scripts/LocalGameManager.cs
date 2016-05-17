@@ -111,11 +111,12 @@ public class LocalGameManager : MonoBehaviour
         Dispatcher.Instance.Invoke(delegate ()
         {
             // OnlinePlayer instanziieren
-            OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefab).GetComponent<OnlinePlayerInfo>();
+                OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefab).GetComponent<OnlinePlayerInfo>();
 
             // OnlinePlayer initialisieren
             newPlayer.PlayerID = id;
             newPlayer.PlayerName = name;
+            newPlayer.TeamID = 0;
 
             // Referenz merken
             onlinePlayer.Add(newPlayer);

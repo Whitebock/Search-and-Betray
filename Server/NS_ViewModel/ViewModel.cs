@@ -97,6 +97,7 @@ namespace Server.NS_ViewModel
             server.PlayerMoved += OnPlayerMove;
             server.PlayerCrouch += OnPlayerCrouch;
             server.Sync += Server_Sync;
+            
         }
 
         private void Server_Sync(DateTime datetime)

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -28,6 +26,8 @@ namespace WhiteNet.Client
         #region Events
 
         public event ByteEvent DataReceived = delegate { };
+        public event ByteEvent Timeout = delegate { };
+        public event ByteEvent ConnectionLost = delegate { };
 
         #endregion
 
@@ -60,10 +60,11 @@ namespace WhiteNet.Client
         public void Connect(IPAddress address, int port)
         {
             if (connected)
-                throw new Exception("Alread connected to a Server");
+                throw new Exception("Already connected to a Server");
             try
             {
                 tcpClient = new TcpClient();
+                tcpClient.ReceiveTimeout = 5000;
                 tcpClient.Connect(address, port);
                 writer = new BinaryWriter(tcpClient.GetStream());
                 connected = true;
@@ -96,8 +97,8 @@ namespace WhiteNet.Client
             if (!connected)
                 throw new Exception("Not connected to a Server");
 
-            if (packet.Length > 255)
-                throw new ArgumentException("Packet must be smaller than 255 bytes, because the header is 2 bytes long", "packet");
+            if (packet.Length > 65535)
+                throw new ArgumentException("Packet must be smaller than 65535 bytes, because the header is 2 bytes long", "packet");
 
             // Get the length of the packet as header.
             byte[] header = BitConverter.GetBytes((UInt16)packet.Length);
@@ -106,10 +107,18 @@ namespace WhiteNet.Client
             byte[] data = new byte[header.Length + packet.Length];
             header.CopyTo(data, 0);
             packet.CopyTo(data, header.Length);
-            
+
             // Send the data.
-            writer.Write(data);
-            writer.Flush();
+            try
+            {
+                writer.Write(data);
+                writer.Flush();
+            }
+            catch (SocketException)
+            {
+                //Disconnect();
+                ConnectionLost(new byte[0]);
+            }
         }
 
         #endregion
@@ -126,7 +135,18 @@ namespace WhiteNet.Client
 
             // Get the header (length of the packet).
             byte[] header = new byte[2];
-            s.Read(header, 0, 2);
+            try
+            {
+                s.Read(header, 0, 2);
+            }
+            catch (IOException e)
+            {
+                // Timeout.
+                Timeout(new byte[0]);
+                EndRead();
+                Disconnect();
+                throw new IOException("Read Timeout", e);
+            }
             UInt16 length = BitConverter.ToUInt16(header, 0);
 
             // Now read the actual data.
@@ -158,15 +178,26 @@ namespace WhiteNet.Client
             try
             {
                 Stream s = tcpClient.GetStream();
+                byte[] packet = new byte[0];
+                try
+                {
+                    // Get the header (length of the packet).
+                    byte[] header = new byte[2];
+                    s.Read(header, 0, 2);
+                    UInt16 length = BitConverter.ToUInt16(header, 0);
 
-                // Get the header (length of the packet).
-                byte[] header = new byte[2];
-                s.Read(header, 0, 2);
-                UInt16 length = BitConverter.ToUInt16(header, 0);
-
-                // Now read the actual data.
-                byte[] packet = new byte[length];
-                s.Read(packet, 0, length);
+                    // Now read the actual data.
+                    packet = new byte[length];
+                    s.Read(packet, 0, length);
+                }
+                catch (IOException)
+                {
+                    // Timeout.
+                    Timeout(new byte[0]);
+                    EndRead();
+                    Disconnect();
+                    return;
+                }
 
                 DataReceived(packet);
 
