@@ -558,7 +558,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &281101051 stripped
@@ -871,19 +872,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11449222, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_Color.r
@@ -1410,7 +1411,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &655473007 stripped
@@ -1587,7 +1589,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &764697436
@@ -1697,7 +1700,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &773629731
@@ -2059,7 +2063,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &898558648 stripped
@@ -2474,7 +2479,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1208700866 stripped
@@ -3187,7 +3193,8 @@ Prefab:
       propertyPath: m_Name
       value: Shootgun_Spas12
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &1768897000 stripped
@@ -3377,7 +3384,7 @@ GameObject:
   - 114: {fileID: 1824462302}
   m_Layer: 0
   m_Name: GameManagement
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3484,7 +3491,8 @@ Prefab:
       propertyPath: m_Name
       value: Shootgun_Spas12
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1862732036 stripped
@@ -3695,7 +3703,8 @@ Prefab:
       value: 
       objectReference: {fileID: -5082302936091411984, guid: 0000000000000000d000000000000000,
         type: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11409512, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1153a2a425da5e14484ad8d9f420e2d0, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &2055655302

@@ -44,7 +44,7 @@ public class LocalGameManager : MonoBehaviour
     }
 
     // Der Spieler in der Scene ist deaktiviert und die Kameraposition ist fest
-    private void StopPlayer()
+    public void StopPlayer()
     {
         cameraManager.FrezzeCamera();
         player.gameObject.SetActive(false);
@@ -89,7 +89,7 @@ public class LocalGameManager : MonoBehaviour
     }
 
     // ------------------------------------------------- Spieler -------------------------------------------------
-    private void SpawnPlayer(int spawnIndex)
+    public void SpawnPlayer(int spawnIndex)
     {
         int x = CheckSpawnIndex(spawnIndex);                // Spawnpoint checken
         player.transform.position = spawns[x].position;     // positionieren
@@ -97,7 +97,7 @@ public class LocalGameManager : MonoBehaviour
         player.gameObject.SetActive(true);                  // aktivieren
         cameraManager.UnfrezzeCamera(false);                // Spieler wieder in Egoperspektive bringen
     }
-    private void SpawnPlayer()
+    public void SpawnPlayer()
     {
         int x = CheckSpawnIndex((int)UnityEngine.Random.Range(0, spawns.Length)); // Zufälligen Spawnpoint setzen und checken
         player.transform.position = spawns[x].position;
