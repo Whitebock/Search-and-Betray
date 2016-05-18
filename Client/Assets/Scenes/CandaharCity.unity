@@ -871,19 +871,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22476418, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22498302, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11449222, guid: 0d72a6cd134290b44acebf0558216f41, type: 2}
       propertyPath: m_Color.r
