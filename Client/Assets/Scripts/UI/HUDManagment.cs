@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 using System;
 
@@ -28,6 +30,9 @@ public class HUDManagment : MonoBehaviour
 	private static GameObject connectionPanel;
 	private static Text connectionStatus;
 	private static Image connectionImage;
+
+	[Header("Scoreboard")]
+	private static GameObject scoreboardPanel;
 
 	//Sprites
 	private static Sprite connectionLost;
@@ -232,6 +237,66 @@ public class HUDManagment : MonoBehaviour
 			connectionImage = null;
 		}
     }
+
+	/// <summary>
+	/// Sets the content of the scoreboard.
+	/// </summary>
+	/// <param name="tableContent">Table content. Prepare list with dictionaries. Each dictionary is one row. The keys from the first given row will be also used as header automatically. Example <Key>="Name" <value>="Herbert"</value></param>
+	public static void SetScoreboardContent(List<Dictionary<string,string>> tableContent)
+	{
+		scoreboardPanel = GameObject.Find("Panel_Board");
+
+
+		//Set Header and Content
+		foreach (var key in tableContent[0].Keys.ToArray()) 
+		{
+			//Header for current column
+			GameObject tempcolumn = Instantiate(Resources.Load("Board_Col")) as GameObject;
+			tempcolumn.transform.SetParent(scoreboardPanel.transform,false);
+
+			GameObject tempheader = Instantiate(Resources.Load("Board_HeaderRow")) as GameObject;
+			tempheader.transform.SetParent(tempcolumn.transform,false);
+			tempheader.GetComponentInChildren<Text>().text = " " + key.ToString();
+
+			//Content for column
+			foreach (Dictionary<string,string> row in tableContent) 
+			{
+				if(row.ContainsKey(key.ToString()))
+				{
+					GameObject temprow = Instantiate(Resources.Load("Board_Row")) as GameObject;
+					temprow.transform.SetParent(tempcolumn.transform,false);
+					temprow.GetComponentInChildren<Text>().text = " " + row[key.ToString()];
+				}
+				else
+				{
+					GameObject temprow = Instantiate(Resources.Load("Board_Row")) as GameObject;
+					temprow.transform.SetParent(tempcolumn.transform,false);
+					temprow.GetComponentInChildren<Text>().text = " ";
+				}
+			}
+
+
+		}
+
+
+
+	}
+
+	/// <summary>
+	/// Set the visibility of the scoreboard. Setup is "false"
+	/// </summary>
+	/// <param name="on">If set to <c>true</c> on.</param>
+	public static void SetDisplayScoreboard(bool on)
+	{
+		if (on) 
+		{
+			scoreboardPanel.GetComponent<CanvasGroup>().alpha = 1.0F;
+		} 
+		else 
+		{
+			scoreboardPanel.GetComponent<CanvasGroup>().alpha = 0.0F;
+		}
+	}
 }
 
 /// <summary>
