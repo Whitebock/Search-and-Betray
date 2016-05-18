@@ -18,7 +18,7 @@ public class PlayerInfo : MonoBehaviour
 	private static Rigidbody phy;
 	private static float inp_horizontal, inp_vertical;
 	private static bool isGrounded, isCrouchingInp, isCrouching, crouchToggle, unconscious;
-
+    public LocalGameManager myGameManager;
     // Events
     /*
 	 * Erklärung:
@@ -45,8 +45,9 @@ public class PlayerInfo : MonoBehaviour
 	{
         get { return lifeEnergy; }
         set {
-            
+
             lifeEnergy = value;
+            HUDManagment.SetPlayerHealth(lifeEnergy);
         }
     }
 	public static Rigidbody Phy														// Rigitbody des Spielers
@@ -94,6 +95,7 @@ public class PlayerInfo : MonoBehaviour
 		phy = GetComponent<Rigidbody>();
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
+        myGameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<LocalGameManager>();
         CCC_Client.Instance.OnPlayerUpdate += Client_OnPlayerUpdate;
     }
     
@@ -135,6 +137,11 @@ public class PlayerInfo : MonoBehaviour
         //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
 
         // ------------------------------------------------------------------
+
+        if (lifeEnergy <= 0)
+        {
+            Kill();
+        }
     }
 
     void FixedUpdate()
@@ -146,8 +153,15 @@ public class PlayerInfo : MonoBehaviour
 	// Todessequenz
 	public void Kill()
 	{
-		gameObject.SetActive(false);
-	}
+        myGameManager.StopPlayer();
+        Invoke("Respawn", 5.0f);
+    }
+
+    void Respawn()
+    {
+        LifeEnergy = 100;
+        myGameManager.SpawnPlayer();
+    }
 
 	void OnDisabled()
 	{
