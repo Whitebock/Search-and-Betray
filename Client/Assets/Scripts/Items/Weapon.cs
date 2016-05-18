@@ -135,7 +135,7 @@ public class Weapon : MonoBehaviour
     /// Method to play sound with weapon as source.
     /// </summary>
     /// <param name="toPlay">Audioclip which shall be played</param>
-    void PlaySound(AudioClip toPlay)
+    public void PlaySound(AudioClip toPlay)
     {
         if (myAudioSource != null)
         {

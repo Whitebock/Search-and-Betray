@@ -1428,7 +1428,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103084}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1873.1093, y: 504.52158, z: 912.8997}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 459712}
@@ -2665,7 +2665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerID: 0
   bodyDamageHandler: {fileID: 11484456}
-  posOffset: {x: 20, y: 0, z: 0}
+  posOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &11441758
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2760,6 +2760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tracer: {fileID: 108528, guid: 1b0707dd4067d5e47acf877af27886f3, type: 2}
+  defaultShot: {fileID: 8300000, guid: 5cd898ab0dfefc14f8c2c617d7bb3545, type: 3}
 --- !u!114 &11487738
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -44,8 +44,8 @@ public class PlayerInfo : MonoBehaviour
 	public static int LifeEnergy													// Leben
 	{
         get { return lifeEnergy; }
-        set {
-
+        set
+		{
             lifeEnergy = value;
             HUDManagment.SetPlayerHealth(lifeEnergy);
         }
@@ -81,7 +81,8 @@ public class PlayerInfo : MonoBehaviour
 	public static bool IsCrouching													// Ist tatsächlich geduckt
 	{
         get { return isCrouching; }
-        set {
+        set
+		{
             isCrouching = value;
             CCC_Client.Instance.SendCrouch(value);
         }
@@ -95,7 +96,6 @@ public class PlayerInfo : MonoBehaviour
 		phy = GetComponent<Rigidbody>();
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
-        myGameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<LocalGameManager>();
         CCC_Client.Instance.OnPlayerUpdate += Client_OnPlayerUpdate;
     }
     
@@ -128,14 +128,9 @@ public class PlayerInfo : MonoBehaviour
 
 
         // --------------------- Netzwerkschnittstelle ---------------------
-
         Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
 
         CCC_Client.Instance.SendTransform(transform, hilf);
-
-        // Granatenwurf senden
-        //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
-
         // ------------------------------------------------------------------
     }
 
@@ -153,7 +148,6 @@ public class PlayerInfo : MonoBehaviour
 	}
 
     // ------------------------- Netzwerk -------------------------
-
     private void Client_OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
         if (player.ID == PlayerID)
