@@ -40,7 +40,7 @@ public class Tracer : MonoBehaviour {
     /// <param name="hit">The hit object of the raycast.</param>
     public void StartTracer(Ray myRay, RaycastHit hit)
     {
-		if (hit.transform == null)
+		if (hit.distance > 300)
 		{
 			hit = new RaycastHit();
 			hit.point = myRay.GetPoint(300);

@@ -3,10 +3,11 @@ using System.Collections;
 
 public class OnlinePlayerWeaponHinge : MonoBehaviour
 {
-	private OnlinePlayerInfo onlinePlayer;	// Referenz auf diesen Online Spieler
-	private CollectableWeapon weapon;		// Attribut dass das Waffen-GameObject speichert
-	private Transform propsManager;			// Parrent-Objekt des Items, wenn es noch nicht aufgesammelt wurde
-	private Network_SendTransform network;	// Referenz auf die Netzwerkkomponente des Objektes
+	private OnlinePlayerInfo onlinePlayer;		// Referenz auf diesen Online Spieler
+	private CollectableWeapon weapon;			// Attribut dass das Waffen-GameObject speichert
+	private Transform propsManager;				// Parrent-Objekt des Items, wenn es noch nicht aufgesammelt wurde
+	private Network_SendTransform network;		// Referenz auf die Netzwerkkomponente des Objektes
+	private OnlinePlayerFireWeapon fireWeapon;	// Referenz auf das Schießen-Skript
 
 	public CollectableWeapon Weapon
 	{ get { return weapon; } }
@@ -16,6 +17,7 @@ public class OnlinePlayerWeaponHinge : MonoBehaviour
 		// Initialisierungen
 		try { propsManager = GameObject.Find("PropsManager").transform; } catch {}
 		onlinePlayer = GetComponentInParent<OnlinePlayerInfo>();
+		fireWeapon = GetComponent<OnlinePlayerFireWeapon>();
 
 		// ---------------------- Netzwerkschnittstelle ----------------------
 		Netzwerk_Simulator.NetzwerkStream += Stream;
@@ -36,15 +38,17 @@ public class OnlinePlayerWeaponHinge : MonoBehaviour
 
 		network = this.weapon.GetComponent<Network_SendTransform>(); 	// Referenz auf die Netzwerkkomponente merken
 		network.Mode = PropMode.inactive; 								// Waffenposition nicht mehr über das Netzwerk senden
-		network.On_Network_DataRecieved += DropWeapon;
+		network.On_Network_DataRecieved += DropWeapon;					// Sobald Netzwerkdaten ankommen, soll die Waffe wieder fallen gelassen werden.
 
 		this.weapon.transform.SetParent(transform);						// Waffe an den Waffenanker hängen
 		this.weapon.transform.localPosition = new Vector3();			// Am Anker positionieren
 		this.weapon.transform.localRotation = Quaternion.identity;		// Am Anker rotieren
+		fireWeapon.MyWeapon = this.weapon.GetComponent<Weapon>();		// Dem Schießen-Skript die Waffe übergeben
 	}
 
 	public void DropWeapon()
 	{
+		if (fireWeapon != null) fireWeapon.MyWeapon = null;
 		if (weapon != null)
 		{
 			weapon.transform.SetParent(propsManager);	// Waffe vom Waffenanker lösen
