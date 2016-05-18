@@ -28,12 +28,14 @@ public class LocalGameManager : MonoBehaviour
         {
             bool found = false;
             foreach (OnlinePlayerInfo op in onlinePlayer)
+            {
                 if (s.Key == op.PlayerID)
                 { found = true; break; }
-
+            }
             if (!found && s.Key != PlayerInfo.PlayerID)
             {
                 ConnectOnlinePlayer(s.Key, s.Value);
+                
             }
         }
     }
@@ -114,7 +116,7 @@ public class LocalGameManager : MonoBehaviour
                 OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefab).GetComponent<OnlinePlayerInfo>();
 
             // OnlinePlayer initialisieren
-            newPlayer.PlayerID = id;
+            newPlayer.playerID = id;
             newPlayer.PlayerName = name;
             newPlayer.TeamID = 0;
 

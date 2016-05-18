@@ -137,11 +137,6 @@ public class PlayerInfo : MonoBehaviour
         //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
 
         // ------------------------------------------------------------------
-
-        if (lifeEnergy <= 0)
-        {
-            Kill();
-        }
     }
 
     void FixedUpdate()
@@ -150,18 +145,6 @@ public class PlayerInfo : MonoBehaviour
 		IsGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
 	}
 
-	// Todessequenz
-	public void Kill()
-	{
-        myGameManager.StopPlayer();
-        Invoke("Respawn", 5.0f);
-    }
-
-    void Respawn()
-    {
-        LifeEnergy = 100;
-        myGameManager.SpawnPlayer();
-    }
 
 	void OnDisabled()
 	{

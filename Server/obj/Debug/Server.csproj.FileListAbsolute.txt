@@ -68,3 +68,6 @@ E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\NS_View\View.baml
 E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.g.resources
 E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.Properties.Resources.resources
 E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.csproj.GenerateResource.Cache
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\bin\Debug\Server.exe.config
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.exe
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.pdb

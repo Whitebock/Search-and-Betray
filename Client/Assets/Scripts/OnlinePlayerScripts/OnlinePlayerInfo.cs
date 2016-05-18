@@ -11,7 +11,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	 */
 
 	// Felder
-	private int playerID;                           // Spieler-ID
+	public int playerID;                           // Spieler-ID
     private int teamID;                             //TeamID
     private string playerName = "Test-Spieler";		// Spielername
 	private bool isCrouching;						// Ob Spieler gerade geduckt ist
@@ -36,7 +36,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	public bool IsGrounded
 	{ get { return isGrounded; } }
     public int TeamID
-    { get { return teamID; } set { playerID = value; } }
+    { get { return teamID; } set { teamID = value; } }
     void Start()
 	{
 		// Objekt umbenennen
@@ -61,6 +61,7 @@ public class OnlinePlayerInfo : MonoBehaviour
     // ---------------------- Netzwerkschnittstelle ----------------------
     private void OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
+       // Debug.Log(PlayerID.ToString() + " " +  player.ID.ToString());
         if (PlayerID != player.ID) return;
 
         Dispatcher.Instance.Invoke(delegate ()
