@@ -10,6 +10,7 @@ TagManager:
   - EnemyCam
   - Collectable
   - Climbable
+  - Manager
   layers:
   - Default
   - TransparentFX
