@@ -160,7 +160,7 @@ namespace Server.NS_ViewModel
                         Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate ()
                         { Clients[i] = p; });
                     else
-                        Clients[i] = p;
+                        //Clients[i] = p;
 
                     break;
                 }

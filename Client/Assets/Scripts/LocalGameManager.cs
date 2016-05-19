@@ -10,7 +10,7 @@ public class LocalGameManager : MonoBehaviour
     private List<OnlinePlayerInfo> onlinePlayer = new List<OnlinePlayerInfo>();     // Liste aller OnlineSpieler
     private PlayerInfo player;                                                      // Referenz auf den Spieler
     private MainCameraManager cameraManager;                                        // Referenz auf den KameraManager
-    private Transform[] spawns;		
+    public Transform[] spawns;		
     void Awake()
     {
         // Initialisierungen
@@ -104,6 +104,7 @@ public class LocalGameManager : MonoBehaviour
         int x = CheckSpawnIndex((int)UnityEngine.Random.Range(0, spawns.Length)); // Zufälligen Spawnpoint setzen und checken
         player.transform.position = spawns[x].position;
         player.transform.rotation = spawns[x].rotation;
+        Debug.Log(x);
         player.gameObject.SetActive(true);
         cameraManager.UnfrezzeCamera(false);
     }

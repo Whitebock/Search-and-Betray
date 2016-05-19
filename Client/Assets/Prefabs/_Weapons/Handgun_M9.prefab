@@ -492,10 +492,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: M9
   damage: 5
-  shotsPerSecond: 3
+  shotsPerSecond: 4
   shotsTotal: 60
   shotsPerMag: 12
-  recoilForce: 3
+  recoilForce: 1
   singleShot: 1
   reloadTime: 1.5
   shotSound: {fileID: 8300000, guid: 48a208653b0046c409a66a38645dbd40, type: 3}

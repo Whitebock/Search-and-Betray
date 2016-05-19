@@ -39,11 +39,11 @@ public class OnlinePlayerFireWeapon : MonoBehaviour
         {
             Debug.Log("tracer");
             Dispatcher.Instance.Invoke(delegate {
-                GameObject t = Instantiate(tracer, gameObject.transform.position, Quaternion.identity) as GameObject;
+                /*GameObject t = Instantiate(tracer, gameObject.transform.position, Quaternion.identity) as GameObject;
                 RaycastHit hit = new RaycastHit();
                 hit.distance = Vector3.Distance(transform.position, hitpoint);
-                t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, (transform.position - hitpoint).normalized), hit);
-                
+                t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, (hitpoint - transform.position).normalized), hit);*/
+                AudioSource.PlayClipAtPoint(defaultShot, transform.position);
             });
             
 

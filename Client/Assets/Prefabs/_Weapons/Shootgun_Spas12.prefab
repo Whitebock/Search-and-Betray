@@ -568,11 +568,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Spas 12
-  damage: 5
+  damage: 15
   shotsPerSecond: 1
   shotsTotal: 18
   shotsPerMag: 6
-  recoilForce: 5
+  recoilForce: 2
   singleShot: 1
   reloadTime: 3.5
   shotSound: {fileID: 8300000, guid: 7b1c0468d33e20d4e8ed0530ce18c242, type: 3}

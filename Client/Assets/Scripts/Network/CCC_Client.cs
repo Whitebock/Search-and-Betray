@@ -121,19 +121,21 @@ public class CCC_Client
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
         {
+            Debug.Log("Update Player");
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
 
             OnPlayerUpdate(d);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
         {
-            Debug.Log("SHOT_RECIEVED");
+            
             bool hit = BitConverter.ToBoolean(packet.Data, 0);
             int shooterid = packet.Data[1];
             Vector3 position = new Vector3();
             position.x = BitConverter.ToSingle(packet.Data, 2);
             position.y = BitConverter.ToSingle(packet.Data, 6);
             position.z = BitConverter.ToSingle(packet.Data, 10);
+            Debug.Log("SHOT_RECIEVED");
 
             if (hit)
             {

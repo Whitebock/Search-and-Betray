@@ -61,8 +61,11 @@ public class OnlinePlayerInfo : MonoBehaviour
     // ---------------------- Netzwerkschnittstelle ----------------------
     private void OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-       // Debug.Log(PlayerID.ToString() + " " +  player.ID.ToString());
-        if (PlayerID != player.ID) return;
+        // Debug.Log(PlayerID.ToString() + " " +  player.ID.ToString());
+        if (PlayerID != player.ID)
+        {   
+            return;
+        }
 
         Dispatcher.Instance.Invoke(delegate ()
         {

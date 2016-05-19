@@ -869,11 +869,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: M60E4
-  damage: 8
+  damage: 1
   shotsPerSecond: 12
   shotsTotal: 300
   shotsPerMag: 60
-  recoilForce: 40
+  recoilForce: 2
   singleShot: 0
   reloadTime: 5
   shotSound: {fileID: 8300000, guid: 5cd898ab0dfefc14f8c2c617d7bb3545, type: 3}

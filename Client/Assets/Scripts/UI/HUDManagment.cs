@@ -92,7 +92,7 @@ public class HUDManagment : MonoBehaviour
 	{
 		playerHealth.value = health;
         Debug.Log("SetPlayerHealth");
-		/*Image fill = playerHealth.GetComponentsInChildren<UnityEngine.UI.Image>().FirstOrDefault(t => t.name == "Fill");
+		Image fill = playerHealth.GetComponentsInChildren<UnityEngine.UI.Image>().FirstOrDefault(t => t.name == "Fill");
 		if (playerHealth.value > 50) 
 		{
 			fill.color = new Color32(0,150,100,255);
@@ -104,7 +104,7 @@ public class HUDManagment : MonoBehaviour
 		else if (playerHealth.value <= 50) 
 		{
 			fill.color = new Color32(200,200,25,255);
-		} */
+		} 
 
 	}
 

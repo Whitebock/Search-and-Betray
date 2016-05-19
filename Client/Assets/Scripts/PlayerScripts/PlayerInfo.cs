@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.Network;
 
 public class PlayerInfo : MonoBehaviour
 {
@@ -47,10 +48,9 @@ public class PlayerInfo : MonoBehaviour
         set
 		{
             lifeEnergy = value;
-            HUDManagment.SetPlayerHealth(LifeEnergy);
+            HUDManagment.SetPlayerHealth(value);
             if (LifeEnergy <= 0)
             {
-                LifeEnergy = 100;
                 GameObject.Find("GameManagement").GetComponent<LocalGameManager>().SpawnPlayer();
             }
         }
@@ -102,7 +102,6 @@ public class PlayerInfo : MonoBehaviour
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
         CCC_Client.Instance.OnPlayerUpdate += Client_OnPlayerUpdate;
-        myGameManager = GameObject.Find("GameManagement").GetComponent<LocalGameManager>();
     }
     
 
@@ -144,6 +143,7 @@ public class PlayerInfo : MonoBehaviour
 	{
 		// Bodenkontakt
 		IsGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
+        
 	}
 
 
@@ -156,11 +156,14 @@ public class PlayerInfo : MonoBehaviour
     // ------------------------- Netzwerk -------------------------
     private void Client_OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-        if (player.ID == PlayerID)
-        {
-            Debug.Log("Set Health"  + player.Health);
-            LifeEnergy = player.Health;
-        }
+        Dispatcher.Instance.Invoke(delegate {
+            if (player.ID == PlayerID)
+            {
+                Debug.Log("Updated Player health" + player.Health);
+                LifeEnergy = player.Health;
+            }
+        });
+        
     }
     public void Disconnect()
     {
