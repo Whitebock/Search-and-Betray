@@ -156,14 +156,21 @@ public class PlayerInfo : MonoBehaviour
     // ------------------------- Netzwerk -------------------------
     private void Client_OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-        Dispatcher.Instance.Invoke(delegate {
-            if (player.ID == PlayerID)
-            {
-                Debug.Log("Updated Player health" + player.Health);
-                LifeEnergy = player.Health;
-            }
+		if (player.ID != PlayerID)
+		{
+			return;
+		}
+        
+		Dispatcher.Instance.Invoke(delegate {
+         
+			Debug.Log("Updated Player health" + player.Health);
+
+			LifeEnergy = player.Health;
+
         });
         
+
+
     }
     public void Disconnect()
     {
