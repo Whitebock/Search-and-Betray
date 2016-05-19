@@ -67,6 +67,21 @@ public class HUDManagment : MonoBehaviour
     }
 
 	/// <summary>
+	/// Temp. keycode actions
+	/// </summary>
+	void Update()
+	{
+		if (Input.GetKey(KeyCode.Tab))
+		{
+			SetDisplayScoreboard(true);
+		}
+		else if (Input.GetKeyUp(KeyCode.Tab))
+		{
+			SetDisplayScoreboard(false);
+		}
+	}
+
+	/// <summary>
 	/// Sets the player info [Name or position. E.G. "Playername" or "Traitor".
 	/// </summary>
 	/// <param name="currentPlayerinfo">The player info you want to display next to the health and armor panel.</param>
@@ -303,13 +318,17 @@ public class HUDManagment : MonoBehaviour
 	/// <param name="on">If set to <c>true</c> on.</param>
 	public static void SetDisplayScoreboard(bool on)
 	{
+		GameObject board = GameObject.Find("Panel_Stats");
+
 		if (on) 
 		{
-			scoreboardPanel.GetComponent<CanvasGroup>().alpha = 1.0F;
+			Debug.Log("Display ScoreBoard");
+			board.GetComponent<CanvasGroup>().alpha = 1.0F;
 		} 
 		else 
 		{
-			scoreboardPanel.GetComponent<CanvasGroup>().alpha = 0.0F;
+			Debug.Log("Hide ScoreBoard");
+			board.GetComponent<CanvasGroup>().alpha = 0.0F;
 		}
 	}
 }
