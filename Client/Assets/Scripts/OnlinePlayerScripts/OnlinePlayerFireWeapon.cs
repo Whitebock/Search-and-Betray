@@ -41,10 +41,9 @@ public class OnlinePlayerFireWeapon : MonoBehaviour
             Dispatcher.Instance.Invoke(delegate {
                 GameObject t = Instantiate(tracer, gameObject.transform.position, Quaternion.identity) as GameObject;
                 RaycastHit hit = new RaycastHit();
-                hit.distance = Vector3.Magnitude(transform.position - hitpoint);
-                t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, transform.position - hitpoint), hit);
-
-
+                hit.distance = Vector3.Distance(transform.position, hitpoint);
+                t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, (transform.position - hitpoint).normalized), hit);
+                
             });
             
 
