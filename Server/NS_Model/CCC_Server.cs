@@ -116,7 +116,8 @@ namespace Server.NS_Model
             // Send to all players.
             for (int i = 0; i < players.Count; i++)
             {
-                players[i].Client.Send(packet);
+                try { players[i].Client.Send(packet); }
+                catch (Exception) { players.RemoveAt(i); }
             }
 
             Sync(DateTime.Now);
@@ -227,9 +228,9 @@ namespace Server.NS_Model
                 joinPacket.Data = temp.ToArray();
 
                 // Notify other players.
-                foreach (CCC_Player p in players)
+                for (int i = 0; i < players.Count; i++)
                 {
-                    p.Client.Send(joinPacket);
+                    players[i].Client.Send(joinPacket);
                 }
                 #endregion
 
@@ -315,6 +316,11 @@ namespace Server.NS_Model
         private void Player_Shoot(CCC_Player player, CCC_Player.Vector3 position, int? playerid = null, int? amount = null)
         {
             Debug.WriteLine("{0} shot {1} with {2}", player.ID, playerid, amount);
+            List<byte> packetdata = new List<byte>();
+            packetdata.Add(BitConverter.GetBytes(playerid.HasValue)[0]);
+            byte[] pos = position;
+            packetdata.AddRange(pos);
+
             // Check if a player was hit.
             if (playerid.HasValue)
             {
@@ -328,6 +334,9 @@ namespace Server.NS_Model
                         if (amount.HasValue)
                             damage = amount.Value;
 
+                        packetdata.Add(players[i].ID);
+                        packetdata.Add((byte)damage);
+
                         // Set health and send update
                         players[i].TakeDamage((byte)damage);
                         SendPlayerUpdate(players[i]);
@@ -337,7 +346,7 @@ namespace Server.NS_Model
 
             // Send shoot packet
             CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_SHOOT);
-            packet.Data = position;
+            packet.Data = packetdata.ToArray();
 
             for (int i = 0; i < players.Count; i++)
             {
@@ -346,7 +355,7 @@ namespace Server.NS_Model
                     catch (Exception) { players.RemoveAt(i); }
             }
         }
-
+34567pü
         private void SendPlayerUpdate(CCC_Player player)
         {
             CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);

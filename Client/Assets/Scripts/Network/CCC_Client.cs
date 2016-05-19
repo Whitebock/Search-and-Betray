@@ -127,12 +127,12 @@ public class CCC_Client
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
         {
+            Debug.Log("SHOT_RECIEVED");
             bool hit = BitConverter.ToBoolean(packet.Data, 0);
             Vector3 position = new Vector3();
             position.x = BitConverter.ToSingle(packet.Data, 1);
             position.y = BitConverter.ToSingle(packet.Data, 5);
             position.z = BitConverter.ToSingle(packet.Data, 9);
-            Debug.Log("SHOT_RECIEVED");
             OnPlayerShoot(position);
         }
         else if (packet.Flag == CCC_Packet.Type.SYNC)
@@ -347,7 +347,7 @@ public class CCC_Client
             temp.Add((byte)amount);
         }
         packet.Data = temp.ToArray();
-
+        Debug.Log("SEND_SHOOT");
         SendPacket(packet);
     }
 

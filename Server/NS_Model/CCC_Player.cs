@@ -145,8 +145,9 @@ namespace Server.NS_Model
                 
                 if (hitplayer)
                 {
-                    byte amount = response.Data[10];
-                    byte id = response.Data[11];
+                    byte id = response.Data[13];
+                    byte amount = response.Data[14];
+                    
                     Shoot(this, position, id, amount);
                 }
                 else

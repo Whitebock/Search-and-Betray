@@ -47,7 +47,12 @@ public class PlayerInfo : MonoBehaviour
         set
 		{
             lifeEnergy = value;
-            HUDManagment.SetPlayerHealth(lifeEnergy);
+            HUDManagment.SetPlayerHealth(LifeEnergy);
+            if (LifeEnergy <= 0)
+            {
+                LifeEnergy = 100;
+                GameObject.Find("GameManagement").GetComponent<LocalGameManager>().SpawnPlayer();
+            }
         }
     }
 	public static Rigidbody Phy														// Rigitbody des Spielers
@@ -97,6 +102,7 @@ public class PlayerInfo : MonoBehaviour
 		LifeEnergy = 100;
 		isCrouchingInp = isCrouching = false;
         CCC_Client.Instance.OnPlayerUpdate += Client_OnPlayerUpdate;
+        myGameManager = GameObject.Find("GameManagement").GetComponent<LocalGameManager>();
     }
     
 
@@ -152,8 +158,8 @@ public class PlayerInfo : MonoBehaviour
     {
         if (player.ID == PlayerID)
         {
+            Debug.Log("Set Health"  + player.Health);
             LifeEnergy = player.Health;
-            HUDManagment.SetPlayerHealth(player.Health);
         }
     }
     public void Disconnect()
@@ -161,6 +167,8 @@ public class PlayerInfo : MonoBehaviour
         CCC_Client.Instance.Disconnect();
         SceneManager.LoadScene("MainMenu");
 	}
+
+
 	// ------------------------------------------------------------
 }
 

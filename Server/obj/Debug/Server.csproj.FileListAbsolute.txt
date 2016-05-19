@@ -71,3 +71,14 @@ E:\Projekte\GitHub\Search-and-Betray\Server\obj\Debug\Server.csproj.GenerateReso
 C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\bin\Debug\Server.exe.config
 C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.exe
 C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.pdb
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\bin\Debug\Server.exe
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\bin\Debug\Server.pdb
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\bin\Debug\WhiteNet.dll
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\NS_View\View.g.cs
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server_MarkupCompile.cache
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server_MarkupCompile.lref
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\NS_View\View.baml
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.g.resources
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.Properties.Resources.resources
+C:\Users\Markus\Documents\GitHub\Search-and-Betray\Server\obj\Debug\Server.csproj.GenerateResource.Cache
