@@ -45,8 +45,8 @@ namespace Server.NS_Model
 
         |   ->      | PLAYER_MOVE               | position, rotation, velocity, scale
         |           | PLAYER_CROUCH             | bool
-        |           | PLAYER_SHOOT              | [hitplayer] position [amount, playerid]
-        |   <-      | PLAYER_SHOOT              | [hitplayer] position [amount, playerid]
+        |           | PLAYER_SHOOT              | [hitplayer] shooterid position [amount, playerid]
+        |   <-      | PLAYER_SHOOT              | [hitplayer] shooterid position [amount, playerid]
         
         |   <-      | SYNC                      | all objects
 

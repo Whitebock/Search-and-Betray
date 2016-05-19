@@ -318,6 +318,7 @@ namespace Server.NS_Model
             Debug.WriteLine("{0} shot {1} with {2}", player.ID, playerid, amount);
             List<byte> packetdata = new List<byte>();
             packetdata.Add(BitConverter.GetBytes(playerid.HasValue)[0]);
+            packetdata.Add(player.ID);
             byte[] pos = position;
             packetdata.AddRange(pos);
 
@@ -338,8 +339,18 @@ namespace Server.NS_Model
                         packetdata.Add((byte)damage);
 
                         // Set health and send update
-                        players[i].TakeDamage((byte)damage);
-                        SendPlayerUpdate(players[i]);
+                        if (players[i].TakeDamage((byte)damage))
+                        {
+                            SendPlayerUpdate(players[i]);
+                            players[i].ResetHealth();
+                            SendPlayerUpdate(players[i]);
+                        }
+                        else
+                        {
+                            SendPlayerUpdate(players[i]);
+                        }
+                        
+                        
                     }
                 }
             }
@@ -355,7 +366,7 @@ namespace Server.NS_Model
                     catch (Exception) { players.RemoveAt(i); }
             }
         }
-34567pü
+
         private void SendPlayerUpdate(CCC_Player player)
         {
             CCC_Packet packet = new CCC_Packet(CCC_Packet.Type.PLAYER_UPDATE);

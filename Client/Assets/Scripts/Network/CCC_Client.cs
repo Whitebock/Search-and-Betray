@@ -84,7 +84,7 @@ public class CCC_Client
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
     public delegate void UpdateEvent(DeserializedPlayer player);
-    public delegate void ShootEvent(Vector3 position);
+    public delegate void ShootEvent(int id,Vector3 position);
 
     #endregion
 
@@ -129,11 +129,18 @@ public class CCC_Client
         {
             Debug.Log("SHOT_RECIEVED");
             bool hit = BitConverter.ToBoolean(packet.Data, 0);
+            int shooterid = packet.Data[1];
             Vector3 position = new Vector3();
-            position.x = BitConverter.ToSingle(packet.Data, 1);
-            position.y = BitConverter.ToSingle(packet.Data, 5);
-            position.z = BitConverter.ToSingle(packet.Data, 9);
-            OnPlayerShoot(position);
+            position.x = BitConverter.ToSingle(packet.Data, 2);
+            position.y = BitConverter.ToSingle(packet.Data, 6);
+            position.z = BitConverter.ToSingle(packet.Data, 10);
+
+            if (hit)
+            {
+                int playerhitid = packet.Data[14];
+                int damage = packet.Data[15];
+            }
+            OnPlayerShoot(shooterid,position);
         }
         else if (packet.Flag == CCC_Packet.Type.SYNC)
         {

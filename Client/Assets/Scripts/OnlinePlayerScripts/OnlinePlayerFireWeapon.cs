@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Network;
 
 public class OnlinePlayerFireWeapon : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class OnlinePlayerFireWeapon : MonoBehaviour
 	private Weapon myWeapon;
     public GameObject tracer;
 	public AudioClip defaultShot;
-
+   
     public Weapon MyWeapon
     {
 		get { return myWeapon; }
@@ -17,6 +18,7 @@ public class OnlinePlayerFireWeapon : MonoBehaviour
 	void Start()
 	{
 		onlinePlayer = GetComponentInParent<OnlinePlayerInfo>();
+       CCC_Client.Instance.OnPlayerShoot += ShootWeaponTemp;
 	}
 
 	public void ShootWeapon(int onlinePlayerID, Vector3 hitpoint)
@@ -31,15 +33,23 @@ public class OnlinePlayerFireWeapon : MonoBehaviour
 		myWeapon.PlaySound(myWeapon.shotSound);
 	}
 
-	public void ShootWeaponThemp(int onlinePlayerID, Vector3 hitpoint)
+    void ShootWeaponTemp(int onlinePlayerID, Vector3 hitpoint)
 	{
-		if (myWeapon && onlinePlayerID != onlinePlayer.PlayerID) return;
+		if (onlinePlayerID == onlinePlayer.PlayerID)
+        {
+            Debug.Log("tracer");
+            Dispatcher.Instance.Invoke(delegate {
+                GameObject t = Instantiate(tracer, gameObject.transform.position, Quaternion.identity) as GameObject;
+                RaycastHit hit = new RaycastHit();
+                hit.distance = Vector3.Magnitude(transform.position - hitpoint);
+                t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, transform.position - hitpoint), hit);
 
-		GameObject t = Instantiate(tracer, gameObject.transform.position, Quaternion.identity) as GameObject;
-		RaycastHit hit = new RaycastHit();
-		hit.distance = Vector3.Magnitude(transform.position - hitpoint);
-		t.GetComponent<Tracer>().StartTracer(new Ray(transform.position, myWeapon.transform.position - hitpoint), hit);
 
-		AudioSource.PlayClipAtPoint(defaultShot, transform.position);
+            });
+            
+
+           
+        }
+
 	}
 }

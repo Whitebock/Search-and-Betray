@@ -214,6 +214,11 @@ namespace Server.NS_Model
             return false;
         }
 
+        public void ResetHealth()
+        {
+            Health = 100;
+        }
+
         #region Operators
         public static bool operator ==(CCC_Player p1, CCC_Player p2)
         {
