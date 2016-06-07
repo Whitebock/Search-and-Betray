@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Net;
-using System.Threading;
+﻿using Assets.Scripts.Network;
 using System;
-using WhiteNet;
-using WhiteNet.Client;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using UnityEngine;
 
 public class CCC_Client
 {
@@ -170,6 +168,20 @@ public class CCC_Client
     private void OnTimeout(byte[] data)
     {
 		HUDManagment.SetConnectionStatus(ConnectionStatus.TimeOut);
+    }
+
+    public static IPAddress GetLocalAddress(bool ipv6 = false)
+    {
+        IPAddress localhost = null;
+        foreach (IPAddress ipaddress in Dns.GetHostAddresses(Dns.GetHostName()))
+        {
+            if (ipaddress.AddressFamily == (ipv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
+            {
+                localhost = ipaddress;
+                break;
+            }
+        }
+        return localhost;
     }
 
     #region Network Methodes

@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using System;
 using System.Text;
 using UnityEngine.SceneManagement;
-using WhiteNet;
 
 //Borucki
 
@@ -70,7 +69,7 @@ public class MainMenuManagment : MonoBehaviour
 		Preferences_PrepareUI();
 		onChange = true;
 
-        ui_connectionIpAdress.text = IPUtils.GetLocalAddress().ToString();
+        ui_connectionIpAdress.text = CCC_Client.GetLocalAddress().ToString();
         ui_connectionPort.text = 63001 + "";
 	}
 
