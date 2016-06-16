@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 
@@ -57,6 +56,11 @@ public class CCC_Client
 
             byte[] ubytes = serializedData.Skip(53).ToArray();
             Username = Encoding.Unicode.GetString(ubytes);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}]{1} P[{2}] R[{3}] V[{4}] S[{5}]", ID, Username, Position, Rotation.eulerAngles, Velocity, Scale);
         }
     }
     #region Properties
@@ -120,7 +124,6 @@ public class CCC_Client
         else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
         {
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
-
             OnPlayerUpdate(d);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
@@ -168,20 +171,6 @@ public class CCC_Client
     private void OnTimeout(byte[] data)
     {
 		HUDManagment.SetConnectionStatus(ConnectionStatus.TimeOut);
-    }
-
-    public static IPAddress GetLocalAddress(bool ipv6 = false)
-    {
-        IPAddress localhost = null;
-        foreach (IPAddress ipaddress in Dns.GetHostAddresses(Dns.GetHostName()))
-        {
-            if (ipaddress.AddressFamily == (ipv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
-            {
-                localhost = ipaddress;
-                break;
-            }
-        }
-        return localhost;
     }
 
     #region Network Methodes

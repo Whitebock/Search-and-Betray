@@ -36,7 +36,7 @@ public class OnlinePlayerInfo : MonoBehaviour
 	public bool IsGrounded
 	{ get { return isGrounded; } }
     public int TeamID
-    { get { return teamID; } set { playerID = value; } }
+    { get { return teamID; } set { teamID = value; } }
     void Start()
 	{
 		// Objekt umbenennen
@@ -61,6 +61,7 @@ public class OnlinePlayerInfo : MonoBehaviour
     // ---------------------- Netzwerkschnittstelle ----------------------
     private void OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
+        //Debug.Log("Update for " + player.ID + " I am " + PlayerID);
         if (PlayerID != player.ID) return;
 
         Dispatcher.Instance.Invoke(delegate ()

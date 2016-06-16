@@ -49,11 +49,6 @@ public class Network_SendTransform : MonoBehaviour
 	public delegate void Del_Network_DataRecieved();
 	public event Del_Network_DataRecieved On_Network_DataRecieved;
 
-	// ------------------------- Testvariablen -------------------------
-	public int game = 1;		// Spielinstanz (für Testzwecke)
-	public Vector3 posOffset;	// Objekt verschieben (für Testzwecke)
-	// -----------------------------------------------------------------
-
 	public PropStatus Status
 	{
 		get { return status; }
@@ -95,10 +90,6 @@ public class Network_SendTransform : MonoBehaviour
 		Status = PropStatus.inactive; 		// Initialen Status des Objekts setzen
 		enabled = false;
 
-		// ------------------ Simulierte Netzwerkschnittstelle ------------------
-		Netzwerk_Simulator.NetzwerkStream += Receive;
-		// ----------------------------------------------------------------------
-
 		// ObjektID setzen
 		if (initialObjectID < 1)
 		{
@@ -136,12 +127,7 @@ public class Network_SendTransform : MonoBehaviour
 		if (status == PropStatus.active)
 		{
 			// ------------------ Simulierte Netzwerkschnittstelle ------------------
-			// Position senden
-			Netzwerk_Simulator.Senden(game, objectID, PackageType.Position, (transform.position.x - posOffset.x) + ","
-				+ (transform.position.y - posOffset.y) + "," + (transform.position.z - posOffset.z));
-			// Ausrichtung senden
-			Netzwerk_Simulator.Senden(game, objectID, PackageType.Rotation, transform.rotation.x + ","
-				+ transform.rotation.y + "," + transform.rotation.z + "," + transform.rotation.w);
+			// TODO: Position + Rotation senden
 			// ----------------------------------------------------------------------
 		}
 
@@ -165,45 +151,25 @@ public class Network_SendTransform : MonoBehaviour
 	}
 
 	// ------------------ Simulierte Netzwerkschnittstelle ------------------
-	void Receive(int sender, int empfaenger, PackageType typ, string info)
+	void GetPositionData()
 	{
-		if (sender == game || empfaenger != objectID) return;
-
 		// --------------- !!! WICHTIG !!! ---------------
-		if (On_Network_DataRecieved != null && status != PropStatus.passive)
-		{
-			Debug.Log(transform.name);
-			On_Network_DataRecieved();
-		}
+		if (On_Network_DataRecieved != null && status != PropStatus.passive) On_Network_DataRecieved();
 		Status = PropStatus.passive;
 		if (status != PropStatus.passive) return;
 		// -----------------------------------------------
-
-		string[] msg = info.Split(new char[]{ ',' });
-		float[] hilf = new float[msg.Length];
-		for(int i = 0; i < msg.Length; i++) float.TryParse(msg[i], out hilf[i]);
-
-		switch(typ)
-		{
-		case PackageType.Position:	// Positionsdaten empfangen
-			transform.position = new Vector3(hilf[0] + posOffset.x, hilf[1] + posOffset.y, hilf[2] + posOffset.z);
-			break;
-		case PackageType.Rotation:	// Ausrichtung empfangen
-			transform.rotation = new Quaternion(hilf[0], hilf[1], hilf[2], hilf[3]);
-			break;
-		}
-	}
-	void OnDestroy()
-	{
-		Netzwerk_Simulator.NetzwerkStream -= Receive;
-		DisconnectFromNetwork();
 	}
 	// ----------------------------------------------------------------------
+
+	void OnDestroy()
+	{
+		DisconnectFromNetwork();
+	}
 
 	public static Network_SendTransform GetItem(int id)
 	{
 		// Alle Child-Objekte mit einem Network_SendTransform als Referenz durchsuchen
-		foreach (Network_SendTransform item in allProps) if (item.ObjectID == id && item.game == 2) return item;
+		foreach (Network_SendTransform item in allProps) if (item.ObjectID == id) return item;
 		return null;
 	}
 }

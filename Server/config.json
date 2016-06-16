@@ -1,4 +1,21 @@
 {
+  "log": {
+    "info": true,
+    "warning": true,
+    "error": true,
+    "file": {
+      "enabled": false,
+      "path": "log.txt",
+      "type": "txt"
+    },
+    "time": false,
+    "network": false,
+    "color": true
+  },
   "name": "Node Test Server",
-  "sync": "5000"
+  "port": 63001,
+  "sync": {
+    "enabled": true,
+    "timer": 5000
+  }
 }

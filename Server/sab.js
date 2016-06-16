@@ -133,8 +133,8 @@ module.exports = {
         this.toBuffer = function (){
             var buf = Buffer.allocUnsafe(12);
             buf.writeFloatLE(this.x, 0);
-            buf.writeFloatLE(this.x, 4);
-            buf.writeFloatLE(this.x, 8);
+            buf.writeFloatLE(this.y, 4);
+            buf.writeFloatLE(this.z, 8);
             return buf;
         }
 
@@ -178,9 +178,9 @@ module.exports = {
             var scl = this.scale.toBuffer();
             
             pos.copy(buf, 5, 0);
-            rot.copy(buf, 5, 0);
-            vel.copy(buf, 5, 0);
-            scl.copy(buf, 5, 0);
+            rot.copy(buf, 17, 0);
+            vel.copy(buf, 29, 0);
+            scl.copy(buf, 41, 0);
 
             buf.write(this.username, 53, userlen, encoding);
             return buf;
