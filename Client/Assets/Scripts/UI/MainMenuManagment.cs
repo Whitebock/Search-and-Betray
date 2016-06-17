@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Text;
 using UnityEngine.SceneManagement;
-using WhiteNet;
+using System.Net.Sockets;
 
 //Borucki
 
@@ -70,14 +70,28 @@ public class MainMenuManagment : MonoBehaviour
 		Preferences_PrepareUI();
 		onChange = true;
 
-        ui_connectionIpAdress.text = IPUtils.GetLocalAddress().ToString();
+        ui_connectionIpAdress.text = GetLocalAddress().ToString();
         ui_connectionPort.text = 63001 + "";
 	}
 
-	/// <summary>
-	/// Update this instance.
-	/// </summary>
-	void Update ()
+    public static IPAddress GetLocalAddress(bool ipv6 = false)
+    {
+        IPAddress localhost = null;
+        foreach (IPAddress ipaddress in Dns.GetHostAddresses(Dns.GetHostName()))
+        {
+            if (ipaddress.AddressFamily == (ipv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork))
+            {
+                localhost = ipaddress;
+                break;
+            }
+        }
+        return localhost;
+    }
+
+    /// <summary>
+    /// Update this instance.
+    /// </summary>
+    void Update ()
 	{
 		SetClockInfo();
 	}

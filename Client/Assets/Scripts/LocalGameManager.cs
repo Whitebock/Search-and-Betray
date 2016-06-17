@@ -10,7 +10,7 @@ public class LocalGameManager : MonoBehaviour
     private List<OnlinePlayerInfo> onlinePlayer = new List<OnlinePlayerInfo>();     // Liste aller OnlineSpieler
     private PlayerInfo player;                                                      // Referenz auf den Spieler
     private MainCameraManager cameraManager;                                        // Referenz auf den KameraManager
-    public Transform[] spawns;		
+    private Transform[] spawns;		
     void Awake()
     {
         // Initialisierungen
@@ -28,14 +28,12 @@ public class LocalGameManager : MonoBehaviour
         {
             bool found = false;
             foreach (OnlinePlayerInfo op in onlinePlayer)
-            {
                 if (s.Key == op.PlayerID)
                 { found = true; break; }
-            }
+
             if (!found && s.Key != PlayerInfo.PlayerID)
             {
                 ConnectOnlinePlayer(s.Key, s.Value);
-                
             }
         }
     }
@@ -46,7 +44,7 @@ public class LocalGameManager : MonoBehaviour
     }
 
     // Der Spieler in der Scene ist deaktiviert und die Kameraposition ist fest
-    public void StopPlayer()
+    private void StopPlayer()
     {
         cameraManager.FrezzeCamera();
         player.gameObject.SetActive(false);
@@ -91,7 +89,7 @@ public class LocalGameManager : MonoBehaviour
     }
 
     // ------------------------------------------------- Spieler -------------------------------------------------
-    public void SpawnPlayer(int spawnIndex)
+    private void SpawnPlayer(int spawnIndex)
     {
         int x = CheckSpawnIndex(spawnIndex);                // Spawnpoint checken
         player.transform.position = spawns[x].position;     // positionieren
@@ -99,12 +97,11 @@ public class LocalGameManager : MonoBehaviour
         player.gameObject.SetActive(true);                  // aktivieren
         cameraManager.UnfrezzeCamera(false);                // Spieler wieder in Egoperspektive bringen
     }
-    public void SpawnPlayer()
+    private void SpawnPlayer()
     {
         int x = CheckSpawnIndex((int)UnityEngine.Random.Range(0, spawns.Length)); // Zufälligen Spawnpoint setzen und checken
         player.transform.position = spawns[x].position;
         player.transform.rotation = spawns[x].rotation;
-        Debug.Log(x);
         player.gameObject.SetActive(true);
         cameraManager.UnfrezzeCamera(false);
     }
@@ -117,7 +114,7 @@ public class LocalGameManager : MonoBehaviour
                 OnlinePlayerInfo newPlayer = Instantiate(onlinePlayerPrefab).GetComponent<OnlinePlayerInfo>();
 
             // OnlinePlayer initialisieren
-            newPlayer.playerID = id;
+            newPlayer.PlayerID = id;
             newPlayer.PlayerName = name;
             newPlayer.TeamID = 0;
 

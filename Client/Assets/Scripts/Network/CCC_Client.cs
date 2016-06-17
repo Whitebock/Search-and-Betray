@@ -1,13 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Net;
-using System.Threading;
+﻿using Assets.Scripts.Network;
 using System;
-using WhiteNet;
-using WhiteNet.Client;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
+using UnityEngine;
 
 public class CCC_Client
 {
@@ -60,6 +57,11 @@ public class CCC_Client
             byte[] ubytes = serializedData.Skip(53).ToArray();
             Username = Encoding.Unicode.GetString(ubytes);
         }
+
+        public override string ToString()
+        {
+            return String.Format("[{0}]{1} P[{2}] R[{3}] V[{4}] S[{5}]", ID, Username, Position, Rotation.eulerAngles, Velocity, Scale);
+        }
     }
     #region Properties
     public int Port
@@ -84,7 +86,7 @@ public class CCC_Client
     public delegate void JoinEvent(int playerid, string playername);
     public delegate void SyncEvent(Dictionary<int, string> players);
     public delegate void UpdateEvent(DeserializedPlayer player);
-    public delegate void ShootEvent(int id,Vector3 position);
+    public delegate void ShootEvent(Vector3 position);
 
     #endregion
 
@@ -121,28 +123,18 @@ public class CCC_Client
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_UPDATE)
         {
-            Debug.Log("Update Player");
             DeserializedPlayer d = new DeserializedPlayer(packet.Data);
-
             OnPlayerUpdate(d);
         }
         else if (packet.Flag == CCC_Packet.Type.PLAYER_SHOOT)
         {
-            
             bool hit = BitConverter.ToBoolean(packet.Data, 0);
-            int shooterid = packet.Data[1];
             Vector3 position = new Vector3();
-            position.x = BitConverter.ToSingle(packet.Data, 2);
-            position.y = BitConverter.ToSingle(packet.Data, 6);
-            position.z = BitConverter.ToSingle(packet.Data, 10);
+            position.x = BitConverter.ToSingle(packet.Data, 1);
+            position.y = BitConverter.ToSingle(packet.Data, 5);
+            position.z = BitConverter.ToSingle(packet.Data, 9);
             Debug.Log("SHOT_RECIEVED");
-
-            if (hit)
-            {
-                int playerhitid = packet.Data[14];
-                int damage = packet.Data[15];
-            }
-            OnPlayerShoot(shooterid,position);
+            OnPlayerShoot(position);
         }
         else if (packet.Flag == CCC_Packet.Type.SYNC)
         {
@@ -356,7 +348,7 @@ public class CCC_Client
             temp.Add((byte)amount);
         }
         packet.Data = temp.ToArray();
-        Debug.Log("SEND_SHOOT");
+
         SendPacket(packet);
     }
 

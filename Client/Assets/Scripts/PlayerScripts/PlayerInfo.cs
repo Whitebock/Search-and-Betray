@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-using Assets.Scripts.Network;
 
 public class PlayerInfo : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class PlayerInfo : MonoBehaviour
 	private static Rigidbody phy;
 	private static float inp_horizontal, inp_vertical;
 	private static bool isGrounded, isCrouchingInp, isCrouching, crouchToggle, unconscious;
-    public LocalGameManager myGameManager;
+
     // Events
     /*
 	 * Erklärung:
@@ -45,14 +44,9 @@ public class PlayerInfo : MonoBehaviour
 	public static int LifeEnergy													// Leben
 	{
         get { return lifeEnergy; }
-        set
-		{
+        set {
+            
             lifeEnergy = value;
-            HUDManagment.SetPlayerHealth(value);
-            if (LifeEnergy <= 0)
-            {
-                GameObject.Find("GameManagement").GetComponent<LocalGameManager>().SpawnPlayer();
-            }
         }
     }
 	public static Rigidbody Phy														// Rigitbody des Spielers
@@ -86,8 +80,7 @@ public class PlayerInfo : MonoBehaviour
 	public static bool IsCrouching													// Ist tatsächlich geduckt
 	{
         get { return isCrouching; }
-        set
-		{
+        set {
             isCrouching = value;
             CCC_Client.Instance.SendCrouch(value);
         }
@@ -133,9 +126,14 @@ public class PlayerInfo : MonoBehaviour
 
 
         // --------------------- Netzwerkschnittstelle ---------------------
+
         Vector3 hilf = transform.worldToLocalMatrix * phy.velocity;
 
         CCC_Client.Instance.SendTransform(transform, hilf);
+
+        // Granatenwurf senden
+        //if (Input.GetButtonDown("Fire1")) Netzwerk_Simulator.Senden(playerID, -1, PackageType.Granade, "");
+
         // ------------------------------------------------------------------
     }
 
@@ -143,9 +141,13 @@ public class PlayerInfo : MonoBehaviour
 	{
 		// Bodenkontakt
 		IsGrounded = Physics.Raycast(transform.position, Vector3.down, 1.05f);
-        
 	}
 
+	// Todessequenz
+	public void Kill()
+	{
+		gameObject.SetActive(false);
+	}
 
 	void OnDisabled()
 	{
@@ -154,31 +156,20 @@ public class PlayerInfo : MonoBehaviour
 	}
 
     // ------------------------- Netzwerk -------------------------
+
     private void Client_OnPlayerUpdate(CCC_Client.DeserializedPlayer player)
     {
-		if (player.ID != PlayerID)
-		{
-			return;
-		}
-        
-		Dispatcher.Instance.Invoke(delegate {
-         
-			Debug.Log("Updated Player health" + player.Health);
-
-			LifeEnergy = player.Health;
-
-        });
-        
-
-
+        if (player.ID == PlayerID)
+        {
+            LifeEnergy = player.Health;
+            HUDManagment.SetPlayerHealth(player.Health);
+        }
     }
     public void Disconnect()
     {
         CCC_Client.Instance.Disconnect();
         SceneManager.LoadScene("MainMenu");
 	}
-
-
 	// ------------------------------------------------------------
 }
 

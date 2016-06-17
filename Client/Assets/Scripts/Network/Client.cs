@@ -3,9 +3,9 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
-namespace WhiteNet.Client
+namespace Assets.Scripts.Network
 {
-    public class Client
+    public sealed class Client
     {
         #region Attributes
         private TcpClient tcpClient;
@@ -203,7 +203,8 @@ namespace WhiteNet.Client
 
                 tcpClient.GetStream().BeginRead(new byte[] { 0 }, 0, 0, OnRead, null);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 throw e;
             }
         }
