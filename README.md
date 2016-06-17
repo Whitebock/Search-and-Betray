@@ -15,6 +15,13 @@ We started using GitFlow instead of creating branches without system.
 More Interfaces were created to simplify the entire process.
 
 All in all I would say this was a successful project, everyone learned a lot while working on it.
+***
+In Pull Request #34 the C# server was replaced by a JavaScript Server using [Node.js](https://nodejs.org/)  
+I'm using some things that are not in version 4.4.5 (mostly Buffers),  
+so at least version 6.2.1 is required.  
+You can download it [here](https://nodejs.org/en/download/current/)  
+
+To start it, simply call `node server.js`
 
 ***
 
