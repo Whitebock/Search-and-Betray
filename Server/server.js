@@ -149,7 +149,7 @@ function socketData(socket, data) {
             
             socket.player.position = new sab.Vector3(pos);
             socket.player.rotation = new sab.Vector3(rot);
-            socket.player.veloctiy = new sab.Vector3(vel);
+            socket.player.velocity = new sab.Vector3(vel);
             socket.player.scale = new sab.Vector3(scl);
             
             sendPlayerUpdate(socket.player);

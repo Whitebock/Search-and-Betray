@@ -6,12 +6,14 @@ Client/Library/
 Client/**/*.csproj
 Client/**/*.sln
 Client/**/*.userprefs
+Client/ProjectSettings/ProjectVersion.txt
 
 ========================
 Visual Studio generated
 ========================
 .vs/
 Server/obj/
+Server/node.exe
 
 ========================
 Git generated
