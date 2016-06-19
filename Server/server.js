@@ -154,6 +154,55 @@ function socketData(socket, data) {
             
             sendPlayerUpdate(socket.player);
             break;
+        case sab.PacketType.PLAYER_SHOOT:
+            // Will be fired when someone shoots
+            var hitsomeone = recieved.data[0];
+            var pos = Buffer.allocUnsafe(12);
+            recieved.data.copy(pos, 0, 1);
+            var hitpoint = new sab.Vector3(pos);
+            
+            var buf = Buffer.allocUnsafe(14);
+            buf[0] = hitsomeone;
+            buf[1] = socket.player.id;
+            hitpoint.toBuffer().copy(buf, 0, 2);
+            
+            // If someone was hit, add that information
+            // to the packet and calculate the damage 
+            if (hitsomeone) {
+                var hitid = recieved.data[13];
+                var amount = recieved.data[14];
+
+                clients.forEach(function (client) {
+                    if (hitid === client.player.id) {
+                        var temp = Buffer.allocUnsafe(buf.length + 2);
+                        buf.copy(temp, 0, 0);
+                        temp[15] = client.id;
+                        temp[16] = amount;
+                        buf = temp;
+                        
+                        client.health -= amount;
+                        // Check if the player died
+                        if (client.player.health < 0) {
+                            client.player.health = 0;
+                            logStatus(client.player.username + ' got killed by ' + socket.player.username);
+                        }
+                        
+                        sendPlayerUpdate(client.player);
+                        return;
+                    }
+                });
+            }
+            
+            // Send shoot packet
+            packet = new sab.Packet(sab.PacketType.PLAYER_SHOOT, buf);
+            clients.forEach(function (client) {
+                if (client.player.id !== socket.player.id) {
+                    client.write(packet.toBuffer());
+                    logStatus('Send ' + packet.toBuffer().length + ' Bytes to ' + client.remoteAddress + ':' + client.remotePort, 3);
+                }
+            });
+
+            break;
         default:
             var buf = Buffer.allocUnsafe(1);
             buf.writeInt8(sab.VERSION, 0);
